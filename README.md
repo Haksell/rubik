@@ -2,9 +2,9 @@
 
 ## todo
 
-- [ ] Kociemba solver
-- [ ] Korf solver
-- [ ] CFOP solver
+- [ ] 3x3x3 Kociemba solver
+- [ ] 3x3x3 Korf solver
+- [ ] 3x3x3 CFOP solver
 - [ ] 3d visualization
 - [ ] 2x2x2 solver
 - [ ] 4x4x4 solver
