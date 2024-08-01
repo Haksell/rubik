@@ -4,14 +4,15 @@ use std::fmt::{Debug, Display, Error, Formatter};
 #[derive(Clone, Debug)]
 pub enum Color {
     WHITE,
-	YELLOW,
-	RED,
-	GREEN,
-	BLUE,
-	ORANGE
+    YELLOW,
+    RED,
+    GREEN,
+    BLUE,
+    ORANGE,
 }
 
 impl Color {
+    // TODO: #[repr(u8)] on pub enum Color instead?
     fn from_int(n: u8) -> Option<Color> {
         match n {
             0 => Some(Color::WHITE),
@@ -28,11 +29,11 @@ impl Color {
 #[derive(Clone, Debug)]
 pub enum Move {
     FRONT,
-	RIGHT,
-	UP,
-	BACK,
-	LEFT,
-	DOWN
+    RIGHT,
+    UP,
+    BACK,
+    LEFT,
+    DOWN,
 }
 
 impl Move {
@@ -49,27 +50,27 @@ impl Move {
     }
 
     fn from_str(s: &str) -> Option<Move> {
-		todo!();
+        todo!();
     }
 }
 
 pub struct Cube {
-	faces: Vec<Vec<Color>>
+    faces: Vec<Vec<Color>>,
 }
 
 impl Cube {
-	pub fn new(n: usize) -> Cube {
-		println!("New Cube !");
-		let mut faces = Vec::new();
-		for i in 0..6 {
-			faces.push(vec![Color::from_int(i).unwrap(); n * n]);
-		}
-		Cube { faces }
-	}
+    pub fn new(n: usize) -> Cube {
+        println!("New Cube !");
+        let mut faces = Vec::new();
+        for i in 0..6 {
+            faces.push(vec![Color::from_int(i).unwrap(); n * n]);
+        }
+        Cube { faces }
+    }
 
-	pub fn do_move(&self, _move: Move) {
-		todo!();
-	}
+    pub fn do_move(&self, _move: Move) {
+        todo!();
+    }
 
     pub fn scramble(&self, sequence: &str) -> Result<(), Error> {
         let as_moves = sequence.split_whitespace().map(Move::from_str);
@@ -86,24 +87,24 @@ impl Cube {
 }
 
 impl Display for Cube {
-	fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-		self.faces.iter().try_for_each(|faces| 
-			write!(f, "{:?}", faces)
-		)
-	}
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        self.faces
+            .iter()
+            .try_for_each(|faces| write!(f, "{:?}", faces))
+    }
 }
 
 fn main() -> Result<(), Error> {
-	let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().collect();
 
-	if args.len() != 2 {
-		println!("Usage: ./rubik <mixing sequence>");
-		return Err(Error); // TODO Better error handling
-	}
+    if args.len() != 2 {
+        println!("Usage: ./rubik <mixing sequence>");
+        return Err(Error); // TODO Better error handling
+    }
 
-	let cube = Cube::new(2);
-	cube.scramble(&args[1])?;
-	println!("{}", cube);
+    let cube = Cube::new(2);
+    cube.scramble(&args[1])?;
+    println!("{}", cube);
 
-	Ok(())
+    Ok(())
 }
