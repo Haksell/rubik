@@ -1,3 +1,6 @@
+// TODO: remove inner colors
+// TODO: margin variable (0.05, 2.99, ...)
+
 use kiss3d::light::Light;
 use kiss3d::nalgebra::{Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
@@ -47,12 +50,12 @@ fn main() {
                 );
 
                 let cubie = Cubie {
-                    up: [1.0, 1.0, 1.0],          // White
-                    down: [1.000, 0.835, 0.000],  // Yellow
-                    front: [0.000, 0.608, 0.282], // Green
-                    back: [0.000, 0.275, 0.678],  // Blue
-                    left: [1.000, 0.345, 0.000],  // Orange
-                    right: [0.718, 0.071, 0.204], // Red
+                    up: [1.0, 1.0, 1.0],        // White
+                    down: [1.0, 0.835, 0.0],    // Yellow
+                    front: [0.0, 0.608, 0.282], // Green
+                    back: [0.0, 0.275, 0.678],  // Blue
+                    left: [1.0, 0.345, 0.0],    // Orange
+                    right: [1.0, 0.071, 0.204], // Red
                 };
 
                 cubes.push(create_cubie_face(
