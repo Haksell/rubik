@@ -21,7 +21,7 @@ fn create_cubie_face(
     translation: Vector3<f32>,
     rotation: UnitQuaternion<f32>,
 ) -> SceneNode {
-    let mut face = window.add_quad(CUBE_SIZE, CUBE_SIZE, 1, 1); // TODO: fix aliasing
+    let mut face = window.add_quad(CUBE_SIZE - 0.05, CUBE_SIZE - 0.05, 1, 1);
     face.set_local_translation(Translation3::from(translation));
     face.set_local_rotation(rotation);
     face.set_color(color[0], color[1], color[2]);
@@ -34,13 +34,16 @@ fn main() {
 
     let mut cubes = Vec::new();
 
+    let mut core = window.add_cube(CUBE_SIZE * 2.9, CUBE_SIZE * 2.9, CUBE_SIZE * 2.9);
+    core.set_color(0.0, 0.0, 0.0);
+
     for x in 0..3 {
         for y in 0..3 {
             for z in 0..3 {
                 let translation = Translation3::new(
-                    (x as f32 - 1.5) * CUBE_SIZE,
-                    (y as f32 - 1.5) * CUBE_SIZE,
-                    (z as f32 - 1.5) * CUBE_SIZE,
+                    (x as f32 - 1.0) * CUBE_SIZE,
+                    (y as f32 - 1.0) * CUBE_SIZE,
+                    (z as f32 - 1.0) * CUBE_SIZE,
                 );
 
                 let cubie = Cubie {
