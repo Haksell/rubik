@@ -1,6 +1,6 @@
-use std::convert::TryFrom;
-use std::fmt::{Display, Formatter, Error};
 use crate::r#move::Move;
+use std::convert::TryFrom;
+use std::fmt::{Display, Error, Formatter};
 
 #[repr(u8)]
 #[derive(Clone, Debug, Copy)]
@@ -49,8 +49,25 @@ impl Cube {
     }
 
     // TODO
+    // Always fronting white face ?
     pub fn do_move(&self, _move: Move) {
         println!("{:?}", _move);
+        match _move {
+            Move::F => {
+                // Transpose white
+            }
+            Move::F2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::F);
+                }
+            }
+            Move::F3 => {
+                for _ in 0..3 {
+                    self.do_move(Move::F);
+                }
+            }
+            _ => (),
+        }
     }
 
     pub fn scramble(&self, sequence: &str) -> Result<(), Error> {
@@ -66,7 +83,11 @@ impl Cube {
         Ok(())
     }
 
-	pub fn get_face(&self, face: u8) -> Vec<Color> {
+    pub fn adjency_faces(&self, face: u8) -> Vec<u8> {
+        todo!();
+    }
+
+    pub fn get_face(&self, face: u8) -> Vec<Color> {
         let start = face as usize * self.size * self.size;
         let end = (face as usize + 1) * self.size * self.size;
         self.faces[start..end].to_vec()
@@ -75,15 +96,11 @@ impl Cube {
 
 impl Display for Cube {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-		for i in 0..6 {
-			let face = self.get_face(i);
-			writeln!(f, "Face {}\n {:?}", i, face)?;
-		}
+        for i in 0..6 {
+            let face = self.get_face(i);
+            writeln!(f, "Face {}\n {:?}", i, face)?;
+        }
 
-		Ok(())
-		
-        // self.faces
-        //     .iter()
-        //     .try_for_each(|faces| write!(f, "{:?}", faces))
+        Ok(())
     }
 }
