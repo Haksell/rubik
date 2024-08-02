@@ -35,10 +35,10 @@ fn main() {
     let mut window = Window::new("Rubik's Cube");
     window.set_light(Light::StickToCamera);
 
-    let mut cubes = Vec::new();
-
     let mut core = window.add_cube(CUBE_SIZE * 2.9, CUBE_SIZE * 2.9, CUBE_SIZE * 2.9);
     core.set_color(0.0, 0.0, 0.0);
+
+    let mut cubes = Vec::new();
 
     for x in 0..3 {
         for y in 0..3 {
@@ -61,13 +61,13 @@ fn main() {
                 cubes.push(create_cubie_face(
                     &mut window,
                     cubie.front,
-                    translation.vector + Vector3::z() * 0.5,
+                    translation.vector - Vector3::z() * 0.5,
                     UnitQuaternion::identity(),
                 ));
                 cubes.push(create_cubie_face(
                     &mut window,
                     cubie.back,
-                    translation.vector - Vector3::z() * 0.5,
+                    translation.vector + Vector3::z() * 0.5,
                     UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::PI),
                 ));
                 cubes.push(create_cubie_face(
@@ -91,7 +91,7 @@ fn main() {
                 cubes.push(create_cubie_face(
                     &mut window,
                     cubie.left,
-                    translation.vector - Vector3::x() * 0.5,
+                    translation.vector + Vector3::x() * 0.5,
                     UnitQuaternion::from_axis_angle(
                         &Vector3::y_axis(),
                         std::f32::consts::FRAC_PI_2,
@@ -100,7 +100,7 @@ fn main() {
                 cubes.push(create_cubie_face(
                     &mut window,
                     cubie.right,
-                    translation.vector + Vector3::x() * 0.5,
+                    translation.vector - Vector3::x() * 0.5,
                     UnitQuaternion::from_axis_angle(
                         &Vector3::y_axis(),
                         -std::f32::consts::FRAC_PI_2,
