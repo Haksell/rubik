@@ -1,4 +1,5 @@
-// TODO: margin variable (0.05, 2.99, ...)
+// TODO: setup camera correctly at the start
+// TODO: deactivate zoom/dezoom
 
 use kiss3d::light::Light;
 use kiss3d::nalgebra::{Translation3, UnitQuaternion, Vector3};
@@ -6,7 +7,9 @@ use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 
 const CUBIE_SIZE: f32 = 1.0;
-const CORE_SIZE: f32 = 3.0 * (CUBIE_SIZE * 0.99);
+const MARGIN: f32 = 0.05;
+const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
+const CORE_SIZE: f32 = CUBIE_SIZE * (3.0 - 2.0 * MARGIN);
 
 // TODO: Point3<f32>
 struct Cubie {
@@ -24,7 +27,7 @@ fn create_cubie_face(
     translation: Vector3<f32>,
     rotation: UnitQuaternion<f32>,
 ) -> SceneNode {
-    let mut face = window.add_quad(CUBIE_SIZE - 0.05, CUBIE_SIZE - 0.05, 1, 1);
+    let mut face = window.add_quad(STICKER_SIZE, STICKER_SIZE, 1, 1);
     face.set_local_translation(Translation3::from(translation));
     face.set_local_rotation(rotation);
     face.set_color(color[0], color[1], color[2]);
