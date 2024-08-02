@@ -1,4 +1,3 @@
-// TODO: remove inner colors
 // TODO: margin variable (0.05, 2.99, ...)
 
 use kiss3d::light::Light;
@@ -6,7 +5,8 @@ use kiss3d::nalgebra::{Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 
-const CUBE_SIZE: f32 = 1.0;
+const CUBIE_SIZE: f32 = 1.0;
+const CORE_SIZE: f32 = 3.0 * (CUBIE_SIZE * 0.99);
 
 // TODO: Point3<f32>
 struct Cubie {
@@ -24,7 +24,7 @@ fn create_cubie_face(
     translation: Vector3<f32>,
     rotation: UnitQuaternion<f32>,
 ) -> SceneNode {
-    let mut face = window.add_quad(CUBE_SIZE - 0.05, CUBE_SIZE - 0.05, 1, 1);
+    let mut face = window.add_quad(CUBIE_SIZE - 0.05, CUBIE_SIZE - 0.05, 1, 1);
     face.set_local_translation(Translation3::from(translation));
     face.set_local_rotation(rotation);
     face.set_color(color[0], color[1], color[2]);
@@ -35,7 +35,7 @@ fn main() {
     let mut window = Window::new("Rubik's Cube");
     window.set_light(Light::StickToCamera);
 
-    let mut core = window.add_cube(CUBE_SIZE * 2.9, CUBE_SIZE * 2.9, CUBE_SIZE * 2.9);
+    let mut core = window.add_cube(CORE_SIZE, CORE_SIZE, CORE_SIZE);
     core.set_color(0.0, 0.0, 0.0);
 
     let mut cubes = Vec::new();
@@ -44,9 +44,9 @@ fn main() {
         for y in 0..3 {
             for z in 0..3 {
                 let translation = Translation3::new(
-                    (x as f32 - 1.0) * CUBE_SIZE,
-                    (y as f32 - 1.0) * CUBE_SIZE,
-                    (z as f32 - 1.0) * CUBE_SIZE,
+                    (x as f32 - 1.0) * CUBIE_SIZE,
+                    (y as f32 - 1.0) * CUBIE_SIZE,
+                    (z as f32 - 1.0) * CUBIE_SIZE,
                 );
 
                 let cubie = Cubie {
@@ -58,54 +58,66 @@ fn main() {
                     right: [1.0, 0.071, 0.204], // Red
                 };
 
-                cubes.push(create_cubie_face(
-                    &mut window,
-                    cubie.front,
-                    translation.vector - Vector3::z() * 0.5,
-                    UnitQuaternion::identity(),
-                ));
-                cubes.push(create_cubie_face(
-                    &mut window,
-                    cubie.back,
-                    translation.vector + Vector3::z() * 0.5,
-                    UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::PI),
-                ));
-                cubes.push(create_cubie_face(
-                    &mut window,
-                    cubie.up,
-                    translation.vector + Vector3::y() * 0.5,
-                    UnitQuaternion::from_axis_angle(
-                        &Vector3::x_axis(),
-                        std::f32::consts::FRAC_PI_2,
-                    ),
-                ));
-                cubes.push(create_cubie_face(
-                    &mut window,
-                    cubie.down,
-                    translation.vector - Vector3::y() * 0.5,
-                    UnitQuaternion::from_axis_angle(
-                        &Vector3::x_axis(),
-                        -std::f32::consts::FRAC_PI_2,
-                    ),
-                ));
-                cubes.push(create_cubie_face(
-                    &mut window,
-                    cubie.left,
-                    translation.vector + Vector3::x() * 0.5,
-                    UnitQuaternion::from_axis_angle(
-                        &Vector3::y_axis(),
-                        std::f32::consts::FRAC_PI_2,
-                    ),
-                ));
-                cubes.push(create_cubie_face(
-                    &mut window,
-                    cubie.right,
-                    translation.vector - Vector3::x() * 0.5,
-                    UnitQuaternion::from_axis_angle(
-                        &Vector3::y_axis(),
-                        -std::f32::consts::FRAC_PI_2,
-                    ),
-                ));
+                if y == 2 {
+                    cubes.push(create_cubie_face(
+                        &mut window,
+                        cubie.up,
+                        translation.vector + Vector3::y() * 0.5,
+                        UnitQuaternion::from_axis_angle(
+                            &Vector3::x_axis(),
+                            std::f32::consts::FRAC_PI_2,
+                        ),
+                    ));
+                }
+                if y == 0 {
+                    cubes.push(create_cubie_face(
+                        &mut window,
+                        cubie.down,
+                        translation.vector - Vector3::y() * 0.5,
+                        UnitQuaternion::from_axis_angle(
+                            &Vector3::x_axis(),
+                            -std::f32::consts::FRAC_PI_2,
+                        ),
+                    ));
+                }
+                if z == 0 {
+                    cubes.push(create_cubie_face(
+                        &mut window,
+                        cubie.front,
+                        translation.vector - Vector3::z() * 0.5,
+                        UnitQuaternion::identity(),
+                    ));
+                }
+                if z == 2 {
+                    cubes.push(create_cubie_face(
+                        &mut window,
+                        cubie.back,
+                        translation.vector + Vector3::z() * 0.5,
+                        UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::PI),
+                    ));
+                }
+                if x == 2 {
+                    cubes.push(create_cubie_face(
+                        &mut window,
+                        cubie.left,
+                        translation.vector + Vector3::x() * 0.5,
+                        UnitQuaternion::from_axis_angle(
+                            &Vector3::y_axis(),
+                            std::f32::consts::FRAC_PI_2,
+                        ),
+                    ));
+                }
+                if x == 0 {
+                    cubes.push(create_cubie_face(
+                        &mut window,
+                        cubie.right,
+                        translation.vector - Vector3::x() * 0.5,
+                        UnitQuaternion::from_axis_angle(
+                            &Vector3::y_axis(),
+                            -std::f32::consts::FRAC_PI_2,
+                        ),
+                    ));
+                }
             }
         }
     }
