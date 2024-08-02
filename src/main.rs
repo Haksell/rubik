@@ -21,7 +21,7 @@ fn create_cubie_face(
     translation: Vector3<f32>,
     rotation: UnitQuaternion<f32>,
 ) -> SceneNode {
-    let mut face = window.add_cube(CUBE_SIZE, CUBE_SIZE, 0.001); // TODO: fix aliasing
+    let mut face = window.add_quad(CUBE_SIZE, CUBE_SIZE, 1, 1); // TODO: fix aliasing
     face.set_local_translation(Translation3::from(translation));
     face.set_local_rotation(rotation);
     face.set_color(color[0], color[1], color[2]);
