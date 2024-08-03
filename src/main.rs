@@ -11,7 +11,7 @@ fn main() -> Result<(), Error> {
         return Err(Error); // TODO Better error handling
     }
 
-    let mut cube = cube::Cube::new(3);
+    let mut cube = cube::Cube::new(5);
 
     cube.scramble(&args[1])?;
 
