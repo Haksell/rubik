@@ -1,9 +1,24 @@
 #[repr(u8)]
 #[derive(Clone, Debug, Copy)]
 pub enum Move {
-    F, R, U, B, L, D,
-	F2, R2, U2, B2, L2, D2,
-    F3, R3, U3, B3, L3, D3,
+    F,
+    R,
+    U,
+    B,
+    L,
+    D,
+    F2,
+    R2,
+    U2,
+    B2,
+    L2,
+    D2,
+    F3,
+    R3,
+    U3,
+    B3,
+    L3,
+    D3,
 }
 
 impl Move {
