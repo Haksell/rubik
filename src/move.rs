@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 #[repr(u8)]
 #[derive(Clone, Debug, Copy)]
 pub enum Move {
@@ -87,5 +89,11 @@ impl TryFrom<&str> for Move {
             "D'" | "D’" => Ok(Move::D3),
             _ => Err(()),
         }
+    }
+}
+
+impl Display for Move {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(f, "{:?}", self)
     }
 }

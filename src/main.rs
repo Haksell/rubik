@@ -1,7 +1,9 @@
 use std::env;
 use std::fmt::Error;
+
 mod cube;
 mod r#move;
+mod solver;
 
 fn main() -> Result<(), Error> {
     let args: Vec<String> = env::args().collect();
@@ -11,11 +13,23 @@ fn main() -> Result<(), Error> {
         return Err(Error); // TODO Better error handling
     }
 
-    let mut cube = cube::Cube::new(3);
+    let mut cube = cube::Cube::new(2);
+
+    cube.scramble(&args[1])?;
 
     println!("{}", cube);
 
-    cube.scramble(&args[1])?;
+    let solution = solver::bfs_solve(cube.clone());
+
+    match solution {
+        None => {
+            println!("Solution not found");
+        },
+        Some(moves) => {
+            println!("Solution found with {} moves:", moves.split_whitespace().count());
+            println!("{:?}", moves);
+        }
+    }
 
     Ok(())
 }
