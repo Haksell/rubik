@@ -3,6 +3,7 @@ use colored::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
+use rand::prelude::*;
 
 #[repr(u8)]
 #[derive(Clone, Debug, Copy, PartialEq, Eq, Hash)]
@@ -298,6 +299,14 @@ impl Cube {
         }
 
         Ok(())
+    }
+
+    pub fn rand_scramble(&mut self, iterations: u32) {
+        let moves = Move::iterator();
+
+        for _ in 0..iterations {
+            self.do_move(*moves.choose(&mut thread_rng()).unwrap());
+        }
     }
 
     pub fn opposite_face(&self, face: Color) -> Color {

@@ -1,7 +1,7 @@
 use std::fmt::{Display, Formatter};
 
 #[repr(u8)]
-#[derive(Clone, Debug, Copy)]
+#[derive(Clone, Debug, Copy, PartialEq)]
 pub enum Move {
     F,
     R,
@@ -46,6 +46,10 @@ impl Move {
             17 => Some(Move::D3),
             _ => None,
         }
+    }
+
+    pub fn iterator() -> Vec<Move> {
+        (0..18).map(|m| Move::from_int(m).unwrap()).collect::<Vec<Move>>()
     }
 
     pub fn as_int(&self) -> u8 {

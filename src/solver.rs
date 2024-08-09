@@ -2,33 +2,40 @@ use std::collections::{HashSet, VecDeque};
 
 use crate::{cube::{self, Cube}, r#move::Move};
 
-pub fn bfs_solve(start: Cube) -> Option<String> {
-	let goal = cube::Cube::new(start.size);
-	let mut queue: VecDeque<(u32, Cube, String)> = VecDeque::new();
-	let mut seen: HashSet<Cube> = HashSet::new();
+// TODO Cleanup
+pub fn bfs_solve(start: Cube) -> Option<Vec<Move>> {
+    let goal = cube::Cube::new(start.size);
+    let mut queue: VecDeque<(Cube, Vec<Move>)> = VecDeque::new();
+    let mut seen: HashSet<Cube> = HashSet::new();
 
-	queue.push_back((0, start, String::new()));
+    queue.push_back((start, Vec::new()));
 
-	
-	while !queue.is_empty() {
-		let (d, cur, path) = queue.pop_front().unwrap();
-		if cur == goal {
-			return Some(path);
-		}
+    while !queue.is_empty() {
+        let (cur, path) = queue.pop_front().unwrap();
 
-		if seen.contains(&cur) {
-			continue;
-		}
+        if cur == goal {
+            return Some(path);
+        }
 
-		seen.insert(cur.clone());
+        seen.insert(cur.clone());
 
-		for m in 0..18 {
-			let _move = Move::from_int(m).unwrap();
-			let mut new = cur.clone();
-			new.do_move(_move);
+        for _move in Move::iterator() {
+            if !path.is_empty() && *path.last().unwrap() == _move {
+                continue;
+            }
 
-			queue.push_back((d + 1, new, path.clone() + " " + &_move.to_string()));
-		}
-	}
-	None
+            let mut new = cur.clone();
+            new.do_move(_move);
+
+            if seen.contains(&new) {
+                continue;
+            }
+            
+            let mut new_path = path.clone();
+            new_path.push(_move);
+
+            queue.push_back((new, new_path));
+        }
+    }
+    None
 }
