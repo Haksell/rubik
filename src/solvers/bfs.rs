@@ -1,8 +1,9 @@
 use crate::{cube::Cube, r#move::Move};
 use std::collections::{HashSet, VecDeque};
 
-// TODO Cleanup
-pub fn bfs_solve(start: Cube<2>) -> Option<Vec<Move>> {
+// TODO: cleanup
+// TODO: accept Cube<2> or Pyraminx
+pub fn bfs(start: Cube<2>) -> Option<Vec<Move>> {
     let goal = Cube::new();
     let mut queue: VecDeque<(Cube<2>, Vec<Move>)> = VecDeque::new();
     let mut seen: HashSet<Cube<2>> = HashSet::new();

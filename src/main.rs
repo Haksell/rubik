@@ -1,6 +1,6 @@
 mod cube;
 mod r#move;
-mod solver;
+mod solvers;
 
 use cube::Cube;
 use std::env;
@@ -24,7 +24,7 @@ fn main() -> Result<(), Error> {
 
     println!("{}", cube);
 
-    let solution = solver::bfs_solve(cube.clone());
+    let solution = solvers::bfs(cube.clone());
 
     match solution {
         None => {
