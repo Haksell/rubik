@@ -49,7 +49,9 @@ impl Move {
     }
 
     pub fn iterator() -> Vec<Move> {
-        (0..18).map(|m| Move::from_int(m).unwrap()).collect::<Vec<Move>>()
+        (0..18)
+            .map(|m| Move::from_int(m).unwrap())
+            .collect::<Vec<Move>>()
     }
 
     pub fn as_int(&self) -> u8 {

@@ -28,7 +28,7 @@ fn main() -> Result<(), Error> {
     match solution {
         None => {
             println!("Solution not found");
-        },
+        }
         Some(moves) => {
             println!("Solution found with {} moves:", moves.len());
             println!("{:?}", moves);

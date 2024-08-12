@@ -1,6 +1,9 @@
 use std::collections::{HashSet, VecDeque};
 
-use crate::{cube::{self, Cube}, r#move::Move};
+use crate::{
+    cube::{self, Cube},
+    r#move::Move,
+};
 
 // TODO Cleanup
 pub fn bfs_solve(start: Cube) -> Option<Vec<Move>> {
@@ -30,7 +33,7 @@ pub fn bfs_solve(start: Cube) -> Option<Vec<Move>> {
             if seen.contains(&new) {
                 continue;
             }
-            
+
             let mut new_path = path.clone();
             new_path.push(_move);
 

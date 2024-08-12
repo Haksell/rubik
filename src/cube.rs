@@ -1,9 +1,9 @@
 use crate::r#move::Move;
 use colored::*;
+use rand::prelude::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
-use rand::prelude::*;
 
 #[repr(u8)]
 #[derive(Clone, Debug, Copy, PartialEq, Eq, Hash)]
@@ -70,7 +70,6 @@ impl Cube {
                     let white_idx = white_start + (self.size - 1) * self.size + i;
                     let yellow_idx = yellow_start + self.size - i - 1;
                     self.faces.swap(white_idx, yellow_idx);
-
                 }
 
                 // Swap White & Orange
@@ -325,7 +324,8 @@ impl Cube {
         let start = face as usize * self.size * self.size;
         for y in 0..self.size {
             for x in y + 1..self.size {
-                self.faces.swap(start + y * self.size + x, start + x * self.size + y);
+                self.faces
+                    .swap(start + y * self.size + x, start + x * self.size + y);
             }
         }
 
