@@ -28,6 +28,23 @@ impl<const N: usize> Cube<N> {
 
     // TODO: from_scramble
 
+    // Kind of sucks, but we can't implement the same method for Cube<2> and Cube<N >= 3> without nightly
+    pub fn is_solved(&self) -> bool {
+        if N == 2 {
+            self.faces[16] == self.faces[18]
+                && self.faces[17] == self.faces[18]
+                && self.faces[19] == self.faces[18]
+                && self.faces[20] == self.faces[23]
+                && self.faces[21] == self.faces[23]
+                && self.faces[22] == self.faces[23]
+                && self.faces[12] == self.faces[14]
+                && self.faces[13] == self.faces[14]
+                && self.faces[15] == self.faces[14]
+        } else {
+            (0..6 * N * N).all(|i| self.faces[i] == Color::try_from((i / (N * N)) as u8).unwrap())
+        }
+    }
+
     pub fn do_move(&mut self, _move: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
         // TODO: Implement double and prime moves without loops
@@ -339,12 +356,10 @@ impl<const N: usize> Cube<N> {
 
 impl<const N: usize> Display for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        println!("{:?}", &self.faces[0..9]);
-        println!("{:?}", &self.faces[9..18]);
-        println!("{:?}", &self.faces[18..27]);
-        println!("{:?}", &self.faces[27..36]);
-        println!("{:?}", &self.faces[36..45]);
-        println!("{:?}", &self.faces[45..54]);
+        for i in 0..6 {
+            println!("{:?}", &self.faces[i * N * N..(i + 1) * N * N]);
+        }
+
         fn colored(color: &Color) -> String {
             match color {
                 Color::WHITE => "■".truecolor(0xff, 0xff, 0xff),
@@ -396,13 +411,6 @@ impl<const N: usize> Display for Cube<N> {
     }
 }
 
-// TODO: impl for Cube<2>
-impl<const N: usize> Cube<N> {
-    pub fn is_solved(&self) -> bool {
-        (0..6 * N * N).all(|i| self.faces[i] == Color::try_from((i / (N * N)) as u8).unwrap())
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::Cube;
@@ -435,5 +443,19 @@ mod tests {
             cube.do_move(Move::U3);
             assert!((i == 5) == cube.is_solved());
         }
+    }
+
+    #[test]
+    fn test_is_solved_2x2x2() {
+        let mut cube = Cube::<2>::new();
+        assert!(cube.is_solved());
+        cube.do_move(Move::R);
+        assert!(!cube.is_solved());
+        cube.do_move(Move::R3);
+        assert!(cube.is_solved());
+        cube.do_move(Move::F);
+        assert!(!cube.is_solved());
+        cube.do_move(Move::B3);
+        assert!(cube.is_solved());
     }
 }

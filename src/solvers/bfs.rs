@@ -3,6 +3,7 @@ use std::collections::{HashSet, VecDeque};
 
 // TODO: cleanup
 // TODO: accept Cube<2> or Pyraminx
+// TODO: use is_solved for Cube<2> which accepts rotated cubes
 #[allow(dead_code)] // TODO: remove
 pub fn bfs(start: Cube<2>) -> Option<Vec<Move>> {
     let goal = Cube::new();

@@ -15,11 +15,11 @@ fn main() -> Result<(), Error> {
         return Err(Error); // TODO Better error handling
     }
 
-    let mut cube = Cube::<3>::new();
+    let mut cube = Cube::<2>::new();
     cube.scramble(&args[1])?;
 
     println!("{}", cube);
-    let solution = solvers::kociemba(cube.clone());
+    let solution = solvers::bfs(cube.clone());
     println!("{solution:?}");
 
     Ok(())
