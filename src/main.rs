@@ -10,17 +10,32 @@ use std::fmt::Error;
 fn main() -> Result<(), Error> {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() != 2 {
+    if args.len() > 2 {
         println!("Usage: ./rubik <scramble>");
         return Err(Error); // TODO Better error handling
     }
 
     let mut cube = Cube::<2>::new();
-    cube.scramble(&args[1])?;
+
+    if args.len() == 2 {
+        cube.scramble(&args[1])?;
+    } else {
+        cube.rand_scramble(10);
+    }
 
     println!("{}", cube);
+
     let solution = solvers::bfs(cube.clone());
-    println!("{solution:?}");
+
+    match solution {
+        None => {
+            println!("Solution not found");
+        }
+        Some(moves) => {
+            println!("Solution found with {} moves:", moves.len());
+            println!("{:?}", moves);
+        }
+    }
 
     Ok(())
 }

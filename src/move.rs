@@ -59,8 +59,7 @@ impl Move {
         *self as u8
     }
 
-    #[allow(dead_code)]
-    fn opposite(&self) -> Move {
+    pub fn opposite(&self) -> Move {
         let mut i = self.as_int();
         if i < 6 {
             i += 12;

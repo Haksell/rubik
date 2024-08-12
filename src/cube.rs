@@ -295,12 +295,16 @@ impl<const N: usize> Cube<N> {
         Ok(())
     }
 
-    pub fn rand_scramble(&mut self, iterations: u32) {
+    pub fn rand_scramble(&mut self, iterations: u32) -> Vec<Move> {
         let moves = Move::iterator();
+        let mut sequence = Vec::new();
 
         for _ in 0..iterations {
-            self.do_move(*moves.choose(&mut thread_rng()).unwrap());
+            let _move = *moves.choose(&mut thread_rng()).unwrap();
+            self.do_move(_move);
+            sequence.push(_move);
         }
+        sequence
     }
 
     pub fn opposite_face(&self, face: Color) -> Color {
@@ -356,9 +360,9 @@ impl<const N: usize> Cube<N> {
 
 impl<const N: usize> Display for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        for i in 0..6 {
-            println!("{:?}", &self.faces[i * N * N..(i + 1) * N * N]);
-        }
+        //for i in 0..6 {
+        //    println!("{:?}", &self.faces[i * N * N..(i + 1) * N * N]);
+        //}
 
         fn colored(color: &Color) -> String {
             match color {
