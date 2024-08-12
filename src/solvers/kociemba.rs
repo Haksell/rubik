@@ -32,6 +32,12 @@ mod tests {
         let mut cube = Cube::<3>::new();
         assert!(cube.is_g1());
 
+        // stay in G1
+        cube.do_move(Move::R2);
+        cube.do_move(Move::U);
+        cube.do_move(Move::R2);
+        assert!(cube.is_g1());
+
         // PLL T
         cube.do_move(Move::R);
         assert!(!cube.is_g1());
