@@ -1,14 +1,11 @@
-use crate::{
-    cube::{self, Cube},
-    r#move::Move,
-};
+use crate::{cube::Cube, r#move::Move};
 use std::collections::{HashSet, VecDeque};
 
 // TODO Cleanup
-pub fn bfs_solve(start: Cube) -> Option<Vec<Move>> {
-    let goal = cube::Cube::new(start.size);
-    let mut queue: VecDeque<(Cube, Vec<Move>)> = VecDeque::new();
-    let mut seen: HashSet<Cube> = HashSet::new();
+pub fn bfs_solve(start: Cube<2>) -> Option<Vec<Move>> {
+    let goal = Cube::new();
+    let mut queue: VecDeque<(Cube<2>, Vec<Move>)> = VecDeque::new();
+    let mut seen: HashSet<Cube<2>> = HashSet::new();
 
     queue.push_back((start, Vec::new()));
 

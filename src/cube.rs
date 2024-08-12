@@ -33,22 +33,22 @@ impl TryFrom<u8> for Color {
 }
 
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub struct Cube {
+pub struct Cube<const N: usize> {
     pub faces: Vec<Color>,
-    pub size: usize,
 }
 
 // Always fronting Green face
-impl Cube {
-    pub fn new(n: usize) -> Cube {
+impl<const N: usize> Cube<N> {
+    pub fn new() -> Cube<N> {
         println!("New Cube !");
+        // TODO: one-liner
         let mut faces = Vec::new();
-        for i in 0..6 * n * n {
-            let face = i / (n * n);
+        for i in 0..6 * N * N {
+            let face = i / (N * N);
             let color = (face as u8).try_into();
             faces.push(color.unwrap());
         }
-        Cube { faces, size: n }
+        Cube { faces }
     }
 
     pub fn do_move(&mut self, _move: Move) {
@@ -56,27 +56,27 @@ impl Cube {
         match _move {
             Move::F => {
                 // Swap White & Red
-                let white_start = Color::WHITE as usize * self.size * self.size;
-                let red_start = Color::RED as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let white_idx = white_start + (self.size - 1) * self.size + i;
-                    let red_idx = red_start + self.size * i;
+                let white_start = Color::WHITE as usize * N * N;
+                let red_start = Color::RED as usize * N * N;
+                for i in 0..N {
+                    let white_idx = white_start + (N - 1) * N + i;
+                    let red_idx = red_start + N * i;
                     self.faces.swap(white_idx, red_idx);
                 }
 
                 // Swap White & Yellow
-                let yellow_start = Color::YELLOW as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let white_idx = white_start + (self.size - 1) * self.size + i;
-                    let yellow_idx = yellow_start + self.size - i - 1;
+                let yellow_start = Color::YELLOW as usize * N * N;
+                for i in 0..N {
+                    let white_idx = white_start + (N - 1) * N + i;
+                    let yellow_idx = yellow_start + N - i - 1;
                     self.faces.swap(white_idx, yellow_idx);
                 }
 
                 // Swap White & Orange
-                let orange_start = Color::ORANGE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let white_idx = white_start + (self.size - 1) * self.size + i;
-                    let orange_idx = orange_start + self.size * (self.size - i) - 1;
+                let orange_start = Color::ORANGE as usize * N * N;
+                for i in 0..N {
+                    let white_idx = white_start + (N - 1) * N + i;
+                    let orange_idx = orange_start + N * (N - i) - 1;
                     self.faces.swap(white_idx, orange_idx);
                 }
 
@@ -94,27 +94,27 @@ impl Cube {
             }
             Move::R => {
                 // Swap Green & White
-                let green_start = Color::GREEN as usize * self.size * self.size;
-                let white_start = Color::WHITE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * (i + 1) - 1;
-                    let white_idx = white_start + self.size * (i + 1) - 1;
+                let green_start = Color::GREEN as usize * N * N;
+                let white_start = Color::WHITE as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * (i + 1) - 1;
+                    let white_idx = white_start + N * (i + 1) - 1;
                     self.faces.swap(green_idx, white_idx);
                 }
 
                 // Swap Green & Blue
-                let blue_start = Color::BLUE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * (i + 1) - 1;
-                    let blue_idx = blue_start + self.size * (self.size - i - 1);
+                let blue_start = Color::BLUE as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * (i + 1) - 1;
+                    let blue_idx = blue_start + N * (N - i - 1);
                     self.faces.swap(green_idx, blue_idx);
                 }
 
                 // Swap Green & Yellow
-                let yellow_start = Color::YELLOW as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * (i + 1) - 1;
-                    let yellow_idx = yellow_start + self.size * (i + 1) - 1;
+                let yellow_start = Color::YELLOW as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * (i + 1) - 1;
+                    let yellow_idx = yellow_start + N * (i + 1) - 1;
                     self.faces.swap(green_idx, yellow_idx);
                 }
 
@@ -132,25 +132,25 @@ impl Cube {
             }
             Move::U => {
                 // Swap Green & Orange
-                let green_start = Color::GREEN as usize * self.size * self.size;
-                let orange_start = Color::ORANGE as usize * self.size * self.size;
-                for i in 0..self.size {
+                let green_start = Color::GREEN as usize * N * N;
+                let orange_start = Color::ORANGE as usize * N * N;
+                for i in 0..N {
                     let green_idx = green_start + i;
                     let orange_idx = orange_start + i;
                     self.faces.swap(green_idx, orange_idx);
                 }
 
                 // Swap Green & Blue
-                let blue_start = Color::BLUE as usize * self.size * self.size;
-                for i in 0..self.size {
+                let blue_start = Color::BLUE as usize * N * N;
+                for i in 0..N {
                     let green_idx = green_start + i;
                     let blue_idx = blue_start + i;
                     self.faces.swap(green_idx, blue_idx);
                 }
 
                 // Swap Green & Red
-                let red_start = Color::RED as usize * self.size * self.size;
-                for i in 0..self.size {
+                let red_start = Color::RED as usize * N * N;
+                for i in 0..N {
                     let green_idx = green_start + i;
                     let red_idx = red_start + i;
                     self.faces.swap(green_idx, red_idx);
@@ -170,27 +170,27 @@ impl Cube {
             }
             Move::B => {
                 // Swap White & Orange
-                let white_start = Color::WHITE as usize * self.size * self.size;
-                let orange_start = Color::ORANGE as usize * self.size * self.size;
-                for i in 0..self.size {
+                let white_start = Color::WHITE as usize * N * N;
+                let orange_start = Color::ORANGE as usize * N * N;
+                for i in 0..N {
                     let white_idx = white_start + i;
-                    let orange_idx = orange_start + self.size * (self.size - i - 1);
+                    let orange_idx = orange_start + N * (N - i - 1);
                     self.faces.swap(white_idx, orange_idx);
                 }
 
                 // Swap White & Yellow
-                let yellow_start = Color::YELLOW as usize * self.size * self.size;
-                for i in 0..self.size {
+                let yellow_start = Color::YELLOW as usize * N * N;
+                for i in 0..N {
                     let white_idx = white_start + i;
-                    let yellow_idx = yellow_start + self.size * self.size - i - 1;
+                    let yellow_idx = yellow_start + N * N - i - 1;
                     self.faces.swap(white_idx, yellow_idx);
                 }
 
                 // Swap White & Red
-                let red_start = Color::RED as usize * self.size * self.size;
-                for i in 0..self.size {
+                let red_start = Color::RED as usize * N * N;
+                for i in 0..N {
                     let white_idx = white_start + i;
-                    let red_idx = red_start + self.size * (i + 1) - 1;
+                    let red_idx = red_start + N * (i + 1) - 1;
                     self.faces.swap(white_idx, red_idx);
                 }
 
@@ -208,27 +208,27 @@ impl Cube {
             }
             Move::L => {
                 // Swap Green & Yellow
-                let green_start = Color::GREEN as usize * self.size * self.size;
-                let yellow_start = Color::YELLOW as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * i;
-                    let yellow_idx = yellow_start + self.size * i;
+                let green_start = Color::GREEN as usize * N * N;
+                let yellow_start = Color::YELLOW as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * i;
+                    let yellow_idx = yellow_start + N * i;
                     self.faces.swap(green_idx, yellow_idx);
                 }
 
                 // Swap Green & Blue
-                let blue_start = Color::BLUE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * i;
-                    let blue_idx = blue_start + self.size * (self.size - i) - 1;
+                let blue_start = Color::BLUE as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * i;
+                    let blue_idx = blue_start + N * (N - i) - 1;
                     self.faces.swap(green_idx, blue_idx);
                 }
 
                 // Swap Green & White
-                let white_start = Color::WHITE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * i;
-                    let white_idx = white_start + self.size * i;
+                let white_start = Color::WHITE as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * i;
+                    let white_idx = white_start + N * i;
                     self.faces.swap(green_idx, white_idx);
                 }
 
@@ -246,27 +246,27 @@ impl Cube {
             }
             Move::D => {
                 // Swap Green & Red
-                let green_start = Color::GREEN as usize * self.size * self.size;
-                let red_start = Color::RED as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * self.size - i - 1;
-                    let red_idx = red_start + self.size * self.size - i - 1;
+                let green_start = Color::GREEN as usize * N * N;
+                let red_start = Color::RED as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * N - i - 1;
+                    let red_idx = red_start + N * N - i - 1;
                     self.faces.swap(green_idx, red_idx);
                 }
 
                 // Swap Green & Blue
-                let blue_start = Color::BLUE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * self.size - i - 1;
-                    let blue_idx = blue_start + self.size * self.size - i - 1;
+                let blue_start = Color::BLUE as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * N - i - 1;
+                    let blue_idx = blue_start + N * N - i - 1;
                     self.faces.swap(green_idx, blue_idx);
                 }
 
                 // Swap Green & Orange
-                let orange_start = Color::ORANGE as usize * self.size * self.size;
-                for i in 0..self.size {
-                    let green_idx = green_start + self.size * self.size - i - 1;
-                    let orange_idx = orange_start + self.size * self.size - i - 1;
+                let orange_start = Color::ORANGE as usize * N * N;
+                for i in 0..N {
+                    let green_idx = green_start + N * N - i - 1;
+                    let orange_idx = orange_start + N * N - i - 1;
                     self.faces.swap(green_idx, orange_idx);
                 }
 
@@ -321,18 +321,17 @@ impl Cube {
 
     fn rotate_clockwise(&mut self, face: Color) {
         // Transpose
-        let start = face as usize * self.size * self.size;
-        for y in 0..self.size {
-            for x in y + 1..self.size {
-                self.faces
-                    .swap(start + y * self.size + x, start + x * self.size + y);
+        let start = face as usize * N * N;
+        for y in 0..N {
+            for x in y + 1..N {
+                self.faces.swap(start + y * N + x, start + x * N + y);
             }
         }
 
         // Reverse rows
-        for y in 0..self.size {
-            let start = start + y * self.size;
-            let end = start + self.size;
+        for y in 0..N {
+            let start = start + y * N;
+            let end = start + N;
             self.faces[start..end].reverse();
         }
     }
@@ -346,21 +345,21 @@ impl Cube {
     }
 
     pub fn get_face(&self, face: Color) -> Vec<Color> {
-        let start = face as usize * self.size * self.size;
-        let end = (face as usize + 1) * self.size * self.size;
+        let start = face as usize * N * N;
+        let end = (face as usize + 1) * N * N;
         self.faces[start..end].to_vec()
     }
 
     // TODO Fix
     #[allow(dead_code)]
     fn get_face_mut(&mut self, face: Color) -> &mut [Color] {
-        let start = face as usize * self.size * self.size;
-        let end = (face as usize + 1) * self.size * self.size;
+        let start = face as usize * N * N;
+        let end = (face as usize + 1) * N * N;
         &mut self.faces[start..end]
     }
 }
 
-impl Display for Cube {
+impl<const N: usize> Display for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         fn colored(color: &Color) -> String {
             match color {
@@ -383,13 +382,8 @@ impl Display for Cube {
         }
 
         let face = self.get_face(Color::WHITE);
-        for line in 0..self.size {
-            writeln!(
-                f,
-                "{}{}",
-                " ".repeat(self.size * 2),
-                format(&face, self.size, line)
-            )?;
+        for line in 0..N {
+            writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
         }
 
         let faces: Vec<Vec<Color>> = vec![4, 2, 1, 5]
@@ -397,26 +391,21 @@ impl Display for Cube {
             .map(|f| self.get_face(Color::try_from(f).unwrap()))
             .collect();
 
-        for line in 0..self.size {
+        for line in 0..N {
             writeln!(
                 f,
                 "{}",
                 faces
                     .iter()
-                    .map(|face| format(face, self.size, line))
+                    .map(|face| format(face, N, line))
                     .collect::<Vec<String>>()
                     .join(" ")
             )?;
         }
 
         let face = self.get_face(Color::YELLOW);
-        for line in 0..self.size {
-            writeln!(
-                f,
-                "{}{}",
-                " ".repeat(self.size * 2),
-                format(&face, self.size, line)
-            )?;
+        for line in 0..N {
+            writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
         }
 
         Ok(())
