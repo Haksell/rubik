@@ -1,36 +1,10 @@
+use crate::color::Color;
 use crate::r#move::Move;
 use colored::*;
 use rand::prelude::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
-
-#[repr(u8)]
-#[derive(Clone, Debug, Copy, PartialEq, Eq, Hash)]
-pub enum Color {
-    WHITE,
-    RED,
-    GREEN,
-    YELLOW,
-    ORANGE,
-    BLUE,
-}
-
-impl TryFrom<u8> for Color {
-    type Error = ();
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
-        match value {
-            0 => Ok(Color::WHITE),
-            1 => Ok(Color::RED),
-            2 => Ok(Color::GREEN),
-            3 => Ok(Color::YELLOW),
-            4 => Ok(Color::ORANGE),
-            5 => Ok(Color::BLUE),
-            _ => Err(()),
-        }
-    }
-}
 
 // TODO: handle N > 3
 #[derive(Clone, Eq, PartialEq, Hash)]
@@ -365,6 +339,12 @@ impl<const N: usize> Cube<N> {
 
 impl<const N: usize> Display for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        println!("{:?}", &self.faces[0..9]);
+        println!("{:?}", &self.faces[9..18]);
+        println!("{:?}", &self.faces[18..27]);
+        println!("{:?}", &self.faces[27..36]);
+        println!("{:?}", &self.faces[36..45]);
+        println!("{:?}", &self.faces[45..54]);
         fn colored(color: &Color) -> String {
             match color {
                 Color::WHITE => "■".truecolor(0xff, 0xff, 0xff),
@@ -413,5 +393,47 @@ impl<const N: usize> Display for Cube<N> {
         }
 
         Ok(())
+    }
+}
+
+// TODO: impl for Cube<2>
+impl<const N: usize> Cube<N> {
+    pub fn is_solved(&self) -> bool {
+        (0..6 * N * N).all(|i| self.faces[i] == Color::try_from((i / (N * N)) as u8).unwrap())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Cube;
+    use crate::r#move::Move;
+
+    #[test]
+    fn test_is_solved_generic() {
+        let mut cube = Cube::<3>::new();
+        // TODO: better loop iterator
+        for &move_ in &[Move::U, Move::L, Move::F, Move::R, Move::B, Move::D] {
+            assert!(cube.is_solved());
+            cube.do_move(move_);
+            assert!(!cube.is_solved());
+            cube.do_move(move_);
+            assert!(!cube.is_solved());
+            cube.do_move(move_);
+            assert!(!cube.is_solved());
+            cube.do_move(move_);
+            assert!(cube.is_solved());
+        }
+    }
+
+    #[test]
+    fn test_is_solved_sexy_moves() {
+        let mut cube = Cube::<3>::new();
+        for i in 0..6 {
+            cube.do_move(Move::R);
+            cube.do_move(Move::U);
+            cube.do_move(Move::R3);
+            cube.do_move(Move::U3);
+            assert!((i == 5) == cube.is_solved());
+        }
     }
 }

@@ -1,3 +1,4 @@
+mod color;
 mod cube;
 mod r#move;
 mod solvers;
