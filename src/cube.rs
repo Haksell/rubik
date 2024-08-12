@@ -32,6 +32,7 @@ impl TryFrom<u8> for Color {
     }
 }
 
+// TODO: handle N > 3
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct Cube<const N: usize> {
     pub faces: Vec<Color>,
@@ -52,7 +53,8 @@ impl<const N: usize> Cube<N> {
     }
 
     pub fn do_move(&mut self, _move: Move) {
-        //println!("{:?}", _move);
+        // TODO: N+1 assignments instead of 2N with Vec::swap
+        // TODO: Implement double and prime moves without loops
         match _move {
             Move::F => {
                 // Swap White & Red
