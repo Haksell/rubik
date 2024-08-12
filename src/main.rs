@@ -1,9 +1,10 @@
-use std::env;
-use std::fmt::Error;
-
 mod cube;
 mod r#move;
 mod solver;
+
+use cube::Cube;
+use std::env;
+use std::fmt::Error;
 
 fn main() -> Result<(), Error> {
     let args: Vec<String> = env::args().collect();
@@ -13,7 +14,7 @@ fn main() -> Result<(), Error> {
         return Err(Error); // TODO Better error handling
     }
 
-    let mut cube = cube::Cube::new(2);
+    let mut cube = Cube::new(2);
 
     if args.len() == 2 {
         cube.scramble(&args[1])?;

@@ -1,9 +1,8 @@
-use std::collections::{HashSet, VecDeque};
-
 use crate::{
     cube::{self, Cube},
     r#move::Move,
 };
+use std::collections::{HashSet, VecDeque};
 
 // TODO Cleanup
 pub fn bfs_solve(start: Cube) -> Option<Vec<Move>> {

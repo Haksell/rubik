@@ -48,6 +48,7 @@ impl Move {
         }
     }
 
+    // TODO: there is probably a better way
     pub fn iterator() -> Vec<Move> {
         (0..18)
             .map(|m| Move::from_int(m).unwrap())
