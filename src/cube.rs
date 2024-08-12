@@ -457,5 +457,9 @@ mod tests {
         assert!(!cube.is_solved());
         cube.do_move(Move::B3);
         assert!(cube.is_solved());
+        cube.do_move(Move::L2);
+        assert!(!cube.is_solved());
+        cube.do_move(Move::R2);
+        assert!(cube.is_solved());
     }
 }
