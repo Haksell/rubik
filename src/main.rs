@@ -9,8 +9,8 @@ use std::fmt::Error;
 fn main() -> Result<(), Error> {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() > 2 {
-        println!("Usage: ./rubik <mixing sequence>");
+    if args.len() != 2 {
+        println!("Usage: ./rubik <scramble>");
         return Err(Error); // TODO Better error handling
     }
 
