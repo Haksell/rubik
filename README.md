@@ -2,6 +2,10 @@
 
 ## todo
 
+- [ ] aliases for individual stickers `self.faces[LF]` instead of `self.faces[41]`
+
+## features
+
 - [ ] 3x3x3 kociemba solver (vegret)
 - [ ] 3x3x3 korf solver (together)
 - [ ] 3x3x3 cfop solver (axbrisse)
