@@ -14,27 +14,12 @@ fn main() -> Result<(), Error> {
         return Err(Error); // TODO Better error handling
     }
 
-    let mut cube = Cube::<2>::new();
-
-    if args.len() == 2 {
-        cube.scramble(&args[1])?;
-    } else {
-        cube.rand_scramble(10);
-    }
+    let mut cube = Cube::<3>::new();
+    cube.scramble(&args[1])?;
 
     println!("{}", cube);
-
-    let solution = solvers::bfs(cube.clone());
-
-    match solution {
-        None => {
-            println!("Solution not found");
-        }
-        Some(moves) => {
-            println!("Solution found with {} moves:", moves.len());
-            println!("{:?}", moves);
-        }
-    }
+    let solution = solvers::kociemba(cube.clone());
+    println!("{solution:?}");
 
     Ok(())
 }

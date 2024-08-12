@@ -52,6 +52,8 @@ impl<const N: usize> Cube<N> {
         Cube { faces }
     }
 
+    // TODO: from_scramble
+
     pub fn do_move(&mut self, _move: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
         // TODO: Implement double and prime moves without loops
