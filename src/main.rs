@@ -5,27 +5,28 @@ mod solvers;
 
 use cube::Cube;
 use std::env;
-use std::fmt::Error;
 
-fn main() -> Result<(), Error> {
+fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() > 2 {
-        println!("Usage: ./rubik <scramble>");
-        return Err(Error); // TODO Better error handling
+        panic!("Usage: ./rubik <scramble>");
     }
 
     let mut cube = Cube::<2>::new();
 
+	println!("{cube}");
+
     if args.len() == 2 {
-        cube.scramble(&args[1])?;
+        cube.scramble(&args[1]);
     } else {
-        cube.rand_scramble(10);
+        let scramble = cube.rand_scramble(5);
+		println!("Scramble sequence: {scramble:?}");
     }
 
-    println!("{}", cube);
+    println!("{cube}");
 
-    let solution = solvers::bfs(cube.clone());
+    let solution = solvers::iddfs(cube.clone());
 
     match solution {
         None => {
@@ -33,9 +34,7 @@ fn main() -> Result<(), Error> {
         }
         Some(moves) => {
             println!("Solution found with {} moves:", moves.len());
-            println!("{:?}", moves);
+            println!("{moves:?}");
         }
     }
-
-    Ok(())
 }

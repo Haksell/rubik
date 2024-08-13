@@ -15,15 +15,14 @@ pub struct Cube<const N: usize> {
 // Always fronting Green face
 impl<const N: usize> Cube<N> {
     pub fn new() -> Cube<N> {
-        println!("New Cube !");
         // TODO: one-liner
-        let mut faces = Vec::new();
-        for i in 0..6 * N * N {
-            let face = i / (N * N);
-            let color = (face as u8).try_into();
-            faces.push(color.unwrap());
-        }
-        Cube { faces }
+        // let mut faces = Vec::new();
+        // for i in 0..6 * N * N {
+        //     let face = i / (N * N);
+        //     let color = (face as u8).try_into();
+        //     faces.push(color.unwrap());
+        // }
+        Cube { faces: (0..6 * N * N).map(|i| Color::try_from((i / (N * N)) as u8).unwrap()).collect() }
     }
 
     // TODO: from_scramble
@@ -282,25 +281,24 @@ impl<const N: usize> Cube<N> {
         //println!("{}", self);
     }
 
-    pub fn scramble(&mut self, sequence: &str) -> Result<(), Error> {
+    pub fn scramble(&mut self, sequence: &str) {
         let as_moves = sequence.split_whitespace().map(Move::try_from);
 
         for mov in as_moves {
             match mov {
                 Ok(m) => self.do_move(m),
-                Err(_) => return Err(Error),
+                Err(_) => panic!("Invalid move in scramble sequence"),
             }
         }
-
-        Ok(())
     }
 
     pub fn rand_scramble(&mut self, iterations: u32) -> Vec<Move> {
         let moves = Move::iterator();
         let mut sequence = Vec::new();
+		let rng = &mut thread_rng();
 
         for _ in 0..iterations {
-            let _move = *moves.choose(&mut thread_rng()).unwrap();
+            let _move = *moves.choose(rng).unwrap();
             self.do_move(_move);
             sequence.push(_move);
         }
