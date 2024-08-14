@@ -15,13 +15,13 @@ fn main() {
 
     let mut cube = Cube::<2>::new();
 
-	println!("{cube}");
+    println!("{cube}");
 
     if args.len() == 2 {
         cube.scramble(&args[1]);
     } else {
-        let scramble = cube.rand_scramble(5);
-		println!("Scramble sequence: {scramble:?}");
+        let scramble = cube.rand_scramble(10);
+        println!("Scramble sequence: {scramble:?}");
     }
 
     println!("{cube}");

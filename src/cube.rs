@@ -22,7 +22,11 @@ impl<const N: usize> Cube<N> {
         //     let color = (face as u8).try_into();
         //     faces.push(color.unwrap());
         // }
-        Cube { faces: (0..6 * N * N).map(|i| Color::try_from((i / (N * N)) as u8).unwrap()).collect() }
+        Cube {
+            faces: (0..6 * N * N)
+                .map(|i| Color::try_from((i / (N * N)) as u8).unwrap())
+                .collect(),
+        }
     }
 
     // TODO: from_scramble
@@ -295,7 +299,7 @@ impl<const N: usize> Cube<N> {
     pub fn rand_scramble(&mut self, iterations: u32) -> Vec<Move> {
         let moves = Move::iterator();
         let mut sequence = Vec::new();
-		let rng = &mut thread_rng();
+        let rng = &mut thread_rng();
 
         for _ in 0..iterations {
             let _move = *moves.choose(rng).unwrap();

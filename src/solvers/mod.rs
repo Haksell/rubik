@@ -1,7 +1,7 @@
 mod bfs;
-mod kociemba;
 mod iddfs;
+mod kociemba;
 
 pub use bfs::bfs;
-pub use kociemba::kociemba;
 pub use iddfs::iddfs;
+pub use kociemba::kociemba;

@@ -103,7 +103,7 @@ impl TryFrom<&str> for Move {
 }
 
 impl Debug for Move {
-	fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         let s = match self {
             Move::F => "F",
             Move::R => "R",
@@ -124,6 +124,6 @@ impl Debug for Move {
             Move::L3 => "L'",
             Move::D3 => "D'",
         };
-		write!(f, "{s}")
-	}
+        write!(f, "{s}")
+    }
 }

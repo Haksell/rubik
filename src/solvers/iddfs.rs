@@ -24,9 +24,9 @@ pub fn iddfs(mut start: Cube<2>) -> Option<Vec<Move>> {
             let mut new_path = path.clone();
             new_path.push(_move);
 
-			if let Some(moves) = search(cur, new_path, max_depth) {
-				return Some(moves);
-			}
+            if let Some(moves) = search(cur, new_path, max_depth) {
+                return Some(moves);
+            }
 
             cur.do_move(_move.opposite());
         }
@@ -34,12 +34,12 @@ pub fn iddfs(mut start: Cube<2>) -> Option<Vec<Move>> {
     }
 
     let mut max_depth = 1;
-    while max_depth < 10000 {
-        match search(&mut start, Vec::new(), max_depth) {
-            Some(moves) => return Some(moves),
-            None => (),
-        }
+    let mut path: Option<Vec<Move>> = None;
+
+    while path.is_none() {
+        path = search(&mut start, Vec::new(), max_depth);
         max_depth += 1;
     }
-    None
+
+    return path;
 }
