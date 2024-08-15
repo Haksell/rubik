@@ -1,7 +1,8 @@
+use std::collections::VecDeque;
+
 use crate::files::{self, FILE_CROSSES};
+use crate::trigger::Trigger;
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
-use std::fs::File;
-use std::io::{self, Read as _};
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -11,9 +12,10 @@ pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_cross(cube));
-    // TODO: solution.extend(solve_f2l(cube));
-    // TODO: solution.extend(solve_oll(cube));
-    // TODO: solution.extend(solve_pll(cube));
+    solution.extend(solve_f2l(cube));
+    // solution.extend(solve_oll(cube));
+    // solution.extend(solve_pll(cube));
+    // TODO: reduce solution (between steps)
     solution
 }
 
@@ -29,6 +31,61 @@ fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
         idx = cube.cross_index();
     }
     solution
+}
+
+fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
+    use crate::trigger::{TRIGGERS_SLOT_0, TRIGGERS_SLOT_1, TRIGGERS_SLOT_2, TRIGGERS_SLOT_3};
+
+    let mut solution = vec![];
+    let mut to_solve = 0b1111; // TODO: check accidental X-cross
+    while to_solve != 0 {
+        println!("{to_solve}");
+        let mut triggers = vec![Trigger::U, Trigger::U2, Trigger::U3];
+        if to_solve & 1 != 0 {
+            triggers.extend(TRIGGERS_SLOT_0);
+        }
+        if to_solve & 2 != 0 {
+            triggers.extend(TRIGGERS_SLOT_1);
+        }
+        if to_solve & 4 != 0 {
+            triggers.extend(TRIGGERS_SLOT_2);
+        }
+        if to_solve & 8 != 0 {
+            triggers.extend(TRIGGERS_SLOT_3);
+        }
+        let pair_solution = solve_pair(cube, &triggers);
+        to_solve &= !(1 << pair_solution.last().unwrap().slot());
+        for trigger in pair_solution {
+            cube.do_trigger(trigger);
+            solution.extend(trigger.moves());
+        }
+    }
+    solution
+}
+
+fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
+    // TODO: came_from like n_puzzle
+    let mut queue: VecDeque<(Cube<3>, Vec<Trigger>)> = VecDeque::new();
+    queue.push_back((cube.clone(), vec![]));
+    loop {
+        let (cube, pair_solution) = queue.pop_front().unwrap();
+        let slot = match pair_solution.last() {
+            Some(trigger) => trigger.slot(),
+            None => usize::MAX,
+        };
+        if slot != usize::MAX && cube.is_pair_solved(slot) {
+            return pair_solution;
+        }
+        for &trigger in triggers {
+            if pair_solution.is_empty() || trigger.slot() != slot {
+                let mut next_cube = cube.clone();
+                let mut next_vec = pair_solution.clone();
+                next_cube.do_trigger(trigger);
+                next_vec.push(trigger);
+                queue.push_back((next_cube, next_vec));
+            }
+        }
+    }
 }
 
 impl Cube<3> {
@@ -88,6 +145,41 @@ impl Cube<3> {
             yellow_orange -= 2;
         }
         yellow_orange + 18 * yellow_blue + 18 * 20 * yellow_red + 18 * 20 * 22 * yellow_green
+    }
+
+    pub fn is_pair_solved(&self, index: usize) -> bool {
+        use crate::Sticker::*;
+        match index {
+            0 => {
+                self.faces[BR as usize] == Color::BLUE
+                    && self.faces[RB as usize] == Color::RED
+                    && self.faces[DRB as usize] == Color::YELLOW
+                    && self.faces[RBD as usize] == Color::RED
+                    && self.faces[BDR as usize] == Color::BLUE
+            }
+            1 => {
+                self.faces[FR as usize] == Color::GREEN
+                    && self.faces[RF as usize] == Color::RED
+                    && self.faces[DFR as usize] == Color::YELLOW
+                    && self.faces[FRD as usize] == Color::GREEN
+                    && self.faces[RDF as usize] == Color::RED
+            }
+            2 => {
+                self.faces[FL as usize] == Color::GREEN
+                    && self.faces[LF as usize] == Color::ORANGE
+                    && self.faces[DLF as usize] == Color::YELLOW
+                    && self.faces[LFD as usize] == Color::ORANGE
+                    && self.faces[FDL as usize] == Color::GREEN
+            }
+            3 => {
+                self.faces[BL as usize] == Color::BLUE
+                    && self.faces[LB as usize] == Color::ORANGE
+                    && self.faces[DBL as usize] == Color::YELLOW
+                    && self.faces[BLD as usize] == Color::BLUE
+                    && self.faces[LDB as usize] == Color::ORANGE
+            }
+            _ => unreachable!(),
+        }
     }
 }
 

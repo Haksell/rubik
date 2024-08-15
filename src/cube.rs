@@ -1,5 +1,6 @@
 use crate::color::Color;
 use crate::r#move::Move;
+use crate::trigger::Trigger;
 use colored::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
@@ -352,6 +353,15 @@ impl<const N: usize> Cube<N> {
     }
 }
 
+impl Cube<3> {
+    // TODO: optimize
+    pub fn do_trigger(&mut self, trigger: Trigger) {
+        for move_ in trigger.moves() {
+            self.do_move(move_);
+        }
+    }
+}
+
 impl<const N: usize> Display for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         //for i in 0..6 {
@@ -370,7 +380,7 @@ impl<const N: usize> Display for Cube<N> {
             .to_string()
         }
 
-        fn format(face: &Vec<Color>, size: usize, line: usize) -> String {
+        fn format(face: &[Color], size: usize, line: usize) -> String {
             face[line * size..(line + 1) * size]
                 .iter()
                 .map(|c| colored(c))

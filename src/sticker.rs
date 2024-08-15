@@ -16,7 +16,7 @@ pub enum Sticker {
     RF,
     R,
     RB,
-    RDU,
+    RDF,
     RD,
     RBD,
     FLU,
