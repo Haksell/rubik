@@ -296,13 +296,16 @@ impl<const N: usize> Cube<N> {
         }
     }
 
-    pub fn rand_scramble(&mut self, iterations: u32) -> Vec<Move> {
+    pub fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
         let moves = Move::iterator();
-        let mut sequence = Vec::new();
+        let mut sequence: Vec<Move> = Vec::new();
         let rng = &mut thread_rng();
 
-        for _ in 0..iterations {
+        while sequence.len() < iterations {
             let move_ = *moves.choose(rng).unwrap();
+            if !sequence.is_empty() && move_ == sequence.last().unwrap().opposite() {
+                continue;
+            }
             self.do_move(move_);
             sequence.push(move_);
         }

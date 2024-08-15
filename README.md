@@ -5,7 +5,7 @@
 - [ ] 3x3x3 kociemba solver (vegret)
 - [ ] 3x3x3 korf solver (together)
 - [ ] 3x3x3 cfop solver (axbrisse)
-- [ ] 2x2x2 bfs solver (vegret)
+- [x] 2x2x2 bfs solver (vegret)
 - [ ] big cube solver (axbrisse)
 - [ ] pyraminx bfs solver (vegret)
 - [ ] megaminx solver (axbrisse)
