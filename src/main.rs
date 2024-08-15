@@ -20,7 +20,7 @@ fn main() {
     if args.len() == 2 {
         cube.scramble(&args[1]);
     } else {
-        let scramble = cube.rand_scramble(10);
+        let scramble = cube.rand_scramble(500);
         println!("Scramble sequence: {scramble:?}");
     }
 

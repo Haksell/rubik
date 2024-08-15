@@ -48,10 +48,10 @@ impl<const N: usize> Cube<N> {
         }
     }
 
-    pub fn do_move(&mut self, _move: Move) {
+    pub fn do_move(&mut self, move_: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
         // TODO: Implement double and prime moves without loops
-        match _move {
+        match move_ {
             Move::F => {
                 // Swap White & Red
                 let white_start = Color::WHITE as usize * N * N;
@@ -302,9 +302,9 @@ impl<const N: usize> Cube<N> {
         let rng = &mut thread_rng();
 
         for _ in 0..iterations {
-            let _move = *moves.choose(rng).unwrap();
-            self.do_move(_move);
-            sequence.push(_move);
+            let move_ = *moves.choose(rng).unwrap();
+            self.do_move(move_);
+            sequence.push(move_);
         }
         sequence
     }

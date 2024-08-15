@@ -2,44 +2,48 @@ use crate::{cube::Cube, r#move::Move};
 
 #[allow(dead_code)]
 pub fn iddfs(mut start: Cube<2>) -> Option<Vec<Move>> {
-    fn search(cur: &mut Cube<2>, path: Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
+    fn search(cur: &mut Cube<2>, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
         if cur.is_solved() {
-            return Some(path);
+            return Some(path.clone());
         }
 
         if path.len() == max_depth {
             return None;
         }
 
-        for _move in Move::iterator() {
-            //if ![Move::R, Move::U, Move::F].contains(&_move) {
-            //    continue;
-            //}
-            if !path.is_empty() && *path.last().unwrap() == _move.opposite() {
+        for &move_ in &[
+            Move::R,
+            Move::R2,
+            Move::R3,
+            Move::F,
+            Move::F2,
+            Move::F3,
+            Move::U,
+            Move::U2,
+            Move::U3,
+        ] {
+            if !path.is_empty() && path.last().unwrap().same_face(&move_) {
                 continue;
             }
 
-            cur.do_move(_move);
+            cur.do_move(move_);
+            path.push(move_);
 
-            let mut new_path = path.clone();
-            new_path.push(_move);
-
-            if let Some(moves) = search(cur, new_path, max_depth) {
+            if let Some(moves) = search(cur, path, max_depth) {
                 return Some(moves);
             }
 
-            cur.do_move(_move.opposite());
+            path.pop();
+            cur.do_move(move_.opposite());
         }
         None
     }
 
     let mut max_depth = 1;
-    let mut path: Option<Vec<Move>> = None;
-
-    while path.is_none() {
-        path = search(&mut start, Vec::new(), max_depth);
+    loop {
+        if let Some(path) = search(&mut start, &mut Vec::new(), max_depth) {
+            return Some(path);
+        }
         max_depth += 1;
     }
-
-    return path;
 }

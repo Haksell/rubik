@@ -44,6 +44,11 @@ impl Move {
         }
         Move::try_from(i).unwrap()
     }
+
+    pub fn same_face(&self, move_: &Move) -> bool {
+        // TODO: one modulo
+        return self.as_int() % 6 == move_.as_int() % 6;
+    }
 }
 
 impl TryFrom<u8> for Move {
