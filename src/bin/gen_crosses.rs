@@ -62,9 +62,8 @@ fn cross_index(cube: &Cube<3>) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use rubik::{cube::Cube, r#move::Move};
-
     use crate::{cross_index, NUM_CROSSES};
+    use rubik::{cube::Cube, r#move::Move};
 
     #[test]
     fn test_cross_index_solved() {
