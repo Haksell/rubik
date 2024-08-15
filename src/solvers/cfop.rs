@@ -1,4 +1,4 @@
-use crate::filenames::FILE_CROSSES;
+use crate::files::{self, FILE_CROSSES};
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
 use std::fs::File;
 use std::io::{self, Read as _};
@@ -18,7 +18,7 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
 }
 
 fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
-    let cross_moves = read_cross_moves_from_file()
+    let cross_moves = files::read_moves(FILE_CROSSES)
         .unwrap_or_else(|err| panic!("Failed to read {FILE_CROSSES}: {err}"));
     let mut solution = vec![];
     let mut idx = cube.cross_index();
@@ -29,16 +29,6 @@ fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
         idx = cube.cross_index();
     }
     solution
-}
-
-// TODO: don't return a copy
-fn read_cross_moves_from_file() -> io::Result<[Move; NUM_CROSSES]> {
-    let mut file = File::open(FILE_CROSSES)?;
-    let mut moves = [Move::U; NUM_CROSSES];
-    let buffer =
-        unsafe { std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, NUM_CROSSES) };
-    file.read_exact(buffer)?;
-    Ok(moves)
 }
 
 impl Cube<3> {

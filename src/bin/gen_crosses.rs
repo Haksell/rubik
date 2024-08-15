@@ -1,9 +1,10 @@
-use rubik::{cube::Cube, filenames::FILE_CROSSES, r#move::Move, solvers::NUM_CROSSES};
-use std::{
-    collections::VecDeque,
-    fs::File,
-    io::{self, Write as _},
+use rubik::{
+    cube::Cube,
+    files::{self, FILE_CROSSES},
+    r#move::Move,
+    solvers::NUM_CROSSES,
 };
+use std::{collections::VecDeque, io};
 
 fn main() -> io::Result<()> {
     let cube = Cube::<3>::new();
@@ -26,17 +27,5 @@ fn main() -> io::Result<()> {
         }
     }
 
-    write_file(&moves)
-}
-
-fn write_file(moves: &[Option<Move>; NUM_CROSSES]) -> io::Result<()> {
-    let mut file = File::create(FILE_CROSSES)?;
-    for opt_move in moves {
-        let move_byte = match opt_move {
-            Some(m) => *m as u8,
-            None => unreachable!(),
-        };
-        file.write_all(&[move_byte])?;
-    }
-    Ok(())
+    files::write_moves(FILE_CROSSES, &moves)
 }
