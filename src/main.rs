@@ -1,3 +1,5 @@
+#![allow(dead_code)] // TODO: REMOVE
+
 use rubik::cube::Cube;
 use rubik::solvers;
 use std::env;
@@ -13,18 +15,12 @@ fn main() {
     if args.len() == 2 {
         cube.scramble(&args[1]);
     } else {
-        let scramble = cube.rand_scramble(50);
+        let scramble = cube.rand_scramble(200);
         println!("Scramble sequence: {scramble:?}");
     }
     println!("{cube}");
-    let solution = solvers::cfop(cube.clone());
-    match solution {
-        None => {
-            println!("Solution not found");
-        }
-        Some(moves) => {
-            println!("Solution found with {} moves:", moves.len());
-            println!("{moves:?}");
-        }
-    }
+    let solution = solvers::cfop(&mut cube);
+    println!("Solution found with {} moves:", solution.len());
+    println!("{solution:?}");
+    println!("{cube}");
 }

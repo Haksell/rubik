@@ -350,14 +350,6 @@ impl<const N: usize> Cube<N> {
         let end = (face as usize + 1) * N * N;
         self.faces[start..end].to_vec()
     }
-
-    // TODO Fix
-    #[allow(dead_code)]
-    fn get_face_mut(&mut self, face: Color) -> &mut [Color] {
-        let start = face as usize * N * N;
-        let end = (face as usize + 1) * N * N;
-        &mut self.faces[start..end]
-    }
 }
 
 impl<const N: usize> Display for Cube<N> {

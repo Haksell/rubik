@@ -2,15 +2,18 @@
 
 ## todo
 
-- [ ] 3x3x3 kociemba solver (vegret)
-- [ ] 3x3x3 korf solver (together)
-- [ ] 3x3x3 cfop solver (axbrisse)
-- [x] 2x2x2 iddfs solver (vegret)
-- [ ] big cube solver (axbrisse)
-- [ ] pyraminx iddfs solver (vegret)
-- [ ] megaminx solver (axbrisse)
-- [ ] scrambler (random state/random moves) (vegret)
-- [ ] 3d visualization (axbrisse)
+- [ ] 3x3x3 cfop solver
+- [ ] 3x3x3 zb solver
+- [ ] 3x3x3 roux solver
+- [ ] 3x3x3 petrus solver
+- [ ] 3x3x3 kociemba solver
+- [ ] 3x3x3 korf solver
+- [x] 2x2x2 iddfs solver
+- [ ] pyraminx iddfs solver
+- [ ] big cube solver
+- [ ] megaminx solver
+- [ ] scrambler (random state/random moves)
+- [ ] 3d visualization
 
 ## before push
 

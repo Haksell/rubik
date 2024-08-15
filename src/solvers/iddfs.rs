@@ -1,7 +1,6 @@
 use crate::{cube::Cube, r#move::Move};
 
-#[allow(dead_code)]
-pub fn iddfs(mut start: Cube<2>) -> Option<Vec<Move>> {
+pub fn iddfs(mut start: Cube<2>) -> Vec<Move> {
     fn search(cur: &mut Cube<2>, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
         if cur.is_solved() {
             return Some(path.clone());
@@ -42,7 +41,7 @@ pub fn iddfs(mut start: Cube<2>) -> Option<Vec<Move>> {
     let mut max_depth = 1;
     loop {
         if let Some(path) = search(&mut start, &mut Vec::new(), max_depth) {
-            return Some(path);
+            return path;
         }
         max_depth += 1;
     }
