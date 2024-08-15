@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, usize};
 
-use rubik::{color::Color, cube::Cube, r#move::Move, Sticker, EDGES};
+use rubik::{color::Color, cube::Cube, r#move::Move, EDGES};
 
 const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -64,7 +64,7 @@ fn cross_index(cube: &Cube<3>) -> usize {
 mod tests {
     use rubik::{cube::Cube, r#move::Move};
 
-    use crate::cross_index;
+    use crate::{cross_index, NUM_CROSSES};
 
     #[test]
     fn test_cross_index_solved() {
@@ -79,8 +79,10 @@ mod tests {
 
     #[test]
     fn test_cross_index_random() {
-        let cube = Cube::<3>::new();
-        assert!(false);
-        assert_eq!(cross_index(&cube), 0);
+        let mut cube = Cube::<3>::new();
+        for _ in 0..100 {
+            cube.do_move(Move::random());
+            assert!(cross_index(&cube) < NUM_CROSSES);
+        }
     }
 }

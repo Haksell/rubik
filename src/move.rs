@@ -23,6 +23,28 @@ pub enum Move {
     D3,
 }
 
+// degueu
+const MOVES: [Move; 18] = [
+    Move::F,
+    Move::R,
+    Move::U,
+    Move::B,
+    Move::L,
+    Move::D,
+    Move::F2,
+    Move::R2,
+    Move::U2,
+    Move::B2,
+    Move::L2,
+    Move::D2,
+    Move::F3,
+    Move::R3,
+    Move::U3,
+    Move::B3,
+    Move::L3,
+    Move::D3,
+];
+
 impl Move {
     // TODO: there is probably a better way
     pub fn iterator() -> Vec<Move> {
@@ -48,6 +70,11 @@ impl Move {
     pub fn same_face(&self, move_: &Move) -> bool {
         // TODO: one modulo
         return self.as_int() % 6 == move_.as_int() % 6;
+    }
+
+    pub fn random() -> Self {
+        use rand::prelude::*;
+        *MOVES.choose(&mut thread_rng()).unwrap()
     }
 }
 
