@@ -1,87 +1,42 @@
-use std::{collections::VecDeque, usize};
+use rubik::{cube::Cube, filenames::FILE_CROSSES, r#move::Move, solvers::NUM_CROSSES};
+use std::{
+    collections::VecDeque,
+    fs::File,
+    io::{self, Write as _},
+};
 
-use rubik::{color::Color, cube::Cube, r#move::Move, EDGES};
-
-const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
-
-fn main() {
+fn main() -> io::Result<()> {
     let cube = Cube::<3>::new();
-    let mut moves: &[Option<Move>; NUM_CROSSES] = &[None; NUM_CROSSES];
+    let mut moves: [Option<Move>; NUM_CROSSES] = [None; NUM_CROSSES];
     let mut queue = VecDeque::new();
     queue.push_back((cube, Move::D));
     let mut remaining_crosses = NUM_CROSSES;
     while remaining_crosses > 0 {
         let (cube, last_move) = queue.pop_front().unwrap();
-    }
-}
-
-fn cross_index(cube: &Cube<3>) -> usize {
-    let mut yellow_green: usize = usize::MAX;
-    let mut yellow_red: usize = usize::MAX;
-    let mut yellow_blue: usize = usize::MAX;
-    let mut yellow_orange: usize = usize::MAX;
-    for (i, &(s1, s2)) in EDGES.iter().enumerate() {
-        if cube.faces[s1 as usize] == Color::YELLOW {
-            match cube.faces[s2 as usize] {
-                Color::GREEN => yellow_green = 2 * i,
-                Color::RED => yellow_red = 2 * i,
-                Color::BLUE => yellow_blue = 2 * i,
-                Color::ORANGE => yellow_orange = 2 * i,
-                _ => unreachable!(),
-            }
-        } else if cube.faces[s2 as usize] == Color::YELLOW {
-            match cube.faces[s1 as usize] {
-                Color::GREEN => yellow_green = 2 * i + 1,
-                Color::RED => yellow_red = 2 * i + 1,
-                Color::BLUE => yellow_blue = 2 * i + 1,
-                Color::ORANGE => yellow_orange = 2 * i + 1,
-                _ => unreachable!(),
-            }
+        let idx = cube.cross_index();
+        if moves[idx].is_some() {
+            continue;
+        }
+        remaining_crosses -= 1;
+        moves[idx] = Some(last_move);
+        for move_ in Move::iterator() {
+            let mut next_cube = cube.clone();
+            next_cube.do_move(move_);
+            queue.push_back((next_cube, move_));
         }
     }
-    if yellow_red > yellow_green {
-        yellow_red -= 2;
-    }
-    if yellow_blue > yellow_green {
-        yellow_blue -= 2;
-    }
-    if yellow_blue > yellow_red {
-        yellow_blue -= 2;
-    }
-    if yellow_orange > yellow_green {
-        yellow_orange -= 2;
-    }
-    if yellow_orange > yellow_red {
-        yellow_orange -= 2;
-    }
-    if yellow_orange > yellow_blue {
-        yellow_orange -= 2;
-    }
-    yellow_orange + 18 * yellow_blue + 18 * 20 * yellow_red + 18 * 20 * 22 * yellow_green
+
+    write_file(&moves)
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::{cross_index, NUM_CROSSES};
-    use rubik::{cube::Cube, r#move::Move};
-
-    #[test]
-    fn test_cross_index_solved() {
-        let mut cube = Cube::<3>::new();
-        assert_eq!(cross_index(&cube), 0);
-        cube.do_move(Move::R);
-        cube.do_move(Move::U);
-        cube.do_move(Move::R3);
-        cube.do_move(Move::U3);
-        assert_eq!(cross_index(&cube), 0);
+fn write_file(moves: &[Option<Move>; NUM_CROSSES]) -> io::Result<()> {
+    let mut file = File::create(FILE_CROSSES)?;
+    for opt_move in moves {
+        let move_byte = match opt_move {
+            Some(m) => *m as u8,
+            None => unreachable!(),
+        };
+        file.write_all(&[move_byte])?;
     }
-
-    #[test]
-    fn test_cross_index_random() {
-        let mut cube = Cube::<3>::new();
-        for _ in 0..100 {
-            cube.do_move(Move::random());
-            assert!(cross_index(&cube) < NUM_CROSSES);
-        }
-    }
+    Ok(())
 }

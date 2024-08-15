@@ -1,5 +1,6 @@
 pub mod color;
 pub mod cube;
+pub mod filenames;
 pub mod r#move;
 pub mod solvers;
 mod sticker;

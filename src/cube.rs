@@ -1,7 +1,6 @@
 use crate::color::Color;
 use crate::r#move::Move;
 use colored::*;
-use rand::prelude::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;

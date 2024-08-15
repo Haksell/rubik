@@ -5,12 +5,16 @@
 - [ ] 3x3x3 kociemba solver (vegret)
 - [ ] 3x3x3 korf solver (together)
 - [ ] 3x3x3 cfop solver (axbrisse)
-- [x] 2x2x2 bfs solver (vegret)
+- [x] 2x2x2 iddfs solver (vegret)
 - [ ] big cube solver (axbrisse)
-- [ ] pyraminx bfs solver (vegret)
+- [ ] pyraminx iddfs solver (vegret)
 - [ ] megaminx solver (axbrisse)
 - [ ] scrambler (random state/random moves) (vegret)
 - [ ] 3d visualization (axbrisse)
+
+## before push
+
+- [ ] remove `#[allow(dead_code)]`
 
 ## resources
 

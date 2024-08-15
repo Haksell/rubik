@@ -53,6 +53,12 @@ impl Move {
             .collect::<Vec<Move>>()
     }
 
+    // fn iterator() -> impl Iterator<Item = Move> {
+    //     [Move::U, Move::D, Move::L, Move::R, Move::F, Move::B]
+    //         .iter()
+    //         .copied()
+    // }
+
     pub fn as_int(&self) -> u8 {
         *self as u8
     }
