@@ -8,26 +8,20 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-
     if args.len() > 2 {
         panic!("Usage: ./rubik <scramble>");
     }
-
-    let mut cube = Cube::<2>::new();
+    let mut cube = Cube::<3>::new();
 
     println!("{cube}");
-
     if args.len() == 2 {
         cube.scramble(&args[1]);
     } else {
-        let scramble = cube.rand_scramble(500);
+        let scramble = cube.rand_scramble(50);
         println!("Scramble sequence: {scramble:?}");
     }
-
     println!("{cube}");
-
-    let solution = solvers::iddfs(cube.clone());
-
+    let solution = solvers::cfop(cube.clone());
     match solution {
         None => {
             println!("Solution not found");
