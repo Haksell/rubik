@@ -1,9 +1,5 @@
-mod color;
-mod cube;
-mod r#move;
-mod solvers;
-
-use cube::Cube;
+use rubik::cube::Cube;
+use rubik::solvers;
 use std::env;
 
 fn main() {

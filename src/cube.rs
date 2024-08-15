@@ -420,6 +420,9 @@ impl<const N: usize> Display for Cube<N> {
     }
 }
 
+// TODO: impl Cube[Sticker]
+// TODO: macro cub2! cub3! cub4! cub5! cub6! cub7!
+
 #[cfg(test)]
 mod tests {
     use super::Cube;

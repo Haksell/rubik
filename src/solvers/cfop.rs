@@ -11,24 +11,15 @@ pub fn cfop(start: Cube<3>) -> Option<Vec<Move>> {
 
 impl Cube<3> {
     fn is_cross_solved(&self) -> bool {
-        const DF: usize = 28;
-        const DR: usize = 32;
-        const DB: usize = 34;
-        const DL: usize = 30;
-
-        const FD: usize = 25;
-        const RD: usize = 16;
-        const BD: usize = 52;
-        const LD: usize = 43;
-
-        return self.faces[DF] == Color::YELLOW
-            && self.faces[DR] == Color::YELLOW
-            && self.faces[DB] == Color::YELLOW
-            && self.faces[DL] == Color::YELLOW
-            && self.faces[FD] == Color::GREEN
-            && self.faces[RD] == Color::RED
-            && self.faces[BD] == Color::BLUE
-            && self.faces[LD] == Color::ORANGE;
+        use crate::Sticker::*;
+        return self.faces[DF as usize] == Color::YELLOW
+            && self.faces[DR as usize] == Color::YELLOW
+            && self.faces[DB as usize] == Color::YELLOW
+            && self.faces[DL as usize] == Color::YELLOW
+            && self.faces[FD as usize] == Color::GREEN
+            && self.faces[RD as usize] == Color::RED
+            && self.faces[BD as usize] == Color::BLUE
+            && self.faces[LD as usize] == Color::ORANGE;
     }
 }
 

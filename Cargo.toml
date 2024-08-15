@@ -2,6 +2,7 @@
 name = "rubik"
 version = "0.1.0"
 edition = "2021"
+default-run = "rubik"
 
 [dependencies]
 colored = "2.1.0"
