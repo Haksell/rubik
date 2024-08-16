@@ -422,6 +422,22 @@ impl<const N: usize> Display for Cube<N> {
 // TODO: impl Cube[Sticker]
 // TODO: macro cub2! cub3! cub4! cub5! cub6! cub7!
 
+// TODO: use everywhere
+#[macro_export]
+macro_rules! moves {
+    ($sequence:expr) => {{
+        let mut moves_vec = Vec::new();
+        let as_moves = $sequence.split_whitespace().map(Move::try_from);
+        for mov in as_moves {
+            match mov {
+                Ok(m) => moves_vec.push(m),
+                Err(_) => panic!("Invalid move in scramble sequence: {}", $sequence),
+            }
+        }
+        moves_vec
+    }};
+}
+
 #[cfg(test)]
 mod tests {
     use super::Cube;

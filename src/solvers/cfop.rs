@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
 use crate::files::{self, FILE_CROSSES};
+use crate::moves;
 use crate::trigger::Trigger;
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
 
@@ -13,7 +14,8 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_cross(cube));
     solution.extend(solve_f2l(cube));
-    // solution.extend(solve_oll(cube));
+    println!("{cube}");
+    solution.extend(solve_oll(cube));
     // solution.extend(solve_pll(cube));
     // TODO: reduce solution (between steps)
     solution
@@ -39,7 +41,6 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     let mut to_solve = 0b1111; // TODO: check accidental X-cross
     while to_solve != 0 {
-        println!("{to_solve}");
         let mut triggers = vec![Trigger::U, Trigger::U2, Trigger::U3];
         if to_solve & 1 != 0 {
             triggers.extend(TRIGGERS_SLOT_0);
@@ -86,6 +87,33 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
             }
         }
     }
+}
+
+fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
+    use crate::Sticker::*;
+    let mut oll_solution = vec![];
+    let cross = match (
+        cube.faces[UB as usize] == Color::WHITE,
+        cube.faces[UR as usize] == Color::WHITE,
+        cube.faces[UF as usize] == Color::WHITE,
+        cube.faces[UL as usize] == Color::WHITE,
+    ) {
+        (true, true, true, true) => vec![],
+        (false, false, true, true) => moves!("U F U R U' R' F'"),
+        (false, true, false, true) => moves!("F R U R' U' F'"),
+        (false, true, true, false) => moves!("U2 F U R U' R' F'"),
+        (true, false, false, true) => moves!("F U R U' R' F'"),
+        (true, false, true, false) => moves!("U F R U R' U' F'"),
+        (true, true, false, false) => moves!("U' F U R U' R' F'"),
+        (false, false, false, false) => moves!("R U2 R2 F R F' U2 R' F R F'"),
+        _ => unreachable!(),
+    };
+    for &move_ in &cross {
+        cube.do_move(move_);
+    }
+    println!("{cross:?}");
+    oll_solution.extend(cross);
+    oll_solution
 }
 
 impl Cube<3> {
