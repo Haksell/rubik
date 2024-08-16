@@ -27,3 +27,16 @@ impl TryFrom<u8> for Color {
         }
     }
 }
+
+impl Color {
+    // TODO: better name
+    pub fn side(&self) -> i8 {
+        match self {
+            Color::BLUE => 0,
+            Color::RED => 1,
+            Color::GREEN => 2,
+            Color::ORANGE => 3,
+            _ => unimplemented!(),
+        }
+    }
+}

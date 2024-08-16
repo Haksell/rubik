@@ -1,9 +1,8 @@
-use std::collections::VecDeque;
-
 use crate::files::{self, FILE_CROSSES};
 use crate::moves;
 use crate::trigger::Trigger;
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
+use std::collections::VecDeque;
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -14,9 +13,8 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_cross(cube));
     solution.extend(solve_f2l(cube));
-    println!("{cube}");
     solution.extend(solve_oll(cube));
-    // solution.extend(solve_pll(cube));
+    solution.extend(solve_pll(cube));
     // TODO: reduce solution (between steps)
     solution
 }
@@ -89,7 +87,6 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
     }
 }
 
-// TODO: TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
     use crate::Sticker::*;
     let mut oll_solution = vec![];
@@ -157,7 +154,7 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
             0b011100100 => Some(moves!("L' B L2 F' L2 B' L2 F L'")),
             0b100011010 => Some(moves!("F U R U' R' U R U' R' F'")),
             0b011100101 => Some(moves!("R' F' U' F U' R U R' U R")),
-            0b011100010 => Some(moves!("L' B R B R' B' R B R' B2 L")),
+            0b011100010 => Some(moves!("L' B' R B' R' B R B' R' B2 L")),
             0b011101010 => Some(moves!("L F R' F R F' R' F R F2 L'")),
             0b011100011 => Some(moves!("R U2 R2 U' R U' R' U2 F R F'")), // bad
             0b010101010 => Some(moves!("R B L B' R2 B U L' U' B' R")),   // bad
@@ -172,6 +169,67 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
             return oll_solution;
         }
         oll_solution.push(Move::U);
+        cube.do_move(Move::U);
+    }
+    unreachable!();
+}
+
+fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
+    use crate::Sticker::*;
+    let mut pll_solution = vec![];
+    for _ in 0..4 {
+        let moves = match (
+            (cube.faces[FLU as usize].side() - cube.faces[FU as usize].side()) & 3,
+            (cube.faces[FLU as usize].side() - cube.faces[FUR as usize].side()) & 3,
+            (cube.faces[FLU as usize].side() - cube.faces[RU as usize].side()) & 3,
+            (cube.faces[FLU as usize].side() - cube.faces[RUB as usize].side()) & 3,
+        ) {
+            (0, 0, 1, 1) => Some(vec![]),
+            (1, 1, 2, 0) => Some(moves!("L2 B2 L' F' L B2 L' F L'")),
+            (2, 2, 3, 0) => Some(moves!("L F' L B2 L' F L B2 L2")),
+            (3, 2, 0, 1) => Some(moves!("L U' R D2 R' U R L' U' L D2 L' U R'")),
+            (0, 0, 3, 2) => Some(moves!("R' U R U' R2 F' U' F U R F R' F' R2")),
+            (1, 1, 3, 0) => Some(moves!("R2 D B' U B' U' B D' R2 F' U F")),
+            (2, 2, 1, 0) => Some(moves!("F' U' F R2 D B' U B U' B D' R2")),
+            (2, 1, 3, 0) => Some(moves!("R2 D' F U' F U F' D R2 B U' B'")),
+            (3, 1, 2, 0) => Some(moves!("R U R' F2 D' L U' L' U L' D F2")),
+            (2, 0, 3, 1) => Some(moves!("R2 F2 B2 L2 D R2 F2 B2 L2")),
+            (0, 0, 1, 2) => Some(moves!("R' U L' U2 R U' R' U2 R L")),
+            (1, 1, 0, 0) => Some(moves!("L R U2 R' U' R U2 L' U R'")),
+            (2, 2, 1, 1) => Some(moves!("R U' L U2 R' U L' R U' L U2 R' U L'")),
+            (0, 2, 3, 1) => Some(moves!("R' U L' U2 R U' L R' U L' U2 R U' L")),
+            (2, 1, 1, 2) => Some(moves!("L2 F' L' U' L' U L F L' U2 L U2 L'")),
+            (3, 1, 1, 0) => Some(moves!("R2 F R U R U' R' F' R U2 R' U2 R")),
+            (0, 1, 3, 0) => Some(moves!("R2 D B2 D' R2 F2 D' L2 D F2")),
+            (1, 0, 2, 1) => Some(moves!("R2 U' F B' R2 F' B U' R2")),
+            (2, 0, 0, 1) => Some(moves!("R2 U F B' R2 F' B U R2")),
+            (3, 2, 2, 1) => Some(moves!("F' U F' U' R' F' R2 U' R' U R' F R F")),
+            (0, 2, 1, 1) => Some(moves!("R2 U' R2 U' R2 U F U F' R2 F U' F'")),
+            (1, 0, 0, 1) => Some(moves!("R B' R' B F R' F B' R' B R F2")),
+            tup => {
+                println!("{tup:?}");
+                None
+            }
+        };
+        if let Some(moves) = moves {
+            for move_ in moves {
+                pll_solution.push(move_);
+                cube.do_move(move_);
+            }
+            let auf = match cube.faces[FU as usize] {
+                Color::GREEN => None,
+                Color::ORANGE => Some(Move::U),
+                Color::BLUE => Some(Move::U2),
+                Color::RED => Some(Move::U3),
+                _ => unreachable!(),
+            };
+            if let Some(move_) = auf {
+                pll_solution.push(move_);
+                cube.do_move(move_);
+            }
+            return pll_solution;
+        }
+        pll_solution.push(Move::U);
         cube.do_move(Move::U);
     }
     unreachable!();
@@ -274,7 +332,7 @@ impl Cube<3> {
 
 #[cfg(test)]
 mod tests {
-    use super::{solve_cross, Cube, NUM_CROSSES};
+    use super::{cfop, solve_cross, Cube, NUM_CROSSES};
     use crate::r#move::Move;
 
     #[test]
@@ -343,6 +401,19 @@ mod tests {
             let solution = solve_cross(&mut cube);
             assert!(cube.is_cross_solved());
             assert!(solution.len() <= 8);
+        }
+    }
+
+    #[test]
+    fn test_cfop_solves_cube() {
+        for _ in 0..100 {
+            let mut cube = Cube::<3>::new(); // TODO: cub3!
+            let scramble = cube.rand_scramble(100);
+            let solution = cfop(&mut cube);
+            assert!(
+                cube.is_solved(),
+                "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
+            );
         }
     }
 }
