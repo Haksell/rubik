@@ -14,8 +14,6 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     solution.extend(solve_f2l(cube));
     // solution.extend(solve_oll(cube));
     // solution.extend(solve_pll(cube));
-    // TODO: reduce solution (between steps)
-
     reduce_moves(&solution)
 }
 
