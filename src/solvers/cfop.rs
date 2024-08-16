@@ -89,6 +89,7 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
     }
 }
 
+// TODO: TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
     use crate::Sticker::*;
     let mut oll_solution = vec![];
@@ -149,18 +150,18 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
             0b000011101 => Some(moves!("R' U' F' U F R")),
             0b000001011 => Some(moves!("F U R U' R' F'")),
             0b010101000 => Some(moves!("F R U R' U' F'")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
+            0b001000011 => Some(moves!("R' U' R' F R F' U R")),
+            0b100101011 => Some(moves!("R' F' U' F U F' U' F U R")),
+            0b010101101 => Some(moves!("F R U R' U' R U R' U' F'")),
+            0b011101100 => Some(moves!("L F' L2 B L2 F L2 B' L")),
+            0b011100100 => Some(moves!("L' B L2 F' L2 B' L2 F L'")),
+            0b100011010 => Some(moves!("F U R U' R' U R U' R' F'")),
+            0b011100101 => Some(moves!("R' F' U' F U' R U R' U R")),
+            0b011100010 => Some(moves!("L' B R B R' B' R B R' B2 L")),
+            0b011101010 => Some(moves!("L F R' F R F' R' F R F2 L'")),
+            0b011100011 => Some(moves!("R U2 R2 U' R U' R' U2 F R F'")), // bad
+            0b010101010 => Some(moves!("R B L B' R2 B U L' U' B' R")),   // bad
+            0b000000000 => Some(moves!("F' B U' F U    F B' R' F' R")),
             _ => None,
         };
         if let Some(moves) = moves {
