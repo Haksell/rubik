@@ -161,7 +161,7 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
             0b011101010 => Some(moves!("L F R' F R F' R' F R F2 L'")),
             0b011100011 => Some(moves!("R U2 R2 U' R U' R' U2 F R F'")), // bad
             0b010101010 => Some(moves!("R B L B' R2 B U L' U' B' R")),   // bad
-            0b000000000 => Some(moves!("F' B U' F U    F B' R' F' R")),
+            0b001000001 => Some(moves!("F' B U' F U F B' R' F' R")),
             _ => None,
         };
         if let Some(moves) = moves {
