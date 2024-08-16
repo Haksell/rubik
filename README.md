@@ -4,7 +4,6 @@
 
 - [ ] 3x3x3 cfop solver
 - [ ] 3x3x3 zb solver
-- [ ] 3x3x3 roux solver
 - [ ] 3x3x3 petrus solver
 - [ ] 3x3x3 kociemba solver
 - [ ] 3x3x3 korf solver
