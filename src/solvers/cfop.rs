@@ -129,11 +129,11 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
             0b000010100 => Some(moves!("R2 D R' U2 R D' R' U2 R'")),
             0b010000000 => Some(moves!("R U R D R' U' R D' R2")),
             0b010000100 => Some(moves!("F' L F R' F' L' F R")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
-            0b000000000 => Some(moves!("")),
+            0b000010010 => Some(moves!("R' U' R U' R' U2 R")),
+            0b100000100 => Some(moves!("R U R' U R U2 R'")),
+            0b000001001 => Some(moves!("R2 F2 L F L' F2 R F' R")), // bad
+            0b011001000 => Some(moves!("F R' U' R2 U' R2 U2 R U' F'")), // bad
+            0b010001001 => Some(moves!("F' L U L2 U L2 U2 L' U F")), // bad
             0b000000000 => Some(moves!("")),
             0b000000000 => Some(moves!("")),
             0b000000000 => Some(moves!("")),
