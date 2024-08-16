@@ -93,37 +93,37 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
     use crate::Sticker::*;
     let mut oll_solution = vec![];
     for _ in 0..4 {
-        let moves = match ((cube.faces[LBU as usize] == Color::WHITE) as u16) << 8
-            | ((cube.faces[LU as usize] == Color::WHITE) as u16) << 7
-            | ((cube.faces[LUF as usize] == Color::WHITE) as u16) << 6
-            | ((cube.faces[FLU as usize] == Color::WHITE) as u16) << 5
-            | ((cube.faces[FU as usize] == Color::WHITE) as u16) << 4
-            | ((cube.faces[FUR as usize] == Color::WHITE) as u16) << 3
-            | ((cube.faces[RFU as usize] == Color::WHITE) as u16) << 2
-            | ((cube.faces[RU as usize] == Color::WHITE) as u16) << 1
-            | ((cube.faces[RUB as usize] == Color::WHITE) as u16) << 0
+        let moves = match ((cube.faces[BUL as usize] == Color::WHITE) as u16) << 8
+            | ((cube.faces[LBU as usize] == Color::WHITE) as u16) << 7
+            | ((cube.faces[LU as usize] == Color::WHITE) as u16) << 6
+            | ((cube.faces[LUF as usize] == Color::WHITE) as u16) << 5
+            | ((cube.faces[FLU as usize] == Color::WHITE) as u16) << 4
+            | ((cube.faces[FU as usize] == Color::WHITE) as u16) << 3
+            | ((cube.faces[FUR as usize] == Color::WHITE) as u16) << 2
+            | ((cube.faces[RFU as usize] == Color::WHITE) as u16) << 1
+            | ((cube.faces[RU as usize] == Color::WHITE) as u16) << 0
         {
             0b000000000 => Some(vec![]),
-            0b111010111 => Some(moves!("R U2 R2 F R F' U2 R' F R F'")),
-            0b110111011 => Some(moves!("R U' R2 D' L F L' D R2 U R'")),
-            0b010011011 => Some(moves!("L' R2 B R' B L U2 L' B L R'")),
-            0b010110110 => Some(moves!("L R2 F' R F' L' U2 L F' L' R")),
-            0b011000001 => Some(moves!("L' B2 R B R' B L")),
-            0b110110100 => Some(moves!("L F2 R' F' R F' L'")),
-            0b000011011 => Some(moves!("L F R' F R F2 L'")),
-            0b000100110 => Some(moves!("L' B' R B' R' B2 L")),
-            0b110010100 => Some(moves!("F' U' F L F' L' U L F L'")), // bad
-            0b001010011 => Some(moves!("F U F' R' F R U' R' F' R")), // bad
-            0b010001001 => Some(moves!("L' R2 B R' B R B2 R' B L R'")), // bad
-            0b010110100 => Some(moves!("L R2 F' R F' R' F2 R F' L' R")), // bad
-            0b000011001 => Some(moves!("L F' L' U' L F L' F' U F")),
-            0b100110000 => Some(moves!("R' F R U R' F' R F U' F'")),
-            0b001010001 => Some(moves!("L' B' L R' U' R U L' B L")),
-            0b100110100 => Some(moves!("L F L' R U R' U' L F' L'")),
-            0b011010010 => Some(moves!("F' L F L' U2 L' U B' U B L")), // bad
-            0b010010010 => Some(moves!("F R U R' U F' U2 F' L F L'")), // bad
-            0b011010110 => Some(moves!("R' U2 F R U R' U' F2 U2 F R")), // bad
-            0b000000000 => Some(moves!("")),                           // standard 13
+            0b011101011 => Some(moves!("R U2 R2 F R F' U2 R' F R F'")),
+            0b011011101 => Some(moves!("R U' R2 D' L F L' D R2 U R'")),
+            0b101001101 => Some(moves!("L' R2 B R' B L U2 L' B L R'")),
+            0b001011011 => Some(moves!("L R2 F' R F' L' U2 L F' L' R")),
+            0b101100000 => Some(moves!("L' B2 R B R' B L")),
+            0b011011010 => Some(moves!("L F2 R' F' R F' L'")),
+            0b100001101 => Some(moves!("L F R' F R F2 L'")),
+            0b000010011 => Some(moves!("L' B' R B' R' B2 L")),
+            0b011001010 => Some(moves!("F' U' F L F' L' U L F L'")), // bad
+            0b100101001 => Some(moves!("F U F' R' F R U' R' F' R")), // bad
+            0b101000100 => Some(moves!("L' R2 B R' B R B2 R' B L R'")), // bad
+            0b001011010 => Some(moves!("L R2 F' R F' R' F2 R F' L' R")), // bad
+            0b100001100 => Some(moves!("L F' L' U' L F L' F' U F")),
+            0b010011000 => Some(moves!("R' F R U R' F' R F U' F'")),
+            0b100101000 => Some(moves!("L' B' L R' U' R U L' B L")),
+            0b010011010 => Some(moves!("L F L' R U R' U' L F' L'")),
+            0b001101001 => Some(moves!("F' L F L' U2 L' U B' U B L")), // bad
+            0b101001001 => Some(moves!("F R U R' U F' U2 F' L F L'")), // bad
+            0b001101011 => Some(moves!("R' U2 F R U R' U' F2 U2 F R")), // bad
+            0b001001001 => Some(moves!("L' R' F' U2 L2 U2 L2 U2 L2 F L R")), // bad
             0b000000000 => Some(moves!("")),
             0b000000000 => Some(moves!("")),
             0b000000000 => Some(moves!("")),
