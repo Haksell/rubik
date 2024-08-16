@@ -2,17 +2,9 @@
 name = "rubik"
 version = "0.1.0"
 edition = "2021"
+default-run = "rubik"
 
 [dependencies]
 kiss3d = "0.35.0"
-
-[profile.dev]
-debug = false
-incremental = true
-opt-level = 1
-
-[profile.release]
-incremental = false
-
-[profile.dev.package."*"]
-opt-level = 3
+colored = "2.1.0"
+rand = "0.8.5"
