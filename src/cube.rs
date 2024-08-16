@@ -12,16 +12,25 @@ pub struct Cube<const N: usize> {
     pub faces: Vec<Color>,
 }
 
+// TODO: cub4!, cub5!, cub6!, cub7! with macro of macros
+
+#[macro_export]
+macro_rules! cub2 {
+    () => {
+        Cube::<2>::new()
+    };
+}
+
+#[macro_export]
+macro_rules! cub3 {
+    () => {
+        Cube::<3>::new()
+    };
+}
+
 // Always fronting Green face
 impl<const N: usize> Cube<N> {
     pub fn new() -> Cube<N> {
-        // TODO: one-liner
-        // let mut faces = Vec::new();
-        // for i in 0..6 * N * N {
-        //     let face = i / (N * N);
-        //     let color = (face as u8).try_into();
-        //     faces.push(color.unwrap());
-        // }
         Cube {
             faces: (0..6 * N * N)
                 .map(|i| Color::try_from((i / (N * N)) as u8).unwrap())
@@ -420,7 +429,6 @@ impl<const N: usize> Display for Cube<N> {
 }
 
 // TODO: impl Cube[Sticker]
-// TODO: macro cub2! cub3! cub4! cub5! cub6! cub7!
 
 #[cfg(test)]
 mod tests {
@@ -429,7 +437,7 @@ mod tests {
 
     #[test]
     fn test_is_solved_generic() {
-        let mut cube = Cube::<3>::new();
+        let mut cube = cub3!();
         // TODO: better loop iterator
         for &move_ in &[Move::U, Move::L, Move::F, Move::R, Move::B, Move::D] {
             assert!(cube.is_solved());
@@ -446,7 +454,7 @@ mod tests {
 
     #[test]
     fn test_is_solved_sexy_moves() {
-        let mut cube = Cube::<3>::new();
+        let mut cube = cub3!();
         for i in 0..6 {
             cube.do_move(Move::R);
             cube.do_move(Move::U);
@@ -458,7 +466,7 @@ mod tests {
 
     #[test]
     fn test_is_solved_2x2x2() {
-        let mut cube = Cube::<2>::new();
+        let mut cube = cub2!();
         assert!(cube.is_solved());
         cube.do_move(Move::R);
         assert!(!cube.is_solved());

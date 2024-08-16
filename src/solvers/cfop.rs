@@ -1,8 +1,7 @@
-use std::collections::VecDeque;
-
 use crate::files::{self, FILE_CROSSES};
 use crate::trigger::Trigger;
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
+use std::collections::{HashMap, VecDeque};
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -16,7 +15,53 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     // solution.extend(solve_oll(cube));
     // solution.extend(solve_pll(cube));
     // TODO: reduce solution (between steps)
-    solution
+
+    reduce_moves(&solution)
+}
+
+fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
+    let mut simplified: Vec<Move> = vec![];
+    for &move_ in moves {
+        match simplified.last() {
+            Some(&last) => {
+                if last == move_.opposite() {
+                    simplified.pop();
+                } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 3 {
+                    // L, L2 or L2, L (for example)
+                    simplified.pop();
+                    simplified.push(Move::try_from(12 + last.as_int() % 6).unwrap());
+                } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 5 {
+                    // L3, L2 or L2, L3 (for example)
+                    simplified.pop();
+                    simplified.push(Move::try_from(last.as_int() % 6).unwrap());
+                } else {
+                    let mut to_add = Some(move_);
+                    if last == move_ {
+                        simplified.pop();
+                        match last.repetitions() {
+                            1 => {
+                                to_add = Some(Move::try_from(move_.as_int() + 6).unwrap());
+                            }
+                            2 => {
+                                to_add = None;
+                            }
+                            3 => {
+                                to_add = Some(Move::try_from(move_.as_int() % 6 + 6).unwrap());
+                            }
+                            _ => unreachable!(),
+                        }
+                    }
+                    if to_add.is_some() {
+                        simplified.push(to_add.unwrap());
+                    }
+                }
+            }
+            None => {
+                simplified.push(move_);
+            }
+        }
+    }
+    simplified
 }
 
 fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
@@ -66,7 +111,9 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
 fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
     // TODO: came_from like n_puzzle
     let mut queue: VecDeque<(Cube<3>, Vec<Trigger>)> = VecDeque::new();
+    let mut came_from: HashMap<Cube<3>, Option<Trigger>> = HashMap::new();
     queue.push_back((cube.clone(), vec![]));
+    came_from.insert(cube.clone(), None);
     loop {
         let (cube, pair_solution) = queue.pop_front().unwrap();
         let slot = match pair_solution.last() {
@@ -80,6 +127,7 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
             if pair_solution.is_empty() || trigger.slot() != slot {
                 let mut next_cube = cube.clone();
                 let mut next_vec = pair_solution.clone();
+                came_from.insert(next_cube.clone(), Some(trigger));
                 next_cube.do_trigger(trigger);
                 next_vec.push(trigger);
                 queue.push_back((next_cube, next_vec));
@@ -185,12 +233,12 @@ impl Cube<3> {
 
 #[cfg(test)]
 mod tests {
-    use super::{solve_cross, Cube, NUM_CROSSES};
-    use crate::r#move::Move;
+    use super::{solve_cross, NUM_CROSSES};
+    use crate::{cub3, cube::Cube, r#move::Move, solvers::cfop::reduce_moves};
 
     #[test]
     fn test_is_cross_solved() {
-        let mut cube = Cube::<3>::new();
+        let mut cube = cub3!();
         assert!(cube.is_cross_solved());
 
         // sexy move
@@ -228,7 +276,7 @@ mod tests {
 
     #[test]
     fn test_cross_index_solved() {
-        let mut cube = Cube::<3>::new();
+        let mut cube = cub3!();
         assert_eq!(cube.cross_index(), 0);
         cube.do_move(Move::R);
         cube.do_move(Move::U);
@@ -239,7 +287,7 @@ mod tests {
 
     #[test]
     fn test_cross_index_random() {
-        let mut cube = Cube::<3>::new();
+        let mut cube = cub3!();
         for _ in 0..100 {
             cube.do_move(Move::random());
             assert!(cube.cross_index() < NUM_CROSSES);
@@ -249,11 +297,49 @@ mod tests {
     #[test]
     fn test_solve_cross() {
         for _ in 0..10 {
-            let mut cube = Cube::<3>::new();
+            let mut cube = cub3!();
             cube.rand_scramble(100);
             let solution = solve_cross(&mut cube);
             assert!(cube.is_cross_solved());
             assert!(solution.len() <= 8);
         }
+    }
+
+    #[test]
+    fn test_moves_reduction() {
+        assert_eq!(
+            reduce_moves(&vec![Move::R, Move::L]),
+            vec![Move::R, Move::L]
+        );
+        assert_eq!(
+            reduce_moves(&vec![Move::L, Move::D]),
+            vec![Move::L, Move::D]
+        );
+        assert_eq!(reduce_moves(&vec![Move::U, Move::U]), vec![Move::U2]);
+        assert_eq!(reduce_moves(&vec![Move::L, Move::L2]), vec![Move::L3]);
+        assert_eq!(reduce_moves(&vec![Move::U, Move::U3]), vec![]);
+        assert_eq!(reduce_moves(&vec![Move::L2, Move::L]), vec![Move::L3]);
+        assert_eq!(reduce_moves(&vec![Move::R2, Move::R2]), vec![]);
+        assert_eq!(reduce_moves(&vec![Move::B2, Move::B3]), vec![Move::B]);
+        assert_eq!(reduce_moves(&vec![Move::D3, Move::D]), vec![]);
+        assert_eq!(reduce_moves(&vec![Move::B3, Move::B2]), vec![Move::B]);
+        assert_eq!(reduce_moves(&vec![Move::F3, Move::F3]), vec![Move::F2]);
+        assert_eq!(
+            reduce_moves(&vec![Move::R, Move::R, Move::R, Move::R]),
+            vec![]
+        );
+        assert_eq!(
+            reduce_moves(&vec![
+                Move::U,
+                Move::U,
+                Move::R,
+                Move::R,
+                Move::R,
+                Move::R,
+                Move::U,
+                Move::U
+            ]),
+            vec![]
+        );
     }
 }

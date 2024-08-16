@@ -63,6 +63,10 @@ impl Move {
         *self as u8
     }
 
+    pub fn repetitions(&self) -> u8 {
+        self.as_int() / 6 + 1
+    }
+
     pub fn opposite(&self) -> Move {
         let mut i = self.as_int();
         if i < 6 {

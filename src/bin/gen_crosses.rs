@@ -1,4 +1,5 @@
 use rubik::{
+    cub3,
     cube::Cube,
     files::{self, FILE_CROSSES},
     r#move::Move,
@@ -7,7 +8,7 @@ use rubik::{
 use std::{collections::VecDeque, io};
 
 fn main() -> io::Result<()> {
-    let cube = Cube::<3>::new();
+    let cube = cub3!();
     let mut moves: [Option<Move>; NUM_CROSSES] = [None; NUM_CROSSES];
     let mut queue = VecDeque::new();
     queue.push_back((cube, Move::R));
