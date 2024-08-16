@@ -253,10 +253,7 @@ fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
             (3, 2, 2, 1) => Some(moves!("F' U F' U' R' F' R2 U' R' U R' F R F")),
             (0, 2, 1, 1) => Some(moves!("R2 U' R2 U' R2 U F U F' R2 F U' F'")),
             (1, 0, 0, 1) => Some(moves!("R B' R' B F R' F B' R' B R F2")),
-            tup => {
-                println!("{tup:?}");
-                None
-            }
+            _ => None,
         };
         if let Some(moves) = moves {
             for move_ in moves {
