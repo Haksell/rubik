@@ -1,11 +1,15 @@
 use std::{
-    fs::File,
+    fs::{self, File},
     io::{self, Read as _, Write as _},
+    path::Path,
 };
 
 use crate::{r#move::Move, solvers::NUM_CROSSES};
 
 pub const FILE_CROSSES: &'static str = "tables/cfop/crosses.bin";
+pub const FILE_EO_LINES: &'static str = "tables/zz/eo_lines.bin";
+
+// TODO: don't depend on NUM_CROSSES to be generic
 
 // TODO: read only once in benchmark tests
 pub fn read_moves(filename: &str) -> io::Result<[Move; NUM_CROSSES]> {
@@ -18,6 +22,9 @@ pub fn read_moves(filename: &str) -> io::Result<[Move; NUM_CROSSES]> {
 }
 
 pub fn write_moves(filename: &str, moves: &[Option<Move>; NUM_CROSSES]) -> io::Result<()> {
+    if let Some(parent_dir) = Path::new(filename).parent() {
+        fs::create_dir_all(parent_dir)?;
+    }
     let mut file = File::create(filename)?;
     for opt_move in moves {
         let move_byte = match opt_move {
