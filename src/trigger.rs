@@ -162,48 +162,45 @@ impl Trigger {
     }
 }
 
-// TODO: [&[Trigger]; 4]
-
-pub const TRIGGERS_SLOT_0: &[Trigger] = &[
-    Trigger::R3UR,
-    Trigger::R3U2R,
-    Trigger::R3U3R,
-    Trigger::BUB3,
-    Trigger::BU2B3,
-    Trigger::BU3B3,
-    Trigger::Sledge0,
-    Trigger::Hedge0,
-];
-
-pub const TRIGGERS_SLOT_1: &[Trigger] = &[
-    Trigger::RUR3,
-    Trigger::RU2R3,
-    Trigger::RU3R3,
-    Trigger::F3UF,
-    Trigger::F3U2F,
-    Trigger::F3U3F,
-    Trigger::Sledge1,
-    Trigger::Hedge1,
-];
-
-pub const TRIGGERS_SLOT_2: &[Trigger] = &[
-    Trigger::L3UL,
-    Trigger::L3U2L,
-    Trigger::L3U3L,
-    Trigger::FUF3,
-    Trigger::FU2F3,
-    Trigger::FU3F3,
-    Trigger::Sledge2,
-    Trigger::Hedge2,
-];
-
-pub const TRIGGERS_SLOT_3: &[Trigger] = &[
-    Trigger::LUL3,
-    Trigger::LU2L3,
-    Trigger::LU3L3,
-    Trigger::B3UB,
-    Trigger::B3U2B,
-    Trigger::B3U3B,
-    Trigger::Sledge3,
-    Trigger::Hedge3,
+pub const TRIGGERS_BY_SLOT: &[&[Trigger]] = &[
+    &[
+        Trigger::R3UR,
+        Trigger::R3U2R,
+        Trigger::R3U3R,
+        Trigger::BUB3,
+        Trigger::BU2B3,
+        Trigger::BU3B3,
+        Trigger::Sledge0,
+        Trigger::Hedge0,
+    ],
+    &[
+        Trigger::RUR3,
+        Trigger::RU2R3,
+        Trigger::RU3R3,
+        Trigger::F3UF,
+        Trigger::F3U2F,
+        Trigger::F3U3F,
+        Trigger::Sledge1,
+        Trigger::Hedge1,
+    ],
+    &[
+        Trigger::L3UL,
+        Trigger::L3U2L,
+        Trigger::L3U3L,
+        Trigger::FUF3,
+        Trigger::FU2F3,
+        Trigger::FU3F3,
+        Trigger::Sledge2,
+        Trigger::Hedge2,
+    ],
+    &[
+        Trigger::LUL3,
+        Trigger::LU2L3,
+        Trigger::LU3L3,
+        Trigger::B3UB,
+        Trigger::B3U2B,
+        Trigger::B3U3B,
+        Trigger::Sledge3,
+        Trigger::Hedge3,
+    ],
 ];

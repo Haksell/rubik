@@ -1,7 +1,7 @@
 use super::{reduce_moves, solve_last_layer_step};
 use crate::files::{self, FILE_CROSSES};
 use crate::moves;
-use crate::trigger::Trigger;
+use crate::trigger::{Trigger, TRIGGERS_BY_SLOT};
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
@@ -36,25 +36,16 @@ fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
 }
 
 fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
-    use crate::trigger::{TRIGGERS_SLOT_0, TRIGGERS_SLOT_1, TRIGGERS_SLOT_2, TRIGGERS_SLOT_3};
-
     let mut solution = vec![];
     let mut to_solve = (0..4).fold(0, |acc, slot| {
         acc | (!cube.is_pair_solved(slot) as u8) << slot
     }); // handles accidental x-crosses
     while to_solve != 0 {
         let mut triggers = vec![Trigger::U, Trigger::U2, Trigger::U3];
-        if to_solve & 1 != 0 {
-            triggers.extend(TRIGGERS_SLOT_0);
-        }
-        if to_solve & 2 != 0 {
-            triggers.extend(TRIGGERS_SLOT_1);
-        }
-        if to_solve & 4 != 0 {
-            triggers.extend(TRIGGERS_SLOT_2);
-        }
-        if to_solve & 8 != 0 {
-            triggers.extend(TRIGGERS_SLOT_3);
+        for slot in 0..4 {
+            if to_solve & 1 << slot != 0 {
+                triggers.extend(TRIGGERS_BY_SLOT[slot]);
+            }
         }
         let pair_solution = solve_pair(cube, &triggers);
         to_solve &= !(1 << pair_solution.last().unwrap().slot());
