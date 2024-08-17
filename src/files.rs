@@ -7,6 +7,7 @@ use crate::{r#move::Move, solvers::NUM_CROSSES};
 
 pub const FILE_CROSSES: &'static str = "tables/cfop/crosses.bin";
 
+// TODO: read only once in benchmark tests
 pub fn read_moves(filename: &str) -> io::Result<[Move; NUM_CROSSES]> {
     let mut file = File::open(filename)?;
     let mut moves = [Move::U; NUM_CROSSES];
