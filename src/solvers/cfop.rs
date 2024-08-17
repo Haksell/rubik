@@ -377,8 +377,7 @@ impl Cube<3> {
 #[cfg(test)]
 mod tests {
     use super::{cfop, solve_cross, Cube, NUM_CROSSES};
-    use crate::r#move::Move;
-    use crate::{cub3, solvers::cfop::reduce_moves};
+    use crate::{cub3, r#move::Move, solvers::cfop::reduce_moves};
 
     #[test]
     fn test_is_cross_solved() {
@@ -490,7 +489,7 @@ mod tests {
     #[test]
     fn test_cfop_solves_cube() {
         for _ in 0..100 {
-            let mut cube = Cube::<3>::new(); // TODO: cub3!
+            let mut cube = cub3!();
             let scramble = cube.rand_scramble(100);
             let solution = cfop(&mut cube);
             assert!(
