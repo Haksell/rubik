@@ -24,22 +24,13 @@ fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     let mut simplified: Vec<Move> = vec![];
     for &move_ in moves {
         if let Some(&last) = simplified.last() {
-            if last == move_.opposite() {
+            if last.same_face(&move_) {
                 simplified.pop();
-            } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 3 {
-                // L, L2 or L2, L (for example)
-                simplified.pop();
-                simplified.push(Move::try_from(12 + last.as_int() % 6).unwrap());
-            } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 5 {
-                // L3, L2 or L2, L3 (for example)
-                simplified.pop();
-                simplified.push(Move::try_from(last.as_int() % 6).unwrap());
-            } else if last == move_ {
-                simplified.pop();
-                match last.repetitions() {
-                    1 => simplified.push(Move::try_from(move_.as_int() + 6).unwrap()),
-                    2 => {}
-                    3 => simplified.push(Move::try_from(move_.as_int() - 6).unwrap()),
+                match last.repetitions() + move_.repetitions() {
+                    2 | 6 => simplified.push(Move::try_from(move_.as_int() % 6 + 6).unwrap()),
+                    3 => simplified.push(Move::try_from(12 + last.as_int() % 6).unwrap()),
+                    4 => {}
+                    5 => simplified.push(Move::try_from(last.as_int() % 6).unwrap()),
                     _ => unreachable!(),
                 }
             } else {
