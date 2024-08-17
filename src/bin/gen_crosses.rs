@@ -7,11 +7,13 @@ use rubik::{
 };
 use std::{collections::VecDeque, io};
 
+const DUMMY_MOVE: Move = Move::U; // could be anything
+
 fn main() -> io::Result<()> {
     let cube = cub3!();
     let mut moves: [Option<Move>; NUM_CROSSES] = [None; NUM_CROSSES];
     let mut queue = VecDeque::new();
-    queue.push_back((cube, Move::R));
+    queue.push_back((cube, DUMMY_MOVE));
     let mut remaining_crosses = NUM_CROSSES;
     while remaining_crosses > 0 {
         let (cube, last_move) = queue.pop_front().unwrap();
