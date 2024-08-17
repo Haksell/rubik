@@ -319,17 +319,6 @@ impl<const N: usize> Cube<N> {
         sequence
     }
 
-    pub fn opposite_face(&self, face: Color) -> Color {
-        match face {
-            Color::WHITE => Color::YELLOW,
-            Color::RED => Color::ORANGE,
-            Color::GREEN => Color::BLUE,
-            Color::YELLOW => Color::WHITE,
-            Color::ORANGE => Color::RED,
-            Color::BLUE => Color::GREEN,
-        }
-    }
-
     fn rotate_clockwise(&mut self, face: Color) {
         // Transpose
         let start = face as usize * N * N;
@@ -345,14 +334,6 @@ impl<const N: usize> Cube<N> {
             let end = start + N;
             self.faces[start..end].reverse();
         }
-    }
-
-    pub fn adjency_faces(&self, face: Color) -> Vec<Color> {
-        let opposite = self.opposite_face(face);
-        (0..6)
-            .map(|x| Color::try_from(x).unwrap())
-            .filter(|f| *f != face && *f != opposite)
-            .collect()
     }
 
     pub fn get_face(&self, face: Color) -> Vec<Color> {

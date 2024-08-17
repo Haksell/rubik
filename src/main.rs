@@ -1,26 +1,20 @@
 #![allow(dead_code)] // TODO: REMOVE
 
-use rubik::cube::Cube;
-use rubik::{cub3, solvers};
-use std::env;
+use rubik::solvers::cfop;
+use rubik::{cub3, cube::Cube};
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() > 2 {
-        panic!("Usage: ./rubik <scramble>");
+    const TESTS: usize = 100;
+    let mut total_moves = 0;
+    for _ in 0..TESTS {
+        let mut cube = cub3!();
+        let scramble = cube.rand_scramble(100);
+        let solution = cfop(&mut cube);
+        assert!(
+            cube.is_solved(),
+            "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
+        );
+        total_moves += solution.len();
     }
-    let mut cube = cub3!();
-
-    println!("{cube}");
-    if args.len() == 2 {
-        cube.scramble(&args[1]);
-    } else {
-        let scramble = cube.rand_scramble(40);
-        println!("Scramble sequence: {scramble:?}");
-    }
-    println!("{cube}");
-    let solution = solvers::cfop(&mut cube);
-    println!("Solution found with {} moves:", solution.len());
-    println!("{solution:?}");
-    println!("{cube}");
+    println!("{} avg", total_moves as f32 / TESTS as f32);
 }
