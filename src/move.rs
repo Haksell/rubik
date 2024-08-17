@@ -86,6 +86,24 @@ impl Move {
         use rand::prelude::*;
         *MOVES.choose(&mut thread_rng()).unwrap()
     }
+
+    pub fn rotate_y(&self) -> Self {
+        match self {
+            Move::F => Move::R,
+            Move::R => Move::B,
+            Move::B => Move::L,
+            Move::L => Move::F,
+            Move::F2 => Move::R2,
+            Move::R2 => Move::B2,
+            Move::B2 => Move::L2,
+            Move::L2 => Move::F2,
+            Move::F3 => Move::R3,
+            Move::R3 => Move::B3,
+            Move::B3 => Move::L3,
+            Move::L3 => Move::F3,
+            _ => *self,
+        }
+    }
 }
 
 impl TryFrom<u8> for Move {

@@ -13,7 +13,7 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_cross(cube));
     solution.extend(solve_f2l(cube));
-    // not U, algorithm rotations
+    // TODO: refactor rotation logic for OLL and PLL
     solution.extend(solve_oll(cube));
     solution.extend(solve_pll(cube));
     reduce_moves(&solution)
@@ -117,7 +117,7 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
 
 fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
     use crate::Sticker::*;
-    let mut oll_solution = vec![];
+    let mut u_moves = 0;
     for _ in 0..4 {
         let moves = match ((cube.faces[BUL as usize] == Color::WHITE) as u16) << 8
             | ((cube.faces[LBU as usize] == Color::WHITE) as u16) << 7
@@ -190,13 +190,24 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
             _ => None,
         };
         if let Some(moves) = moves {
-            for move_ in moves {
-                oll_solution.push(move_);
+            for _ in 0..u_moves {
+                cube.do_move(Move::U3);
+            }
+            let rotated_moves: Vec<Move> = moves
+                .into_iter()
+                .map(|mut move_| {
+                    for _ in 0..u_moves {
+                        move_ = move_.rotate_y();
+                    }
+                    move_
+                })
+                .collect();
+            for &move_ in &rotated_moves {
                 cube.do_move(move_);
             }
-            return oll_solution;
+            return rotated_moves;
         }
-        oll_solution.push(Move::U);
+        u_moves += 1;
         cube.do_move(Move::U);
     }
     unreachable!();
@@ -204,7 +215,7 @@ fn solve_oll(cube: &mut Cube<3>) -> Vec<Move> {
 
 fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
     use crate::Sticker::*;
-    let mut pll_solution = vec![];
+    let mut u_moves = 0;
     for _ in 0..4 {
         let moves = match (
             (cube.faces[FLU as usize].side() - cube.faces[FU as usize].side()) & 3,
@@ -237,8 +248,19 @@ fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
             _ => None,
         };
         if let Some(moves) = moves {
-            for move_ in moves {
-                pll_solution.push(move_);
+            for _ in 0..u_moves {
+                cube.do_move(Move::U3);
+            }
+            let mut rotated_moves: Vec<Move> = moves
+                .into_iter()
+                .map(|mut move_| {
+                    for _ in 0..u_moves {
+                        move_ = move_.rotate_y();
+                    }
+                    move_
+                })
+                .collect();
+            for &move_ in &rotated_moves {
                 cube.do_move(move_);
             }
             let auf = match cube.faces[FU as usize] {
@@ -249,12 +271,12 @@ fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
                 _ => unreachable!(),
             };
             if let Some(move_) = auf {
-                pll_solution.push(move_);
+                rotated_moves.push(move_);
                 cube.do_move(move_);
             }
-            return pll_solution;
+            return rotated_moves;
         }
-        pll_solution.push(Move::U);
+        u_moves += 1;
         cube.do_move(Move::U);
     }
     unreachable!();
