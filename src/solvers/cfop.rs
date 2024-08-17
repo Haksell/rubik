@@ -11,8 +11,27 @@ pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 // (same for the other solvers)
 
 pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
+    let mut best: Option<Vec<Move>> = None;
+    for move_ in Move::iterator() {
+        let mut clone = cube.clone();
+        clone.do_move(move_);
+        let mut solution = vec![move_];
+        solution.extend(_cfop(&mut clone));
+        if best.is_none() || solution.len() < best.clone().unwrap().len() {
+            best = Some(solution.clone());
+        }
+    }
+    let res = best.unwrap().clone();
+    for &move_ in &res {
+        cube.do_move(move_);
+    }
+    res
+}
+
+fn _cfop(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_cross(cube));
+    // TODO: receive Vec of possible solutions, and find the most lucky one
     solution.extend(solve_f2l(cube));
     // TODO: refactor rotation logic for OLL and PLL
     solution.extend(solve_oll(cube));

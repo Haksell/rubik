@@ -3,7 +3,7 @@
 use rubik::{cub3, cube::Cube, solvers::cfop};
 
 fn main() {
-    const TESTS: usize = 10000;
+    const TESTS: usize = 300;
     let mut total_moves = 0;
     for _ in 0..TESTS {
         let mut cube = cub3!();
@@ -13,6 +13,8 @@ fn main() {
             cube.is_solved(),
             "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
         );
+        // println!("{scramble:?}");
+        // println!("{solution:?}");
         // println!("{cube}");
         total_moves += solution.len();
     }
