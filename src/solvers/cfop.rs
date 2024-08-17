@@ -2,7 +2,7 @@ use crate::files::{self, FILE_CROSSES};
 use crate::moves;
 use crate::trigger::Trigger;
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -17,29 +17,6 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     solution.extend(solve_oll(cube));
     solution.extend(solve_pll(cube));
     reduce_moves(&solution)
-}
-
-fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
-    // TODO: handle L R L'
-    let mut simplified: Vec<Move> = vec![];
-    for &move_ in moves {
-        let mut push_move = true;
-        if let Some(&last) = simplified.last() {
-            if last.same_face(&move_) {
-                push_move = false;
-                simplified.pop();
-                let repetitions = (last.repetitions() + move_.repetitions()) % 4;
-                if repetitions != 0 {
-                    simplified
-                        .push(Move::try_from(move_.as_int() % 6 + 6 * (repetitions - 1)).unwrap());
-                }
-            }
-        }
-        if push_move {
-            simplified.push(move_);
-        }
-    }
-    simplified
 }
 
 fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
@@ -90,9 +67,9 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
 fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
     // TODO: came_from like n_puzzle
     let mut queue: VecDeque<(Cube<3>, Vec<Trigger>)> = VecDeque::new();
-    let mut came_from: HashMap<Cube<3>, Option<Trigger>> = HashMap::new();
+    // let mut came_from: HashMap<Cube<3>, Option<Trigger>> = HashMap::new();
     queue.push_back((cube.clone(), vec![]));
-    came_from.insert(cube.clone(), None);
+    // came_from.insert(cube.clone(), None);
     loop {
         let (cube, pair_solution) = queue.pop_front().unwrap();
         let slot = match pair_solution.last() {
@@ -106,7 +83,7 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
             if pair_solution.is_empty() || trigger.slot() != slot {
                 let mut next_cube = cube.clone();
                 let mut next_vec = pair_solution.clone();
-                came_from.insert(next_cube.clone(), Some(trigger));
+                // came_from.insert(next_cube.clone(), Some(trigger));
                 next_cube.do_trigger(trigger);
                 next_vec.push(trigger);
                 queue.push_back((next_cube, next_vec));
@@ -280,6 +257,29 @@ fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
         cube.do_move(Move::U);
     }
     unreachable!();
+}
+
+fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
+    // TODO: handle L R L'
+    let mut simplified: Vec<Move> = vec![];
+    for &move_ in moves {
+        let mut push_move = true;
+        if let Some(&last) = simplified.last() {
+            if last.same_face(&move_) {
+                push_move = false;
+                simplified.pop();
+                let repetitions = (last.repetitions() + move_.repetitions()) % 4;
+                if repetitions != 0 {
+                    simplified
+                        .push(Move::try_from(move_.as_int() % 6 + 6 * (repetitions - 1)).unwrap());
+                }
+            }
+        }
+        if push_move {
+            simplified.push(move_);
+        }
+    }
+    simplified
 }
 
 impl Cube<3> {
