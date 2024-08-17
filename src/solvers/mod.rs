@@ -56,35 +56,17 @@ mod tests {
     #[test]
     fn test_moves_reduction() {
         assert_eq!(reduce_moves(&moves!("R L")), moves!("R L"));
-        assert_eq!(
-            reduce_moves(&vec![Move::L, Move::D]),
-            vec![Move::L, Move::D]
-        );
-        assert_eq!(reduce_moves(&vec![Move::U, Move::U]), vec![Move::U2]);
-        assert_eq!(reduce_moves(&vec![Move::L, Move::L2]), vec![Move::L3]);
-        assert_eq!(reduce_moves(&vec![Move::U, Move::U3]), vec![]);
-        assert_eq!(reduce_moves(&vec![Move::L2, Move::L]), vec![Move::L3]);
-        assert_eq!(reduce_moves(&vec![Move::R2, Move::R2]), vec![]);
-        assert_eq!(reduce_moves(&vec![Move::B2, Move::B3]), vec![Move::B]);
-        assert_eq!(reduce_moves(&vec![Move::D3, Move::D]), vec![]);
-        assert_eq!(reduce_moves(&vec![Move::B3, Move::B2]), vec![Move::B]);
-        assert_eq!(reduce_moves(&vec![Move::F3, Move::F3]), vec![Move::F2]);
-        assert_eq!(
-            reduce_moves(&vec![Move::R, Move::R, Move::R, Move::R]),
-            vec![]
-        );
-        assert_eq!(
-            reduce_moves(&vec![
-                Move::U,
-                Move::U,
-                Move::R,
-                Move::R,
-                Move::R,
-                Move::R,
-                Move::U,
-                Move::U
-            ]),
-            vec![]
-        );
+        assert_eq!(reduce_moves(&moves!("L D")), moves!("L D"));
+        assert_eq!(reduce_moves(&moves!("U U")), moves!("U2"));
+        assert_eq!(reduce_moves(&moves!("L L2")), moves!("L'"));
+        assert_eq!(reduce_moves(&moves!("U U'")), vec![]);
+        assert_eq!(reduce_moves(&moves!("L2 L")), moves!("L'"));
+        assert_eq!(reduce_moves(&moves!("R2 R2")), vec![]);
+        assert_eq!(reduce_moves(&moves!("B2 B'")), moves!("B"));
+        assert_eq!(reduce_moves(&moves!("D' D")), vec![]);
+        assert_eq!(reduce_moves(&moves!("B' B2")), moves!("B"));
+        assert_eq!(reduce_moves(&moves!("F' F'")), moves!("F2"));
+        assert_eq!(reduce_moves(&moves!("R R R R")), vec![]);
+        assert_eq!(reduce_moves(&moves!("U2 R R R R U U")), vec![]);
     }
 }
