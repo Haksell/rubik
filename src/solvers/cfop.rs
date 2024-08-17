@@ -20,6 +20,7 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
 }
 
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
+    // TODO: handle L R L'
     let mut simplified: Vec<Move> = vec![];
     for &move_ in moves {
         if let Some(&last) = simplified.last() {
