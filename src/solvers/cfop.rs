@@ -19,6 +19,7 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     // TODO: refactor rotation logic for OLL and PLL
     solution.extend(solve_oll(cube));
     solution.extend(solve_pll(cube));
+    solution.extend(solve_auf(cube));
     reduce_moves(&solution)
 }
 
@@ -228,7 +229,7 @@ fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
             for _ in 0..u_moves {
                 cube.do_move(Move::U3);
             }
-            let mut rotated_moves: Vec<Move> = moves
+            let rotated_moves: Vec<Move> = moves
                 .into_iter()
                 .map(|mut move_| {
                     for _ in 0..u_moves {
@@ -240,23 +241,26 @@ fn solve_pll(cube: &mut Cube<3>) -> Vec<Move> {
             for &move_ in &rotated_moves {
                 cube.do_move(move_);
             }
-            let auf = match cube.faces[FU as usize] {
-                Color::GREEN => None,
-                Color::ORANGE => Some(Move::U),
-                Color::BLUE => Some(Move::U2),
-                Color::RED => Some(Move::U3),
-                _ => unreachable!(),
-            };
-            if let Some(move_) = auf {
-                rotated_moves.push(move_);
-                cube.do_move(move_);
-            }
             return rotated_moves;
         }
         u_moves += 1;
         cube.do_move(Move::U);
     }
     unreachable!();
+}
+
+fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
+    let auf = match cube.faces[crate::Sticker::FU as usize] {
+        Color::GREEN => vec![],
+        Color::ORANGE => vec![Move::U],
+        Color::BLUE => vec![Move::U2],
+        Color::RED => vec![Move::U3],
+        _ => unreachable!(),
+    };
+    for &move_ in &auf {
+        cube.do_move(move_);
+    }
+    auf
 }
 
 impl Cube<3> {
