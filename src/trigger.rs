@@ -3,7 +3,7 @@
 use crate::{moves, r#move::Move};
 
 #[repr(u8)]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)] // TODO: remove PartialOrd, Ord
 pub enum Trigger {
     U,
     U2,

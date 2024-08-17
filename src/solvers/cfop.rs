@@ -2,7 +2,8 @@ use crate::files::{self, FILE_CROSSES};
 use crate::moves;
 use crate::trigger::Trigger;
 use crate::{color::Color, cube::Cube, r#move::Move, EDGES};
-use std::collections::VecDeque;
+use std::cmp::Reverse;
+use std::collections::BinaryHeap;
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -66,10 +67,10 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
 
 fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
     // TODO: came_from like n_puzzle
-    let mut queue: VecDeque<(Cube<3>, Vec<Trigger>)> = VecDeque::new();
-    queue.push_back((cube.clone(), vec![]));
+    let mut heap: BinaryHeap<(Reverse<usize>, Cube<3>, Vec<Trigger>)> = BinaryHeap::new();
+    heap.push((Reverse(0), cube.clone(), vec![]));
     loop {
-        let (cube, pair_solution) = queue.pop_front().unwrap();
+        let (Reverse(num_moves), cube, pair_solution) = heap.pop().unwrap();
         let slot = match pair_solution.last() {
             Some(trigger) => trigger.slot(),
             None => usize::MAX,
@@ -83,7 +84,7 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
                 let mut next_vec = pair_solution.clone();
                 next_cube.do_trigger(trigger);
                 next_vec.push(trigger);
-                queue.push_back((next_cube, next_vec));
+                heap.push((Reverse(num_moves + trigger.len()), next_cube, next_vec));
             }
         }
     }

@@ -12,6 +12,20 @@ pub struct Cube<const N: usize> {
     pub faces: Vec<Color>,
 }
 
+// TODO: remove dummy PartialOrd and Ord
+
+impl PartialOrd for Cube<3> {
+    fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
+        Some(std::cmp::Ordering::Equal)
+    }
+}
+
+impl Ord for Cube<3> {
+    fn cmp(&self, _: &Self) -> std::cmp::Ordering {
+        std::cmp::Ordering::Equal
+    }
+}
+
 // TODO: cub4!, cub5!, cub6!, cub7! with macro of macros
 
 #[macro_export]
