@@ -303,8 +303,8 @@ impl Cube<3> {
 
 #[cfg(test)]
 mod tests {
-    use super::{cfop, solve_cross, Cube, NUM_CROSSES};
-    use crate::{cub3, r#move::Move};
+    use super::{cfop, solve_cross, NUM_CROSSES};
+    use crate::{cub3, cube::Cube, r#move::Move};
 
     #[test]
     fn test_is_cross_solved() {
