@@ -81,7 +81,9 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
     use crate::trigger::{TRIGGERS_SLOT_0, TRIGGERS_SLOT_1, TRIGGERS_SLOT_2, TRIGGERS_SLOT_3};
 
     let mut solution = vec![];
-    let mut to_solve = 0b1111; // TODO: check accidental X-cross
+    let mut to_solve = (0..4).fold(0, |acc, slot| {
+        acc | (!cube.is_pair_solved(slot) as u8) << slot
+    }); // handles accidental x-crosses
     while to_solve != 0 {
         let mut triggers = vec![Trigger::U, Trigger::U2, Trigger::U3];
         if to_solve & 1 != 0 {
