@@ -30,14 +30,14 @@ fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     simplified
 }
 
-pub fn premover(cube: &mut Cube<3>) -> Vec<Move> {
+pub fn premover(cube: &mut Cube<3>, solver: fn(&mut Cube<3>) -> Vec<Move>) -> Vec<Move> {
     let solution = Move::iterator()
         .into_iter()
         .map(|move_| {
             let mut clone = cube.clone();
             clone.do_move(move_);
             let mut solution = vec![move_];
-            solution.extend(cfop(&mut clone));
+            solution.extend(solver(&mut clone));
             reduce_moves(&solution)
         })
         .min_by_key(|solution| solution.len())

@@ -1,6 +1,10 @@
 #![allow(dead_code)] // TODO: REMOVE
 
-use rubik::{cub3, cube::Cube, solvers::premover};
+use rubik::{
+    cub3,
+    cube::Cube,
+    solvers::{cfop, premover},
+};
 
 fn main() {
     const TESTS: usize = 25;
@@ -8,7 +12,7 @@ fn main() {
     for _ in 0..TESTS {
         let mut cube = cub3!();
         let scramble = cube.rand_scramble(200);
-        let solution = premover(&mut cube);
+        let solution = premover(&mut cube, cfop);
         assert!(
             cube.is_solved(),
             "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
