@@ -7,7 +7,7 @@ fn main() {
     let mut total_moves = 0;
     for _ in 0..TESTS {
         let mut cube = cub3!();
-        let scramble = cube.rand_scramble(100);
+        let scramble = cube.rand_scramble(200);
         let solution = cfop(&mut cube);
         assert!(
             cube.is_solved(),

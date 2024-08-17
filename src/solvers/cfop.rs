@@ -67,9 +67,7 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
 fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
     // TODO: came_from like n_puzzle
     let mut queue: VecDeque<(Cube<3>, Vec<Trigger>)> = VecDeque::new();
-    // let mut came_from: HashMap<Cube<3>, Option<Trigger>> = HashMap::new();
     queue.push_back((cube.clone(), vec![]));
-    // came_from.insert(cube.clone(), None);
     loop {
         let (cube, pair_solution) = queue.pop_front().unwrap();
         let slot = match pair_solution.last() {
@@ -83,7 +81,6 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
             if pair_solution.is_empty() || trigger.slot() != slot {
                 let mut next_cube = cube.clone();
                 let mut next_vec = pair_solution.clone();
-                // came_from.insert(next_cube.clone(), Some(trigger));
                 next_cube.do_trigger(trigger);
                 next_vec.push(trigger);
                 queue.push_back((next_cube, next_vec));
