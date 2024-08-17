@@ -1,7 +1,6 @@
 #![allow(dead_code)] // TODO: REMOVE
 
-use rubik::solvers::cfop;
-use rubik::{cub3, cube::Cube};
+use rubik::{cub3, cube::Cube, solvers::cfop};
 
 fn main() {
     const TESTS: usize = 100;

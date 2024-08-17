@@ -13,6 +13,7 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_cross(cube));
     solution.extend(solve_f2l(cube));
+    // not U, algorithm rotations
     solution.extend(solve_oll(cube));
     solution.extend(solve_pll(cube));
     reduce_moves(&solution)
@@ -21,43 +22,30 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     let mut simplified: Vec<Move> = vec![];
     for &move_ in moves {
-        match simplified.last() {
-            Some(&last) => {
-                if last == move_.opposite() {
-                    simplified.pop();
-                } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 3 {
-                    // L, L2 or L2, L (for example)
-                    simplified.pop();
-                    simplified.push(Move::try_from(12 + last.as_int() % 6).unwrap());
-                } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 5 {
-                    // L3, L2 or L2, L3 (for example)
-                    simplified.pop();
-                    simplified.push(Move::try_from(last.as_int() % 6).unwrap());
-                } else {
-                    let mut to_add = Some(move_);
-                    if last == move_ {
-                        simplified.pop();
-                        match last.repetitions() {
-                            1 => {
-                                to_add = Some(Move::try_from(move_.as_int() + 6).unwrap());
-                            }
-                            2 => {
-                                to_add = None;
-                            }
-                            3 => {
-                                to_add = Some(Move::try_from(move_.as_int() % 6 + 6).unwrap());
-                            }
-                            _ => unreachable!(),
-                        }
-                    }
-                    if to_add.is_some() {
-                        simplified.push(to_add.unwrap());
-                    }
+        if let Some(&last) = simplified.last() {
+            if last == move_.opposite() {
+                simplified.pop();
+            } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 3 {
+                // L, L2 or L2, L (for example)
+                simplified.pop();
+                simplified.push(Move::try_from(12 + last.as_int() % 6).unwrap());
+            } else if last.same_face(&move_) && last.repetitions() + move_.repetitions() == 5 {
+                // L3, L2 or L2, L3 (for example)
+                simplified.pop();
+                simplified.push(Move::try_from(last.as_int() % 6).unwrap());
+            } else if last == move_ {
+                simplified.pop();
+                match last.repetitions() {
+                    1 => simplified.push(Move::try_from(move_.as_int() + 6).unwrap()),
+                    2 => {}
+                    3 => simplified.push(Move::try_from(move_.as_int() - 6).unwrap()),
+                    _ => unreachable!(),
                 }
-            }
-            None => {
+            } else {
                 simplified.push(move_);
             }
+        } else {
+            simplified.push(move_);
         }
     }
     simplified
