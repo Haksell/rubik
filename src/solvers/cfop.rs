@@ -23,20 +23,19 @@ fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     // TODO: handle L R L'
     let mut simplified: Vec<Move> = vec![];
     for &move_ in moves {
+        let mut push_move = true;
         if let Some(&last) = simplified.last() {
             if last.same_face(&move_) {
+                push_move = false;
                 simplified.pop();
-                match last.repetitions() + move_.repetitions() {
-                    2 | 6 => simplified.push(Move::try_from(move_.as_int() % 6 + 6).unwrap()),
-                    3 => simplified.push(Move::try_from(12 + last.as_int() % 6).unwrap()),
-                    4 => {}
-                    5 => simplified.push(Move::try_from(last.as_int() % 6).unwrap()),
-                    _ => unreachable!(),
+                let repetitions = (last.repetitions() + move_.repetitions()) % 4;
+                if repetitions != 0 {
+                    simplified
+                        .push(Move::try_from(move_.as_int() % 6 + 6 * (repetitions - 1)).unwrap());
                 }
-            } else {
-                simplified.push(move_);
             }
-        } else {
+        }
+        if push_move {
             simplified.push(move_);
         }
     }
