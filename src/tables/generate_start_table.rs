@@ -24,6 +24,7 @@ pub fn generate_start_table(
         remaining_cases -= 1;
         moves[idx] = Some(last_move.opposite());
         for move_ in Move::iterator() {
+            // TODO: skip if same face, but don't forget about DUMMY_MOVE
             let mut next_cube = cube.clone();
             next_cube.do_move(move_);
             queue.push_back((next_cube, move_));

@@ -38,8 +38,8 @@ impl Cube<3> {
 
     pub fn is_eo_line_solved(&self) -> bool {
         use crate::color::Color;
-        use crate::Sticker::*;
         use crate::EDGES;
+        use Sticker::*;
 
         // TODO: remove 2 redundant edge checks
         EDGES.iter().all(|&(s1, s2)| self.is_edge_oriented(s1, s2))
@@ -69,6 +69,21 @@ impl Cube<3> {
             yellow_blue -= 1;
         }
         orientation_index * NUM_LINES + yellow_blue + 11 * yellow_green
+    }
+
+    pub fn is_zz_left_solved(&self) -> bool {
+        // We could eliminate some checks by assuming the EO-line is solved
+        use Sticker::*;
+        self.faces[FL as usize] == Color::GREEN
+            && self.faces[LF as usize] == Color::ORANGE
+            && self.faces[FDL as usize] == Color::GREEN
+            && self.faces[LFD as usize] == Color::ORANGE
+            && self.faces[DL as usize] == Color::YELLOW
+            && self.faces[LD as usize] == Color::ORANGE
+            && self.faces[BLD as usize] == Color::BLUE
+            && self.faces[LDB as usize] == Color::ORANGE
+            && self.faces[BL as usize] == Color::BLUE
+            && self.faces[LB as usize] == Color::ORANGE
     }
 }
 
@@ -120,5 +135,28 @@ mod tests {
                 assert!(idx < NUM_EO_LINES);
             }
         }
+    }
+
+    #[test]
+    fn test_is_zz_left_solved() {
+        let mut cube = cub3!();
+        assert!(cube.is_zz_left_solved());
+        cube.scramble("R U' L' U R' U' L R2 U R2 U");
+        assert!(cube.is_zz_left_solved());
+
+        cube.do_move(Move::D);
+        assert!(!cube.is_zz_left_solved());
+        cube.do_move(Move::D3);
+
+        cube.do_move(Move::F);
+        assert!(!cube.is_zz_left_solved());
+        cube.do_move(Move::F3);
+
+        cube.do_move(Move::B);
+        assert!(!cube.is_zz_left_solved());
+        cube.do_move(Move::B3);
+
+        cube.scramble("R D U R U' R' D'");
+        assert!(!cube.is_zz_left_solved());
     }
 }
