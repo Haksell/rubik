@@ -83,8 +83,12 @@ impl Move {
     }
 
     pub fn random() -> Self {
+        Self::choice(&MOVES)
+    }
+
+    pub fn choice(moves: &[Self]) -> Self {
         use rand::prelude::*;
-        *MOVES.choose(&mut thread_rng()).unwrap()
+        *moves.choose(&mut thread_rng()).unwrap()
     }
 
     pub fn rotate_y(&self) -> Self {

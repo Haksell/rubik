@@ -46,7 +46,7 @@ pub enum Sticker {
     LDB,
     LD,
     LFD,
-    BRU,
+    BRU, // bruh
     BU,
     BUL,
     BR,
@@ -57,7 +57,8 @@ pub enum Sticker {
     BLD,
 }
 
-// Order is important for Cube<3>::cross_index and Cube<3>::eo_line_index
+// Order is important for index calculations
+
 pub const EDGES: [(Sticker, Sticker); 12] = [
     (Sticker::DF, Sticker::FD),
     (Sticker::DB, Sticker::BD),
@@ -71,4 +72,16 @@ pub const EDGES: [(Sticker, Sticker); 12] = [
     (Sticker::UB, Sticker::BU),
     (Sticker::UR, Sticker::RU),
     (Sticker::UL, Sticker::LU),
+];
+
+// Third sticker can be guessed from the first 2
+pub const CORNERS: [(Sticker, Sticker); 8] = [
+    (Sticker::DLF, Sticker::LFD),
+    (Sticker::DBL, Sticker::BLD),
+    (Sticker::ULB, Sticker::LBU),
+    (Sticker::UFL, Sticker::FLU),
+    (Sticker::DFR, Sticker::FRD),
+    (Sticker::DRB, Sticker::RBD),
+    (Sticker::UBR, Sticker::BRU),
+    (Sticker::URF, Sticker::RFU),
 ];
