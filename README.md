@@ -46,5 +46,7 @@
 - Korf paper : https://www.cs.princeton.edu/courses/archive/fall06/cos402/papers/korfrubik.pdf
 - Korf opti pattern databases : https://cdn.aaai.org/AAAI/2005/AAAI05-219.pdf
 - Korf explanation : https://github.com/benbotto/rubiks-cube-cracker
+- Korf explanation : https://medium.com/@benjamin.botto/implementing-an-optimal-rubiks-cube-solver-using-korf-s-algorithm-bf750b332cf9
 - Kociemba explanation : https://www.jaapsch.net/puzzles/compcube.htm#kocal
-- https://medium.com/@benjamin.botto/implementing-an-optimal-rubiks-cube-solver-using-korf-s-algorithm-bf750b332cf9
+- *Analyzing the Rubik's Cube Group of Various Sizes and Solutions* : https://math.uchicago.edu/~may/REU2021/REUPapers/Chuang,Alex.pdf#page=17&zoom=100,169,306
+- *Group Theory and the Rubik's Cube* : https://people.math.harvard.edu/~jjchen/docs/Group%20Theory%20and%20the%20Rubik's%20Cube.pdf
