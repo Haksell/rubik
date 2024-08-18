@@ -6,7 +6,7 @@ use std::{
     path::Path,
 };
 
-// TODO Add mutex if multithreading
+// TODO: add mutex if multithreading
 static mut MOVE_CACHE: Option<HashMap<String, Vec<Move>>> = None;
 
 pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
@@ -18,7 +18,7 @@ pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
         let cache = MOVE_CACHE.as_mut().unwrap();
 
         if let Some(moves) = cache.get(filename) {
-            return Ok(moves.clone());
+            return Ok(moves.clone()); // TODO: don't clone
         }
 
         let mut file = File::open(filename)?;
