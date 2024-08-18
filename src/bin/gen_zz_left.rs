@@ -14,15 +14,6 @@ fn main() -> io::Result<()> {
     queue.push_back((cube, Move::D));
     let mut remaining_cases = NUM_ZZ_LEFT;
     while remaining_cases > 0 {
-        if queue.is_empty() {
-            println!("{remaining_cases}");
-            for (i, opt) in moves.iter().enumerate() {
-                if opt.is_none() {
-                    print!("{i} ");
-                }
-            }
-            println!();
-        }
         let (cube, last_move) = queue.pop_front().unwrap();
         let idx = cube.zz_left_index();
         if moves[idx].is_some() {
