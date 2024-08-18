@@ -13,7 +13,7 @@
 - [ ] 3x3x3 zb solver (axbrisse)
 - [ ] 3x3x3 zz solver (axbrisse)
 - [ ] 3x3x3 petrus solver (axbrisse)
-- [ ] 3x3x3 kloosterman solver (axbrisse)
+- [ ] 3x3x3 thistlethwaite/kloosterman/pochmann solver (axbrisse)
 - [ ] 3x3x3 reid solver (axbrisse)
 - [ ] 3x3x3 kociemba solver (axbrisse)
 - [ ] 3x3x3 korf solver (vegret)
@@ -34,9 +34,10 @@
 - https://kociemba.org/cube.htm
 - https://github.com/sebcrozet/kiss3d
 - https://www.youtube.com/watch?v=9PGfL4t-uqE
-- Kloostrman explanation : https://www.math.rwth-aachen.de/~Martin.Schoenert/Cube-Lovers/michael_reid__an_upper_bound_on_god%27s_number.html
+- Kloosterman explanation : https://www.math.rwth-aachen.de/~Martin.Schoenert/Cube-Lovers/michael_reid__an_upper_bound_on_god%27s_number.html
 - Reid explanation : https://www.math.rwth-aachen.de/~Martin.Schoenert/Cube-Lovers/michael_reid__an_upper_bound_on_god%27s_number.html
 - Kociemba symmetry : https://stackoverflow.com/a/70159792
+- Korf paper : https://www.cs.princeton.edu/courses/archive/fall06/cos402/papers/korfrubik.pdf
 - Korf explanation : https://github.com/benbotto/rubiks-cube-cracker
 - https://en.wikipedia.org/wiki/Optimal_solutions_for_the_Rubik%27s_Cube
 - Kociemba explanation : https://www.jaapsch.net/puzzles/compcube.htm#kocal
