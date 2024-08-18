@@ -1,3 +1,4 @@
+use super::last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step};
 use super::reduce_moves;
 use crate::color::Color;
 use crate::sticker::CORNERS;
@@ -16,6 +17,9 @@ pub fn zz(cube: &mut Cube<3>) -> Vec<Move> {
     solution.extend(solve_eo_line(cube));
     solution.extend(solve_zz_left(cube));
     solution.extend(solve_zz_right(cube));
+    solution.extend(solve_last_layer_step(cube, oll_matcher));
+    solution.extend(solve_last_layer_step(cube, pll_matcher));
+    solution.extend(solve_auf(cube));
     reduce_moves(&solution)
 }
 
@@ -260,11 +264,10 @@ impl Cube<3> {
 
 #[cfg(test)]
 mod tests {
-    use super::NUM_EO_LINES;
+    use super::{zz, NUM_EO_LINES, NUM_ZZ_LEFT};
     use crate::{
         cub3,
         r#move::{Move, MOVES_RUL},
-        solvers::zz::NUM_ZZ_LEFT,
         Cube,
     };
 
@@ -379,5 +382,18 @@ mod tests {
 
         cube.scramble("R U R' U2 R U R'");
         assert!(!cube.is_zz_right_solved());
+    }
+
+    #[test]
+    fn test_zz_solves_cube() {
+        for _ in 0..100 {
+            let mut cube = cub3!();
+            let scramble = cube.rand_scramble(100);
+            let solution = zz(&mut cube);
+            assert!(
+                cube.is_solved(),
+                "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
+            );
+        }
     }
 }

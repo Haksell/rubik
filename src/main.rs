@@ -1,6 +1,10 @@
 #![allow(dead_code)] // TODO: REMOVE
 
-use rubik::{cub3, solvers::zz, Cube};
+use rubik::{
+    cub3,
+    solvers::{premover, zz},
+    Cube,
+};
 
 fn main() {
     const TESTS: usize = 1000;
@@ -11,10 +15,11 @@ fn main() {
         let mut cube = cub3!();
         let _ = cube.rand_scramble(SCRAMBLE_LENGTH);
         // println!("{cube}");
-        let solution = zz(&mut cube);
+        let solution = premover(&mut cube, zz);
         assert!(cube.is_eo_line_solved());
         assert!(cube.is_zz_left_solved());
         assert!(cube.is_zz_right_solved());
+        assert!(cube.is_solved());
         // println!("{scramble:?}");
         // println!("{solution:?}");
         // println!("{cube}");

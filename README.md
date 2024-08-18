@@ -2,6 +2,11 @@
 
 ## todo
 
+- [ ] lazy static `read_moves`
+- [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file`
+
+## features
+
 - [x] 3x3x3 cfop solver
 - [ ] 3x3x3 zb solver
 - [ ] 3x3x3 zz solver
