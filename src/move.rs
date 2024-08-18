@@ -23,28 +23,6 @@ pub enum Move {
     D3,
 }
 
-// degueu
-const MOVES: [Move; 18] = [
-    Move::F,
-    Move::R,
-    Move::U,
-    Move::B,
-    Move::L,
-    Move::D,
-    Move::F2,
-    Move::R2,
-    Move::U2,
-    Move::B2,
-    Move::L2,
-    Move::D2,
-    Move::F3,
-    Move::R3,
-    Move::U3,
-    Move::B3,
-    Move::L3,
-    Move::D3,
-];
-
 impl Move {
     // TODO: there is probably a better way
     pub fn iterator() -> Vec<Move> {
@@ -191,3 +169,36 @@ impl Debug for Move {
         write!(f, "{s}")
     }
 }
+
+pub const MOVES: [Move; 18] = [
+    Move::F,
+    Move::R,
+    Move::U,
+    Move::B,
+    Move::L,
+    Move::D,
+    Move::F2,
+    Move::R2,
+    Move::U2,
+    Move::B2,
+    Move::L2,
+    Move::D2,
+    Move::F3,
+    Move::R3,
+    Move::U3,
+    Move::B3,
+    Move::L3,
+    Move::D3,
+];
+
+pub const MOVES_RUL: [Move; 9] = [
+    Move::R,
+    Move::U,
+    Move::L,
+    Move::R2,
+    Move::U2,
+    Move::L2,
+    Move::R3,
+    Move::U3,
+    Move::L3,
+];

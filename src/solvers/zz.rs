@@ -9,18 +9,6 @@ const NUM_LINES: usize = 12 * 11;
 pub const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;
 pub const NUM_ZZ_LEFT: usize = 24 * 21 * 10 * 9 * 8; // 9!
 
-pub const MOVES_RUL: [Move; 9] = [
-    Move::R,
-    Move::U,
-    Move::L,
-    Move::R2,
-    Move::U2,
-    Move::L2,
-    Move::R3,
-    Move::U3,
-    Move::L3,
-];
-
 pub fn zz(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_eo_line(cube));
@@ -179,8 +167,8 @@ mod tests {
     use super::NUM_EO_LINES;
     use crate::{
         cub3,
-        r#move::Move,
-        solvers::{zz::NUM_ZZ_LEFT, MOVES_RUL},
+        r#move::{Move, MOVES_RUL},
+        solvers::zz::NUM_ZZ_LEFT,
         Cube,
     };
 
