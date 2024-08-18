@@ -4,25 +4,24 @@ use rubik::{
     cube::Cube,
     files::{self, FILE_EO_LINES},
     r#move::Move,
-    solvers::NUM_CROSSES,
     Sticker, EDGES,
 };
 use std::{collections::VecDeque, io};
 
 const DUMMY_MOVE: Move = Move::U; // could be anything
 
-const NUM_LINES: usize = 24 * 22;
+const NUM_LINES: usize = 12 * 11;
 const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;
 
 fn main() -> io::Result<()> {
     let cube = cub3!();
-    let mut moves: [Option<Move>; NUM_CROSSES] = [None; NUM_CROSSES];
+    let mut moves: [Option<Move>; NUM_EO_LINES] = [None; NUM_EO_LINES];
     let mut queue = VecDeque::new();
     queue.push_back((cube, DUMMY_MOVE));
-    let mut remaining_eo_lines = NUM_CROSSES;
+    let mut remaining_eo_lines = NUM_EO_LINES;
     while remaining_eo_lines > 0 {
         let (cube, last_move) = queue.pop_front().unwrap();
-        let idx = cube.cross_index();
+        let idx = eo_line_index(&cube);
         if moves[idx].is_some() {
             continue;
         }
@@ -32,6 +31,9 @@ fn main() -> io::Result<()> {
             let mut next_cube = cube.clone();
             next_cube.do_move(move_);
             queue.push_back((next_cube, move_));
+        }
+        if remaining_eo_lines % 10000 == 0 || remaining_eo_lines < 1000 {
+            println!("{remaining_eo_lines}");
         }
     }
 

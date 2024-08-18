@@ -21,7 +21,7 @@ pub fn read_moves(filename: &str) -> io::Result<[Move; NUM_CROSSES]> {
     Ok(moves)
 }
 
-pub fn write_moves(filename: &str, moves: &[Option<Move>; NUM_CROSSES]) -> io::Result<()> {
+pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
     if let Some(parent_dir) = Path::new(filename).parent() {
         fs::create_dir_all(parent_dir)?;
     }
