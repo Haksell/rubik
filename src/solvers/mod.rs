@@ -1,6 +1,7 @@
 mod cfop;
 mod iddfs;
 mod kociemba;
+mod last_layer;
 mod zz;
 
 use crate::{r#move::Move, Cube};
@@ -8,37 +9,6 @@ pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;
 pub use zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT};
-
-fn solve_last_layer_step(
-    cube: &mut Cube<3>,
-    alg_matcher: fn(&Cube<3>) -> Option<Vec<Move>>,
-) -> Vec<Move> {
-    let mut u_moves = 0;
-    for _ in 0..4 {
-        let moves = alg_matcher(cube);
-        if let Some(moves) = moves {
-            for _ in 0..u_moves {
-                cube.do_move(Move::U3);
-            }
-            let rotated_moves: Vec<Move> = moves
-                .into_iter()
-                .map(|mut move_| {
-                    for _ in 0..u_moves {
-                        move_ = move_.rotate_y();
-                    }
-                    move_
-                })
-                .collect();
-            for &move_ in &rotated_moves {
-                cube.do_move(move_);
-            }
-            return rotated_moves;
-        }
-        u_moves += 1;
-        cube.do_move(Move::U);
-    }
-    unreachable!();
-}
 
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     // TODO: handle L R L'
