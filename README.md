@@ -4,6 +4,7 @@
 
 - [ ] lazy static `read_moves`
 - [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file`
+- [ ] generate or find optimal ZBLL/1LLL
 
 ## features
 
