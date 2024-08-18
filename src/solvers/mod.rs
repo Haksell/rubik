@@ -3,7 +3,7 @@ mod iddfs;
 mod kociemba;
 mod zz;
 
-use crate::{cube::Cube, r#move::Move};
+use crate::{r#move::Move, Cube};
 pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;

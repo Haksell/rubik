@@ -1,6 +1,6 @@
 #![allow(dead_code)] // TODO: REMOVE
 
-use rubik::{cub3, cube::Cube, solvers::zz};
+use rubik::{cub3, solvers::zz, Cube};
 
 fn main() {
     const TESTS: usize = 1;

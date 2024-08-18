@@ -1,7 +1,7 @@
 use super::reduce_moves;
 use crate::color::Color;
 use crate::files::{self, FILE_EO_LINES};
-use crate::{cube::Cube, r#move::Move};
+use crate::{r#move::Move, Cube};
 use crate::{Sticker, EDGES};
 
 const NUM_LINES: usize = 12 * 11;
@@ -75,7 +75,7 @@ impl Cube<3> {
 #[cfg(test)]
 mod tests {
     use super::NUM_EO_LINES;
-    use crate::{cub3, cube::Cube, r#move::Move};
+    use crate::{cub3, r#move::Move, Cube};
 
     #[test]
     fn test_is_eo_line_solved() {
