@@ -14,6 +14,7 @@ fn main() {
         let solution = zz(&mut cube);
         assert!(cube.is_eo_line_solved());
         assert!(cube.is_zz_left_solved());
+        assert!(cube.is_zz_right_solved());
         // println!("{scramble:?}");
         // println!("{solution:?}");
         // println!("{cube}");

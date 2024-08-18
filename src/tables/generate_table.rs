@@ -4,7 +4,7 @@ use std::{collections::VecDeque, io};
 
 pub const DUMMY_MOVE: Move = Move::U; // could be anything
 
-pub fn generate_start_table(
+pub fn generate_table(
     filename: &str,
     num_cases: usize,
     calc_index: fn(&Cube<3>) -> usize,

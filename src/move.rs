@@ -202,3 +202,13 @@ pub const MOVES_RUL: [Move; 9] = [
     Move::U3,
     Move::L3,
 ];
+
+
+pub const MOVES_RU: [Move; 6] = [
+    Move::R,
+    Move::U,
+    Move::R2,
+    Move::U2,
+    Move::R3,
+    Move::U3,
+];

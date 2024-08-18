@@ -1,18 +1,21 @@
 use super::reduce_moves;
 use crate::color::Color;
 use crate::sticker::CORNERS;
-use crate::tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT};
+use crate::tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT};
 use crate::{r#move::Move, Cube};
 use crate::{Sticker, EDGES};
 
 const NUM_LINES: usize = 12 * 11;
 pub const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;
 pub const NUM_ZZ_LEFT: usize = 24 * 21 * 10 * 9 * 8; // 9!
+pub const NUM_ZZ_RIGHT: usize = 18 * 15 * 7 * 6 * 5;
 
 pub fn zz(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
+    // TODO: refactor these 3 functions (also the cross)
     solution.extend(solve_eo_line(cube));
     solution.extend(solve_zz_left(cube));
+    solution.extend(solve_zz_right(cube));
     reduce_moves(&solution)
 }
 
@@ -40,6 +43,20 @@ fn solve_zz_left(cube: &mut Cube<3>) -> Vec<Move> {
         cube.do_move(move_);
         solution.push(move_);
         idx = cube.zz_left_index();
+    }
+    solution
+}
+
+fn solve_zz_right(cube: &mut Cube<3>) -> Vec<Move> {
+    let zz_right_moves = read_moves(FILE_ZZ_RIGHT)
+        .unwrap_or_else(|err| panic!("Failed to read {FILE_ZZ_RIGHT}: {err}"));
+    let mut solution = vec![];
+    let mut idx = cube.zz_right_index();
+    while idx != 0 {
+        let move_ = zz_right_moves[idx];
+        cube.do_move(move_);
+        solution.push(move_);
+        idx = cube.zz_right_index();
     }
     solution
 }
@@ -160,6 +177,85 @@ impl Cube<3> {
 
         zz_left_corner_index(self) + 24 * 21 * zz_left_edge_index(self)
     }
+
+    pub fn is_zz_right_solved(&self) -> bool {
+        use Sticker::*;
+        self.faces[FR as usize] == Color::GREEN
+            && self.faces[RF as usize] == Color::RED
+            && self.faces[FRD as usize] == Color::GREEN
+            && self.faces[RDF as usize] == Color::RED
+            && self.faces[DR as usize] == Color::YELLOW
+            && self.faces[RD as usize] == Color::RED
+            && self.faces[BDR as usize] == Color::BLUE
+            && self.faces[RBD as usize] == Color::RED
+            && self.faces[BR as usize] == Color::BLUE
+            && self.faces[RB as usize] == Color::RED
+    }
+
+    pub fn zz_right_index(&self) -> usize {
+        fn zz_right_corner_index(cube: &Cube<3>) -> usize {
+            let mut yellow_green_red: usize = usize::MAX;
+            let mut yellow_red_blue: usize = usize::MAX;
+            for (i, &(s1, s2)) in [
+                (Sticker::DFR, Sticker::FRD),
+                (Sticker::DRB, Sticker::RBD),
+                (Sticker::ULB, Sticker::LBU),
+                (Sticker::UFL, Sticker::FLU),
+                (Sticker::UBR, Sticker::BRU),
+                (Sticker::URF, Sticker::RFU),
+            ]
+            .iter()
+            .enumerate()
+            {
+                match (cube.faces[s1 as usize], cube.faces[s2 as usize]) {
+                    (Color::YELLOW, Color::GREEN) => yellow_green_red = 3 * i,
+                    (Color::GREEN, Color::RED) => yellow_green_red = 3 * i + 1,
+                    (Color::RED, Color::YELLOW) => yellow_green_red = 3 * i + 2,
+                    (Color::YELLOW, Color::RED) => yellow_red_blue = 3 * i,
+                    (Color::RED, Color::BLUE) => yellow_red_blue = 3 * i + 1,
+                    (Color::BLUE, Color::YELLOW) => yellow_red_blue = 3 * i + 2,
+                    _ => {}
+                }
+            }
+            if yellow_red_blue > yellow_green_red {
+                yellow_red_blue -= 3;
+            }
+            yellow_red_blue + 15 * yellow_green_red
+        }
+
+        fn zz_right_edge_index(cube: &Cube<3>) -> usize {
+            let mut green_red: usize = usize::MAX;
+            let mut yellow_red: usize = usize::MAX;
+            let mut blue_red: usize = usize::MAX;
+            for (i, &(s1, s2)) in [
+                (Sticker::FR, Sticker::RF),
+                (Sticker::DR, Sticker::RD),
+                (Sticker::BR, Sticker::RB),
+                (Sticker::UL, Sticker::LU),
+                (Sticker::UR, Sticker::RU),
+                (Sticker::UF, Sticker::FU),
+                (Sticker::UB, Sticker::BU),
+            ]
+            .iter()
+            .enumerate()
+            {
+                if cube.faces[s2 as usize] == Color::RED {
+                    match cube.faces[s1 as usize] {
+                        Color::GREEN => green_red = i,
+                        Color::YELLOW => yellow_red = i,
+                        Color::BLUE => blue_red = i,
+                        _ => {}
+                    }
+                }
+            }
+            blue_red -= (blue_red >= yellow_red) as usize;
+            blue_red -= (blue_red >= green_red) as usize;
+            yellow_red -= (yellow_red >= green_red) as usize;
+            blue_red + 5 * yellow_red + 6 * 5 * green_red
+        }
+
+        zz_right_corner_index(self) + 18 * 15 * zz_right_edge_index(self)
+    }
 }
 
 #[cfg(test)]
@@ -260,5 +356,28 @@ mod tests {
                 assert!(idx < NUM_ZZ_LEFT);
             }
         }
+    }
+
+    #[test]
+    fn test_is_zz_right_solved() {
+        let mut cube = cub3!();
+        assert!(cube.is_zz_right_solved());
+        cube.scramble("U L F R' F' L' F R F' U2");
+        assert!(cube.is_zz_right_solved());
+
+        cube.do_move(Move::D);
+        assert!(!cube.is_zz_right_solved());
+        cube.do_move(Move::D3);
+
+        cube.do_move(Move::F);
+        assert!(!cube.is_zz_right_solved());
+        cube.do_move(Move::F3);
+
+        cube.do_move(Move::B);
+        assert!(!cube.is_zz_right_solved());
+        cube.do_move(Move::B3);
+
+        cube.scramble("R U R' U2 R U R'");
+        assert!(!cube.is_zz_right_solved());
     }
 }
