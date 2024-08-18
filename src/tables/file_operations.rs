@@ -1,21 +1,37 @@
 use crate::r#move::Move;
 use std::{
+    collections::HashMap,
     fs::{self, File},
     io::{self, Read as _, Write as _},
     path::Path,
 };
 
-// TODO: read only once in benchmark tests
+// TODO Add mutex if multithreading
+static mut MOVE_CACHE: Option<HashMap<String, Vec<Move>>> = None;
+
 pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
-    let mut file = File::open(filename)?;
-    let file_size = file.metadata()?.len() as usize;
-    let mut moves = Vec::with_capacity(file_size);
     unsafe {
+        if MOVE_CACHE.is_none() {
+            MOVE_CACHE = Some(HashMap::new());
+        }
+
+        let cache = MOVE_CACHE.as_mut().unwrap();
+
+        if let Some(moves) = cache.get(filename) {
+            return Ok(moves.clone());
+        }
+
+        let mut file = File::open(filename)?;
+        let file_size = file.metadata()?.len() as usize;
+        let mut moves = Vec::with_capacity(file_size);
         moves.set_len(file_size);
         let buffer = std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, file_size);
         file.read_exact(buffer)?;
+
+        cache.insert(filename.to_string(), moves.clone());
+
+        Ok(moves)
     }
-    Ok(moves)
 }
 
 pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
