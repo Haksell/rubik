@@ -9,7 +9,7 @@ fn main() {
     let mut total_moves = 0;
     for _ in 0..TESTS {
         let mut cube = cub3!();
-        let scramble = cube.rand_scramble(SCRAMBLE_LENGTH);
+        let _ = cube.rand_scramble(SCRAMBLE_LENGTH);
         // println!("{cube}");
         let solution = zz(&mut cube);
         assert!(cube.is_eo_line_solved());
