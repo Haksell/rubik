@@ -3,25 +3,19 @@
 use rubik::{cub3, cube::Cube, solvers::zz};
 
 fn main() {
-    const TESTS: usize = 1000;
-    const SCRAMBLE_LENGTH: usize = 100;
+    const TESTS: usize = 1;
+    const SCRAMBLE_LENGTH: usize = 30;
 
     let mut total_moves = 0;
     for _ in 0..TESTS {
         let mut cube = cub3!();
         let scramble = cube.rand_scramble(SCRAMBLE_LENGTH);
-        // println!("{cube}");
+        println!("{cube}");
         let solution = zz(&mut cube);
-        // println!("{solution:?}");
-        // println!("{cube}");
         assert!(cube.is_eo_line_solved());
-        // assert!(
-        //     cube.is_solved(),
-        //     "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
-        // );
-        // println!("{scramble:?}");
-        // println!("{solution:?}");
-        // println!("{cube}");
+        println!("{scramble:?}");
+        println!("{solution:?}");
+        println!("{cube}");
         total_moves += solution.len();
     }
     println!("{} avg", total_moves as f32 / TESTS as f32);
