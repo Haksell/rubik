@@ -1,14 +1,18 @@
 use rubik::{
+    color::Color,
     cub3,
     cube::Cube,
     files::{self, FILE_EO_LINES},
     r#move::Move,
     solvers::NUM_CROSSES,
+    Sticker, EDGES,
 };
 use std::{collections::VecDeque, io};
 
 const DUMMY_MOVE: Move = Move::U; // could be anything
-const NUM_EO_LINES: usize = (1 << 11) * 24 * 22;
+
+const NUM_LINES: usize = 24 * 22;
+const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;
 
 fn main() -> io::Result<()> {
     let cube = cub3!();
@@ -34,12 +38,50 @@ fn main() -> io::Result<()> {
     files::write_moves(FILE_EO_LINES, &moves)
 }
 
+// TODO: all this in impl Cube<3> block in solvers/zz.rs
+
+#[inline]
+fn is_edge_oriented(cube: &Cube<3>, s1: Sticker, s2: Sticker) -> bool {
+    cube.faces[s1 as usize] == Color::WHITE
+        || cube.faces[s1 as usize] == Color::YELLOW
+        || cube.faces[s2 as usize] == Color::ORANGE
+        || cube.faces[s2 as usize] == Color::RED
+}
+
+#[cfg(test)]
 fn is_eo_line_solved(cube: &Cube<3>) -> bool {
-    false
+    use rubik::color::Color;
+    use rubik::Sticker::*;
+    use rubik::EDGES;
+
+    // TODO: remove 2 redundant edge checks
+    EDGES.iter().all(|&(s1, s2)| is_edge_oriented(cube, s1, s2))
+        && cube.faces[DF as usize] == Color::YELLOW
+        && cube.faces[FD as usize] == Color::GREEN
+        && cube.faces[DB as usize] == Color::YELLOW
+        && cube.faces[BD as usize] == Color::BLUE
 }
 
 fn eo_line_index(cube: &Cube<3>) -> usize {
-    0
+    let mut orientation_index = 0;
+    for (i, &(s1, s2)) in EDGES[..11].into_iter().enumerate() {
+        if !is_edge_oriented(cube, s1, s2) {
+            orientation_index |= 1 << i;
+        }
+    }
+    let mut yellow_green: usize = usize::MAX;
+    let mut yellow_blue: usize = usize::MAX;
+    for (i, &(s1, s2)) in EDGES.iter().enumerate() {
+        match (cube.faces[s1 as usize], cube.faces[s2 as usize]) {
+            (Color::YELLOW, Color::GREEN) | (Color::GREEN, Color::YELLOW) => yellow_green = i,
+            (Color::YELLOW, Color::BLUE) | (Color::BLUE, Color::YELLOW) => yellow_blue = i,
+            _ => {}
+        }
+    }
+    if yellow_blue > yellow_green {
+        yellow_blue -= 1;
+    }
+    orientation_index * NUM_LINES + yellow_blue + 11 * yellow_green
 }
 
 #[cfg(test)]
@@ -51,26 +93,44 @@ mod tests {
     fn test_is_eo_line_solved() {
         let mut cube = cub3!();
         assert!(is_eo_line_solved(&cube));
-        // TODO
-    }
-
-    #[test]
-    fn test_eo_line_index_solved() {
-        let mut cube = cub3!();
-        assert_eq!(eo_line_index(&cube), 0);
+        cube.do_move(Move::D);
+        assert!(!is_eo_line_solved(&cube));
+        cube.do_move(Move::D);
+        assert!(!is_eo_line_solved(&cube));
+        cube.do_move(Move::D2);
+        assert!(is_eo_line_solved(&cube));
         cube.do_move(Move::R);
         cube.do_move(Move::U);
         cube.do_move(Move::R3);
         cube.do_move(Move::U3);
-        assert_eq!(eo_line_index(&cube), 0);
+        assert!(is_eo_line_solved(&cube));
+        cube.do_move(Move::R3);
+        cube.do_move(Move::F);
+        cube.do_move(Move::R);
+        cube.do_move(Move::F3);
+        assert!(!is_eo_line_solved(&cube));
+    }
+
+    #[test]
+    fn test_eo_line_index_solved() {
+        assert_eq!(eo_line_index(&cub3!()), 0);
     }
 
     #[test]
     fn test_eo_line_index_random() {
         let mut cube = cub3!();
-        for _ in 0..100 {
-            cube.do_move(Move::random());
-            assert!(eo_line_index(&cube) < NUM_EO_LINES);
+        for _ in 0..10000 {
+            let move_ = Move::random();
+            cube.do_move(move_);
+            let idx = eo_line_index(&cube);
+            println!("{:?} {}", move_, idx);
+            assert!(idx < NUM_EO_LINES);
+            if is_eo_line_solved(&cube) {
+                assert_eq!(idx, 0);
+            } else {
+                assert!(0 < idx);
+                assert!(idx < NUM_EO_LINES);
+            }
         }
     }
 }
