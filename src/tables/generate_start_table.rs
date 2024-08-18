@@ -1,7 +1,6 @@
+use super::file_operations::write_moves;
 use crate::{cub3, r#move::Move, Cube};
 use std::{collections::VecDeque, io};
-
-use super::file_operations::write_moves;
 
 const DUMMY_MOVE: Move = Move::U; // could be anything
 
