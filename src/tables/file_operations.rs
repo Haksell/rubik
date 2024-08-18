@@ -24,11 +24,7 @@ pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
     }
     let mut file = File::create(filename)?;
     for opt_move in moves {
-        let move_byte = match opt_move {
-            Some(m) => *m as u8,
-            None => unreachable!(),
-        };
-        file.write_all(&[move_byte])?;
+        file.write_all(&[opt_move.unwrap().as_int()])?;
     }
     Ok(())
 }
