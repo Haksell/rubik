@@ -1,6 +1,6 @@
 use super::{reduce_moves, solve_last_layer_step};
-use crate::files::{self, FILE_CROSSES};
 use crate::moves;
+use crate::tables::{read_moves, FILE_CROSSES};
 use crate::trigger::{Trigger, TRIGGERS_BY_SLOT};
 use crate::{color::Color, r#move::Move, Cube, EDGES};
 use std::cmp::Reverse;
@@ -22,7 +22,7 @@ pub fn cfop(cube: &mut Cube<3>) -> Vec<Move> {
 }
 
 fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
-    let cross_moves = files::read_moves(FILE_CROSSES)
+    let cross_moves = read_moves(FILE_CROSSES)
         .unwrap_or_else(|err| panic!("Failed to read {FILE_CROSSES}: {err}"));
     let mut solution = vec![];
     let mut idx = cube.cross_index();

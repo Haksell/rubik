@@ -1,4 +1,4 @@
-// TODO: reflechir
+// TODO: in a mod with Move
 
 use crate::{moves, r#move::Move};
 

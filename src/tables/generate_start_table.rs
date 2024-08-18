@@ -1,9 +1,11 @@
-use crate::{cub3, files::write_moves, r#move::Move, Cube};
+use crate::{cub3, r#move::Move, Cube};
 use std::{collections::VecDeque, io};
+
+use super::file_operations::write_moves;
 
 const DUMMY_MOVE: Move = Move::U; // could be anything
 
-pub fn generate_table(
+pub fn generate_start_table(
     filename: &str,
     num_cases: usize,
     calc_index: fn(&Cube<3>) -> usize,

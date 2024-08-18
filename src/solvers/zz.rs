@@ -1,6 +1,6 @@
 use super::reduce_moves;
 use crate::color::Color;
-use crate::files::{self, FILE_EO_LINES};
+use crate::tables::{read_moves, FILE_EO_LINES};
 use crate::{r#move::Move, Cube};
 use crate::{Sticker, EDGES};
 
@@ -14,7 +14,7 @@ pub fn zz(cube: &mut Cube<3>) -> Vec<Move> {
 }
 
 fn solve_eo_line(cube: &mut Cube<3>) -> Vec<Move> {
-    let eo_line_moves = files::read_moves(FILE_EO_LINES)
+    let eo_line_moves = read_moves(FILE_EO_LINES)
         .unwrap_or_else(|err| panic!("Failed to read {FILE_EO_LINES}: {err}"));
     let mut solution = vec![];
     let mut idx = cube.eo_line_index();

@@ -5,20 +5,7 @@ use std::{
     path::Path,
 };
 
-pub const FILE_CROSSES: &'static str = "tables/cfop/crosses.bin";
-pub const FILE_EO_LINES: &'static str = "tables/zz/eo_lines.bin";
-
-// TODO: don't depend on NUM_CROSSES to be generic
-
 // TODO: read only once in benchmark tests
-// pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
-//     let mut file = File::open(filename)?;
-//     let mut moves = vec![];
-//     let buffer = unsafe { std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, 42) };
-//     file.read_exact(buffer)?;
-//     Ok(moves)
-// }
-
 pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
     let mut file = File::open(filename)?;
     let file_size = file.metadata()?.len() as usize;
