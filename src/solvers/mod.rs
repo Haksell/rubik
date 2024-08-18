@@ -1,11 +1,13 @@
 mod cfop;
 mod iddfs;
 mod kociemba;
+mod zz;
 
 use crate::{cube::Cube, r#move::Move};
 pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;
+pub use zz::{zz, NUM_EO_LINES};
 
 fn solve_last_layer_step(
     cube: &mut Cube<3>,

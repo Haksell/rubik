@@ -1,22 +1,24 @@
 #![allow(dead_code)] // TODO: REMOVE
 
-use rubik::{
-    cub3,
-    cube::Cube,
-    solvers::{cfop, premover},
-};
+use rubik::{cub3, cube::Cube, solvers::zz};
 
 fn main() {
-    const TESTS: usize = 25;
+    const TESTS: usize = 1000;
+    const SCRAMBLE_LENGTH: usize = 100;
+
     let mut total_moves = 0;
     for _ in 0..TESTS {
         let mut cube = cub3!();
-        let scramble = cube.rand_scramble(200);
-        let solution = premover(&mut cube, cfop);
-        assert!(
-            cube.is_solved(),
-            "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
-        );
+        let scramble = cube.rand_scramble(SCRAMBLE_LENGTH);
+        // println!("{cube}");
+        let solution = zz(&mut cube);
+        // println!("{solution:?}");
+        // println!("{cube}");
+        assert!(cube.is_eo_line_solved());
+        // assert!(
+        //     cube.is_solved(),
+        //     "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
+        // );
         // println!("{scramble:?}");
         // println!("{solution:?}");
         // println!("{cube}");

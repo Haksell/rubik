@@ -192,6 +192,7 @@ fn pll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
     }
 }
 
+// TODO: put in parent
 fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
     let auf = match cube.faces[crate::Sticker::FU as usize] {
         Color::GREEN => vec![],
@@ -222,50 +223,50 @@ impl Cube<3> {
 
     pub fn cross_index(&self) -> usize {
         let mut yellow_green: usize = usize::MAX;
-        let mut yellow_red: usize = usize::MAX;
         let mut yellow_blue: usize = usize::MAX;
+        let mut yellow_red: usize = usize::MAX;
         let mut yellow_orange: usize = usize::MAX;
         for (i, &(s1, s2)) in EDGES.iter().enumerate() {
             if self.faces[s1 as usize] == Color::YELLOW {
                 match self.faces[s2 as usize] {
                     Color::GREEN => yellow_green = 2 * i,
-                    Color::RED => yellow_red = 2 * i,
                     Color::BLUE => yellow_blue = 2 * i,
+                    Color::RED => yellow_red = 2 * i,
                     Color::ORANGE => yellow_orange = 2 * i,
                     _ => unreachable!(),
                 }
             } else if self.faces[s2 as usize] == Color::YELLOW {
                 match self.faces[s1 as usize] {
                     Color::GREEN => yellow_green = 2 * i + 1,
-                    Color::RED => yellow_red = 2 * i + 1,
                     Color::BLUE => yellow_blue = 2 * i + 1,
+                    Color::RED => yellow_red = 2 * i + 1,
                     Color::ORANGE => yellow_orange = 2 * i + 1,
                     _ => unreachable!(),
                 }
             }
         }
-        if yellow_red > yellow_green {
-            yellow_red -= 2;
-        }
         if yellow_blue > yellow_green {
             yellow_blue -= 2;
         }
-        if yellow_blue > yellow_red {
-            yellow_blue -= 2;
+        if yellow_red > yellow_green {
+            yellow_red -= 2;
+        }
+        if yellow_red > yellow_blue {
+            yellow_red -= 2;
         }
         if yellow_orange > yellow_green {
-            yellow_orange -= 2;
-        }
-        if yellow_orange > yellow_red {
             yellow_orange -= 2;
         }
         if yellow_orange > yellow_blue {
             yellow_orange -= 2;
         }
-        yellow_orange + 18 * yellow_blue + 18 * 20 * yellow_red + 18 * 20 * 22 * yellow_green
+        if yellow_orange > yellow_red {
+            yellow_orange -= 2;
+        }
+        yellow_orange + 18 * yellow_red + 18 * 20 * yellow_blue + 18 * 20 * 22 * yellow_green
     }
 
-    pub fn is_pair_solved(&self, index: usize) -> bool {
+    fn is_pair_solved(&self, index: usize) -> bool {
         use crate::Sticker::*;
         match index {
             0 => {
