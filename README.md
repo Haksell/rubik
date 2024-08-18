@@ -4,7 +4,7 @@
 
 - [ ] lazy static `read_moves`
 - [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file`
-- [ ] generate or find optimal ZBLL/1LLL
+- [ ] generate or find optimal ZBLL
 
 ## features
 
@@ -12,7 +12,7 @@
 - [ ] 3x3x3 zb solver
 - [ ] 3x3x3 zz solver
 - [ ] 3x3x3 petrus solver
-- [ ] 3x3x3 thistlethwaite solver
+- [ ] 3x3x3 thistlethwaite/kloosterman solver
 - [ ] 3x3x3 kociemba solver
 - [ ] 3x3x3 korf solver
 - [x] 2x2x2 iddfs solver
