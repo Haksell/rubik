@@ -41,6 +41,7 @@
 - https://www.youtube.com/watch?v=9PGfL4t-uqE
 - https://en.wikipedia.org/wiki/Optimal_solutions_for_the_Rubik%27s_Cube
 - Kloosterman explanation : https://www.math.rwth-aachen.de/~Martin.Schoenert/Cube-Lovers/michael_reid__an_upper_bound_on_god%27s_number.html
+- Pochmann code : https://www.stefan-pochmann.info/spocc/other_stuff/tools/solver_thistlethwaite/solver_thistlethwaite_cpp.txt
 - Reid explanation : https://www.math.rwth-aachen.de/~Martin.Schoenert/Cube-Lovers/michael_reid__an_upper_bound_on_god%27s_number.html
 - Kociemba symmetry : https://stackoverflow.com/a/70159792
 - Korf paper : https://www.cs.princeton.edu/courses/archive/fall06/cos402/papers/korfrubik.pdf
@@ -50,3 +51,4 @@
 - Kociemba explanation : https://www.jaapsch.net/puzzles/compcube.htm#kocal
 - *Analyzing the Rubik's Cube Group of Various Sizes and Solutions* : https://math.uchicago.edu/~may/REU2021/REUPapers/Chuang,Alex.pdf#page=17&zoom=100,169,306
 - *Group Theory and the Rubik's Cube* : https://people.math.harvard.edu/~jjchen/docs/Group%20Theory%20and%20the%20Rubik's%20Cube.pdf
+- Θ(n²/log(n)) god's number : https://arxiv.org/pdf/1106.5736
