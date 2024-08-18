@@ -7,7 +7,7 @@ use crate::{r#move::Move, Cube};
 pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;
-pub use zz::{zz, NUM_EO_LINES};
+pub use zz::{zz, MOVES_RUL, NUM_EO_LINES, NUM_ZZ_LEFT};
 
 fn solve_last_layer_step(
     cube: &mut Cube<3>,

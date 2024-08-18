@@ -2,7 +2,7 @@ use super::file_operations::write_moves;
 use crate::{cub3, r#move::Move, Cube};
 use std::{collections::VecDeque, io};
 
-const DUMMY_MOVE: Move = Move::U; // could be anything
+pub const DUMMY_MOVE: Move = Move::U; // could be anything
 
 pub fn generate_start_table(
     filename: &str,

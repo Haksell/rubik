@@ -1,17 +1,30 @@
 use super::reduce_moves;
 use crate::color::Color;
 use crate::sticker::CORNERS;
-use crate::tables::{read_moves, FILE_EO_LINES};
+use crate::tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT};
 use crate::{r#move::Move, Cube};
 use crate::{Sticker, EDGES};
 
 const NUM_LINES: usize = 12 * 11;
 pub const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;
-pub const NUM_ZZ_LEFT: usize = 24 * 21 * 10 * 9 * 8; // 10!
+pub const NUM_ZZ_LEFT: usize = 24 * 21 * 10 * 9 * 8; // 9!
+
+pub const MOVES_RUL: [Move; 9] = [
+    Move::R,
+    Move::U,
+    Move::L,
+    Move::R2,
+    Move::U2,
+    Move::L2,
+    Move::R3,
+    Move::U3,
+    Move::L3,
+];
 
 pub fn zz(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     solution.extend(solve_eo_line(cube));
+    solution.extend(solve_zz_left(cube));
     reduce_moves(&solution)
 }
 
@@ -25,6 +38,20 @@ fn solve_eo_line(cube: &mut Cube<3>) -> Vec<Move> {
         cube.do_move(move_);
         solution.push(move_);
         idx = cube.eo_line_index();
+    }
+    solution
+}
+
+fn solve_zz_left(cube: &mut Cube<3>) -> Vec<Move> {
+    let zz_left_moves = read_moves(FILE_ZZ_LEFT)
+        .unwrap_or_else(|err| panic!("Failed to read {FILE_ZZ_LEFT}: {err}"));
+    let mut solution = vec![];
+    let mut idx = cube.zz_left_index();
+    while idx != 0 {
+        let move_ = zz_left_moves[idx];
+        cube.do_move(move_);
+        solution.push(move_);
+        idx = cube.zz_left_index();
     }
     solution
 }
@@ -137,9 +164,9 @@ impl Cube<3> {
                     }
                 }
             }
-            yellow_orange -= (yellow_orange > green_orange) as usize;
-            blue_orange -= (blue_orange > yellow_orange) as usize;
-            blue_orange -= (blue_orange > green_orange) as usize;
+            blue_orange -= (blue_orange >= yellow_orange) as usize;
+            blue_orange -= (blue_orange >= green_orange) as usize;
+            yellow_orange -= (yellow_orange >= green_orange) as usize;
             blue_orange + 8 * yellow_orange + 9 * 8 * green_orange
         }
 
@@ -150,7 +177,12 @@ impl Cube<3> {
 #[cfg(test)]
 mod tests {
     use super::NUM_EO_LINES;
-    use crate::{cub3, r#move::Move, solvers::zz::NUM_ZZ_LEFT, Cube};
+    use crate::{
+        cub3,
+        r#move::Move,
+        solvers::{zz::NUM_ZZ_LEFT, MOVES_RUL},
+        Cube,
+    };
 
     #[test]
     fn test_is_eo_line_solved() {
@@ -227,17 +259,6 @@ mod tests {
 
     #[test]
     fn test_zz_left_index_random() {
-        const MOVES_RUL: [Move; 9] = [
-            Move::R,
-            Move::U,
-            Move::L,
-            Move::R2,
-            Move::U2,
-            Move::L2,
-            Move::R3,
-            Move::U3,
-            Move::L3,
-        ];
         let mut cube = cub3!();
         for _ in 0..10000 {
             let move_ = Move::choice(&MOVES_RUL);
