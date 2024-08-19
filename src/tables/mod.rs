@@ -1,6 +1,7 @@
 mod file_operations;
 mod generate_table;
 
+pub use file_operations::clear_cache;
 pub use file_operations::read_moves;
 pub use file_operations::write_moves;
 pub use generate_table::generate_table;

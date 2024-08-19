@@ -3,6 +3,7 @@
 use rubik::{
     cub3,
     solvers::{premover, zz},
+    tables::clear_cache,
     Cube,
 };
 
@@ -26,4 +27,5 @@ fn main() {
         total_moves += solution.len();
     }
     println!("{} avg", total_moves as f32 / TESTS as f32);
+    clear_cache();
 }
