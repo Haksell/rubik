@@ -12,7 +12,6 @@ use rubik::{color, cub3};
 const CUBIE_SIZE: f32 = 1.0;
 const MARGIN: f32 = 0.05;
 const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
-const CORE_SIZE: f32 = CUBIE_SIZE * (3.0 - 2.0 * MARGIN);
 
 // TODO: Point3<f32>
 struct Cubie {
@@ -82,83 +81,56 @@ fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
         Color::BLUE => UnitQuaternion::identity(),
     };
 
-    let face_y = match face {
-        Color::WHITE => 3,
-        Color::RED => 42,
-        Color::GREEN => 42,
-        Color::YELLOW => -1,
-        Color::ORANGE => 42,
-        Color::BLUE => 42,
-    };
-
     let start = face as usize * N * N;
     for i in 0..N * N {
         let i = start + i;
         let col = cube.faces[i];
-        if face == Color::YELLOW || face == Color::WHITE {
-            let y = face_y;
-            let z = if face == Color::WHITE {
-                3 - (i / 3) % 3
-            } else {
-                (i / 3) % 3 + 1
-            };
-            let x = 3 - i % 3;
+        let (x, y, z) = get_coords(i, N, face);
+        let translation = Translation3::new(
+            (x as f32 - 1.0) * CUBIE_SIZE,
+            (y as f32) * CUBIE_SIZE,
+            (z as f32 - 1.0) * CUBIE_SIZE,
+        );
 
-            let translation = Translation3::new(
-                (x as f32 - 2.0) * CUBIE_SIZE,
-                (y as f32 - 1.0) * CUBIE_SIZE,
-                (z as f32 - 2.0) * CUBIE_SIZE,
-            );
+        create_cubie_face(
+            window,
+            display_color(col),
+            translation.vector + translation_addition,
+            rotation,
+        );
+    }
+}
 
-            create_cubie_face(
-                window,
-                display_color(col),
-                translation.vector + translation_addition,
-                rotation,
-            );
-        } else if face == Color::GREEN || face == Color::BLUE {
-            let z = if face == Color::GREEN { 1 } else { 4 };
-            let y = 3 - (i / 3) % 3 - 1;
-            let x = if face == Color::GREEN {
-                3 - i % 3
-            } else {
-                i % 3 + 1
-            };
-
-            let translation = Translation3::new(
-                (x as f32 - 2.0) * CUBIE_SIZE,
-                (y as f32 - 1.0) * CUBIE_SIZE,
-                (z as f32 - 2.0) * CUBIE_SIZE,
-            );
-
-            create_cubie_face(
-                window,
-                display_color(col),
-                translation.vector + translation_addition,
-                rotation,
-            );
+fn get_coords(i: usize, n: usize, face: Color) -> (f32, f32, f32) {
+    let n = n as f32;
+    let i = i as f32;
+    if face == Color::YELLOW || face == Color::WHITE {
+        let x = n - i % n;
+        let y = if face == Color::WHITE { n } else { -1.0 };
+        let z = if face == Color::WHITE {
+            n - (i.div_euclid(n)) % n
         } else {
-            let x = if face == Color::ORANGE { 3 } else { 1 };
-            let y = 3 - (i / 3) % 3 - 1;
-            let z = if face == Color::ORANGE {
-                3 - i % 3
-            } else {
-                i % 3 + 1
-            };
-
-            let translation = Translation3::new(
-                (x as f32 - 2.0) * CUBIE_SIZE,
-                (y as f32 - 1.0) * CUBIE_SIZE,
-                (z as f32 - 2.0) * CUBIE_SIZE,
-            );
-
-            create_cubie_face(
-                window,
-                display_color(col),
-                translation.vector + translation_addition,
-                rotation,
-            );
-        }
+            (i.div_euclid(n)) % n + 1.0
+        };
+        (x, y, z)
+    } else if face == Color::GREEN || face == Color::BLUE {
+        let x = if face == Color::GREEN {
+            n - i % n
+        } else {
+            i % n + 1.0
+        };
+        let y = n - (i.div_euclid(n)) % n - 1.0;
+        let z = if face == Color::GREEN { 1.0 } else { n + 1.0 };
+        (x, y, z)
+    } else {
+        let x = if face == Color::ORANGE { n } else { 1.0 };
+        let y = n - (i.div_euclid(n)) % n - 1.0;
+        let z = if face == Color::ORANGE {
+            n - i % n
+        } else {
+            i % n + 1.0
+        };
+        (x, y, z)
     }
 }
 
@@ -177,15 +149,18 @@ fn main() {
 
     // window.render_with_camera(&mut cam);
 
+    const N: usize = 3;
+    const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
+
     let mut core = window.add_cube(CORE_SIZE, CORE_SIZE, CORE_SIZE);
     core.set_color(198.0 / 255.0, 3.0 / 255.0, 252.0 / 255.0);
 
-    let mut cube: Cube<3> = cub3!();
+    let mut cube: Cube<N> = Cube::<N>::new();
 
-    cube.do_move(Move::R);
-    cube.do_move(Move::U);
-    cube.do_move(Move::R3);
-    cube.do_move(Move::U3);
+    // cube.do_move(Move::R);
+    // cube.do_move(Move::U);
+    // cube.do_move(Move::R3);
+    // cube.do_move(Move::U3);
 
     println!("{cube}");
     println!("{:?}", cube.faces);
