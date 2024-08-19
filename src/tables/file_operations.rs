@@ -4,12 +4,13 @@ use std::{
     fs::{self, File},
     io::{self, Read as _, Write as _},
     path::Path,
+    rc::Rc,
 };
 
 // TODO: add mutex if multithreading
-static mut MOVE_CACHE: Option<HashMap<String, Vec<Move>>> = None;
+static mut MOVE_CACHE: Option<HashMap<String, Rc<Vec<Move>>>> = None;
 
-pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
+pub fn read_moves(filename: &str) -> io::Result<Rc<Vec<Move>>> {
     unsafe {
         if MOVE_CACHE.is_none() {
             MOVE_CACHE = Some(HashMap::new());
@@ -18,7 +19,7 @@ pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
         let cache = MOVE_CACHE.as_mut().unwrap();
 
         if let Some(moves) = cache.get(filename) {
-            return Ok(moves.clone()); // TODO: don't clone
+            return Ok(Rc::clone(moves));
         }
 
         let mut file = File::open(filename)?;
@@ -28,9 +29,10 @@ pub fn read_moves(filename: &str) -> io::Result<Vec<Move>> {
         let buffer = std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, file_size);
         file.read_exact(buffer)?;
 
-        cache.insert(filename.to_string(), moves.clone());
+        let moves_rc = Rc::new(moves);
+        cache.insert(filename.to_string(), Rc::clone(&moves_rc));
 
-        Ok(moves)
+        Ok(moves_rc)
     }
 }
 
