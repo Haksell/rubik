@@ -17,9 +17,6 @@ fn main() {
         let _ = cube.rand_scramble(SCRAMBLE_LENGTH);
         // println!("{cube}");
         let solution = premover(&mut cube, zz);
-        assert!(cube.is_eo_line_solved());
-        assert!(cube.is_zz_left_solved());
-        assert!(cube.is_zz_right_solved());
         assert!(cube.is_solved());
         // println!("{scramble:?}");
         // println!("{solution:?}");

@@ -7,7 +7,7 @@ use std::{
     rc::Rc,
 };
 
-// TODO: add mutex if multithreading
+// TODO: add Mutex and Arc if multithreading
 static mut MOVE_CACHE: Option<HashMap<String, Rc<Vec<Move>>>> = None;
 
 pub fn read_moves(filename: &str) -> io::Result<Rc<Vec<Move>>> {
