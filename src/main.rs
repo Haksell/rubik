@@ -58,122 +58,114 @@ fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
 
     let translation_addition = match face {
         Color::WHITE => -Vector3::y() * 0.5,
-        Color::RED => todo!(),
-        Color::GREEN => todo!(),
+        Color::RED => -Vector3::x() * 0.5,
+        Color::GREEN => -Vector3::z() * 0.5,
         Color::YELLOW => Vector3::y() * 0.5,
-        Color::ORANGE => todo!(),
-        Color::BLUE => todo!(),
+        Color::ORANGE => Vector3::x() * 0.5,
+        Color::BLUE => -Vector3::z() * 0.5,
     };
 
     let rotation = match face {
         Color::WHITE => {
             UnitQuaternion::from_axis_angle(&Vector3::x_axis(), std::f32::consts::FRAC_PI_2)
         }
-        Color::RED => todo!(),
-        Color::GREEN => todo!(),
+        Color::RED => {
+            UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::FRAC_PI_2)
+        }
+        Color::GREEN => UnitQuaternion::identity(),
         Color::YELLOW => {
             UnitQuaternion::from_axis_angle(&Vector3::x_axis(), -std::f32::consts::FRAC_PI_2)
         }
-        Color::ORANGE => todo!(),
-        Color::BLUE => todo!(),
+        Color::ORANGE => {
+            UnitQuaternion::from_axis_angle(&Vector3::y_axis(), -std::f32::consts::FRAC_PI_2)
+        }
+        Color::BLUE => UnitQuaternion::identity(),
     };
 
     let face_y = match face {
         Color::WHITE => 3,
-        Color::RED => todo!(),
-        Color::GREEN => todo!(),
+        Color::RED => 42,
+        Color::GREEN => 42,
         Color::YELLOW => -1,
-        Color::ORANGE => todo!(),
-        Color::BLUE => todo!(),
+        Color::ORANGE => 42,
+        Color::BLUE => 42,
     };
-
-    let const_y = face == Color::WHITE || face == Color::YELLOW;
-    let const_x = face == Color::WHITE || face == Color::YELLOW;
-    let const_z = face == Color::WHITE || face == Color::YELLOW;
 
     let start = face as usize * N * N;
     for i in 0..N * N {
         let i = start + i;
-        let y = if const_y {
-            face_y
-        } else {
-            N - (i / (N * N)) % N
-        };
-        let z = 3 - (i / 3) % 3;
-        let x = 3 - i % 3;
-
         let col = cube.faces[i];
+        if face == Color::YELLOW || face == Color::WHITE {
+            let y = face_y;
+            let z = if face == Color::WHITE {
+                3 - (i / 3) % 3
+            } else {
+                (i / 3) % 3 + 1
+            };
+            let x = 3 - i % 3;
 
-        println!("x={x} y={y} z={z} col={}", col as u8);
+            let translation = Translation3::new(
+                (x as f32 - 2.0) * CUBIE_SIZE,
+                (y as f32 - 1.0) * CUBIE_SIZE,
+                (z as f32 - 2.0) * CUBIE_SIZE,
+            );
 
-        let translation = Translation3::new(
-            (x as f32 - 2.0) * CUBIE_SIZE,
-            (y as f32 - 1.0) * CUBIE_SIZE,
-            (z as f32 - 2.0) * CUBIE_SIZE,
-        );
+            create_cubie_face(
+                window,
+                display_color(col),
+                translation.vector + translation_addition,
+                rotation,
+            );
+        } else if face == Color::GREEN || face == Color::BLUE {
+            let z = if face == Color::GREEN { 1 } else { 4 };
+            let y = 3 - (i / 3) % 3 - 1;
+            let x = if face == Color::GREEN {
+                3 - i % 3
+            } else {
+                i % 3 + 1
+            };
 
-        create_cubie_face(
-            window,
-            display_color(col),
-            translation.vector + translation_addition,
-            rotation,
-        );
+            let translation = Translation3::new(
+                (x as f32 - 2.0) * CUBIE_SIZE,
+                (y as f32 - 1.0) * CUBIE_SIZE,
+                (z as f32 - 2.0) * CUBIE_SIZE,
+            );
+
+            create_cubie_face(
+                window,
+                display_color(col),
+                translation.vector + translation_addition,
+                rotation,
+            );
+        } else {
+            let x = if face == Color::ORANGE { 3 } else { 1 };
+            let y = 3 - (i / 3) % 3 - 1;
+            let z = if face == Color::ORANGE {
+                3 - i % 3
+            } else {
+                i % 3 + 1
+            };
+
+            let translation = Translation3::new(
+                (x as f32 - 2.0) * CUBIE_SIZE,
+                (y as f32 - 1.0) * CUBIE_SIZE,
+                (z as f32 - 2.0) * CUBIE_SIZE,
+            );
+
+            create_cubie_face(
+                window,
+                display_color(col),
+                translation.vector + translation_addition,
+                rotation,
+            );
+        }
     }
+}
 
-    // if y == 2 {
-    //     // TOP
-    //     cubes.push(create_cubie_face(
-    //         &mut window,
-    //         to_col(col),
-    //         translation.vector + Vector3::y() * 0.5,
-    //         UnitQuaternion::from_axis_angle(&Vector3::x_axis(), std::f32::consts::FRAC_PI_2),
-    //     ));
-    // }
-    // if y == 0 {
-    //     // BOTTOM
-    //     cubes.push(create_cubie_face(
-    //         &mut window,
-    //         to_col(col),
-    //         translation.vector - Vector3::y() * 0.5,
-    //         UnitQuaternion::from_axis_angle(&Vector3::x_axis(), -std::f32::consts::FRAC_PI_2),
-    //     ));
-    // }
-    // if z == 0 {
-    //     // FRONT
-    //     cubes.push(create_cubie_face(
-    //         &mut window,
-    //         to_col(col),
-    //         translation.vector - Vector3::z() * 0.5,
-    //         UnitQuaternion::identity(),
-    //     ));
-    // }
-    // if z == 2 {
-    //     // BACK
-    //     cubes.push(create_cubie_face(
-    //         &mut window,
-    //         to_col(col),
-    //         translation.vector + Vector3::z() * 0.5,
-    //         UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::PI),
-    //     ));
-    // }
-    // if x == 2 {
-    //     // LEFT
-    //     cubes.push(create_cubie_face(
-    //         &mut window,
-    //         to_col(col),
-    //         translation.vector + Vector3::x() * 0.5,
-    //         UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::FRAC_PI_2),
-    //     ));
-    // }
-    // if x == 0 {
-    //     // RIGHT
-    //     cubes.push(create_cubie_face(
-    //         &mut window,
-    //         to_col(col),
-    //         translation.vector - Vector3::x() * 0.5,
-    //         UnitQuaternion::from_axis_angle(&Vector3::y_axis(), -std::f32::consts::FRAC_PI_2),
-    //     ));
-    // }
+fn draw_cube<const N: usize>(cube: &Cube<N>, window: &mut Window) {
+    (0..6)
+        .map(|i| Color::try_from(i).unwrap())
+        .for_each(|face| draw_face(cube, window, face));
 }
 
 fn main() {
@@ -191,12 +183,14 @@ fn main() {
     let mut cube: Cube<3> = cub3!();
 
     cube.do_move(Move::R);
+    cube.do_move(Move::U);
+    cube.do_move(Move::R3);
+    cube.do_move(Move::U3);
 
     println!("{cube}");
     println!("{:?}", cube.faces);
 
-    draw_face(&cube, &mut window, Color::WHITE);
-    draw_face(&cube, &mut window, Color::YELLOW);
+    draw_cube(&cube, &mut window);
 
     while window.render() {
         // println!("{}", cam.view_transform());
