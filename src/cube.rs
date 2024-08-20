@@ -4,10 +4,9 @@ use crate::trigger::Trigger;
 use colored::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
-use std::hash::Hash;
 
 // TODO: handle N > 3
-#[derive(Clone, Eq, PartialEq, Hash)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Cube<const N: usize> {
     pub faces: Vec<Color>,
 }
@@ -42,7 +41,7 @@ macro_rules! cub3 {
     };
 }
 impl<const N: usize> Cube<N> {
-    pub fn new() -> Cube<N> {
+    pub fn new() -> Self {
         Cube {
             faces: (0..6 * N * N)
                 .map(|i| Color::try_from((i / (N * N)) as u8).unwrap())
@@ -359,6 +358,34 @@ impl Cube<3> {
         for move_ in trigger.moves() {
             self.do_move(move_);
         }
+    }
+
+    pub fn serialize(&self) -> u128 {
+        self.faces
+            .iter()
+            .enumerate()
+            .map(|(i, &color)| {
+                if i % 9 == 4 {
+                    0
+                } else {
+                    color as u8 as u128 * 1 * 6u128.pow((i - (i + 5) / 9) as u32)
+                }
+            })
+            .sum()
+    }
+
+    // extremely unchecked
+    pub fn deserialize(mut n: u128) -> Self {
+        let mut faces = vec![Color::WHITE; 54];
+        for i in 0..6 {
+            faces[i * 9 + 4] = Color::try_from(i as u8).unwrap();
+        }
+        for i in 0..48 {
+            let color = Color::try_from((n % 6) as u8).unwrap();
+            faces[i + (i + 4) / 8] = color;
+            n /= 6;
+        }
+        Self { faces }
     }
 }
 

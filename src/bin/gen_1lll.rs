@@ -41,16 +41,24 @@ fn dfs(
 }
 
 fn main() {
-    let mut solutions: [Option<Vec<Move>>; NUM_1LLL] = [ARRAY_REPEAT_VALUE; NUM_1LLL];
-    let mut remaining_cases = NUM_1LLL;
-    for max_depth in 0.. {
-        remaining_cases -= dfs(&mut solutions, &mut cub3!(), &mut Vec::new(), max_depth);
-        println!(
-            "max_depth: {}, remaining_cases: {}/{}",
-            max_depth, remaining_cases, NUM_1LLL
-        );
-        if remaining_cases == 0 {
-            return;
-        }
-    }
+    let mut cube = cub3!();
+    cube.scramble("R U R' U' D2");
+    print!("{cube}");
+    let n = cube.serialize();
+    println!("{}", n);
+    print!("{}", Cube::deserialize(n));
+    print!("{}", Cube::deserialize(n).serialize());
+
+    // let mut solutions: [Option<Vec<Move>>; NUM_1LLL] = [ARRAY_REPEAT_VALUE; NUM_1LLL];
+    // let mut remaining_cases = NUM_1LLL;
+    // for max_depth in 0.. {
+    //     remaining_cases -= dfs(&mut solutions, &mut cub3!(), &mut Vec::new(), max_depth);
+    //     println!(
+    //         "max_depth: {}, remaining_cases: {}/{}",
+    //         max_depth, remaining_cases, NUM_1LLL
+    //     );
+    //     if remaining_cases == 0 {
+    //         return;
+    //     }
+    // }
 }
