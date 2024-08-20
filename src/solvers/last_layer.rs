@@ -184,6 +184,7 @@ impl Cube<3> {
 
     pub fn last_layer_index(&self) -> usize {
         use crate::Sticker::*;
+
         fn last_layer_corner_index(cube: &Cube<3>) -> usize {
             let mut white_blue_red: usize = usize::MAX;
             let mut white_red_green: usize = usize::MAX;

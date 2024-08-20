@@ -41,8 +41,6 @@ macro_rules! cub3 {
         Cube::<3>::new()
     };
 }
-
-// Always fronting Green face
 impl<const N: usize> Cube<N> {
     pub fn new() -> Cube<N> {
         Cube {
@@ -304,8 +302,6 @@ impl<const N: usize> Cube<N> {
                 }
             }
         }
-        // println!("{:?}", self.faces);
-        //println!("{}", self);
     }
 
     pub fn scramble(&mut self, sequence: &str) {
