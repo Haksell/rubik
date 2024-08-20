@@ -3,7 +3,7 @@ use crate::r#move::Move;
 use crate::trigger::Trigger;
 use colored::*;
 use std::convert::TryFrom;
-use std::fmt::{Display, Error, Formatter};
+use std::fmt::{Error, Formatter};
 
 // TODO: handle N > 3
 #[derive(Clone, Eq, PartialEq)]
@@ -389,7 +389,7 @@ impl Cube<3> {
     }
 }
 
-impl<const N: usize> Display for Cube<N> {
+impl<const N: usize> std::fmt::Debug for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         //for i in 0..6 {
         //    println!("{:?}", &self.faces[i * N * N..(i + 1) * N * N]);
@@ -514,5 +514,14 @@ mod tests {
         assert!(!cube.is_solved());
         cube.do_move(Move::R2);
         assert!(cube.is_solved());
+    }
+
+    #[test]
+    fn test_serialize() {
+        let mut cube = cub3!();
+        for _ in 0..100 {
+            cube.do_move(Move::random());
+            assert_eq!(cube, Cube::deserialize(cube.serialize()));
+        }
     }
 }

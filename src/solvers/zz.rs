@@ -392,7 +392,7 @@ mod tests {
             let solution = zz(&mut cube);
             assert!(
                 cube.is_solved(),
-                "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube}"
+                "SCRAMBLE: {scramble:?}\nSOLUTION: {solution:?}\n{cube:?}"
             );
         }
     }

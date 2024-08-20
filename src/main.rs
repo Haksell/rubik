@@ -15,12 +15,12 @@ fn main() {
     for _ in 0..TESTS {
         let mut cube = cub3!();
         let _ = cube.rand_scramble(SCRAMBLE_LENGTH);
-        // println!("{cube}");
+        // println!("{cube:?}");
         let solution = premover(&mut cube, zz);
         assert!(cube.is_solved());
         // println!("{scramble:?}");
         // println!("{solution:?}");
-        // println!("{cube}");
+        // println!("{cube:?}");
         total_moves += solution.len();
     }
     println!("{} avg", total_moves as f32 / TESTS as f32);
