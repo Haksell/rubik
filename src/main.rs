@@ -1,27 +1,18 @@
-// TODO: setup camera correctly at the start
-// TODO: deactivate zoom/dezoom
+use kiss3d::camera::ArcBall;
 use kiss3d::light::Light;
-use kiss3d::nalgebra::{Translation3, UnitQuaternion, Vector3};
+use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 use rubik::color::Color;
 use rubik::cube::Cube;
 use rubik::r#move::Move;
-use rubik::{color, cub3};
 
 const CUBIE_SIZE: f32 = 1.0;
 const MARGIN: f32 = 0.05;
 const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
-
-// TODO: Point3<f32>
-struct Cubie {
-    up: [f32; 3],
-    down: [f32; 3],
-    left: [f32; 3],
-    right: [f32; 3],
-    front: [f32; 3],
-    back: [f32; 3],
-}
+const ZOOM: f32 = 4.2;
+const N: usize = 3;
+const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
 
 fn create_cubie_face(
     window: &mut Window,
@@ -37,22 +28,13 @@ fn create_cubie_face(
 }
 
 fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
-    let cubie = Cubie {
-        up: [1.0, 1.0, 1.0],        // White
-        down: [1.0, 0.835, 0.0],    // Yellow
-        front: [0.0, 0.608, 0.282], // Green
-        back: [0.0, 0.275, 0.678],  // Blue
-        left: [1.0, 0.345, 0.0],    // Orange
-        right: [1.0, 0.071, 0.204], // Red
-    };
-
     let display_color = |c: Color| match c {
-        Color::WHITE => cubie.up,
-        Color::RED => cubie.right,
-        Color::GREEN => cubie.front,
-        Color::YELLOW => cubie.down,
-        Color::ORANGE => cubie.left,
-        Color::BLUE => cubie.back,
+        Color::WHITE => [1.0, 1.0, 1.0],
+        Color::RED => [1.0, 0.071, 0.204],
+        Color::GREEN => [0.0, 0.608, 0.282],
+        Color::YELLOW => [1.0, 0.835, 0.0],
+        Color::ORANGE => [1.0, 0.345, 0.0],
+        Color::BLUE => [0.0, 0.275, 0.678],
     };
 
     let translation_addition = match face {
@@ -87,9 +69,9 @@ fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
         let col = cube.faces[i];
         let (x, y, z) = get_coords(i, N, face);
         let translation = Translation3::new(
-            (x as f32 - 1.0) * CUBIE_SIZE,
-            (y as f32) * CUBIE_SIZE,
-            (z as f32 - 1.0) * CUBIE_SIZE,
+            (x as f32 - 2.0) * CUBIE_SIZE,
+            (y as f32 - 1.0) * CUBIE_SIZE,
+            (z as f32 - 2.0) * CUBIE_SIZE,
         );
 
         create_cubie_face(
@@ -145,12 +127,11 @@ fn main() {
 
     window.set_light(Light::StickToCamera);
 
-    // let mut cam = FixedView::new();
+    let mut cam = ArcBall::new(Point3::new(-4.0, 6.0, -10.0), Point3::new(0.0, 0.0, 0.0));
 
-    // window.render_with_camera(&mut cam);
-
-    const N: usize = 3;
-    const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
+    cam.set_dist(ZOOM * N as f32);
+    cam.set_min_dist(ZOOM * N as f32);
+    cam.set_max_dist(ZOOM * N as f32);
 
     let mut core = window.add_cube(CORE_SIZE, CORE_SIZE, CORE_SIZE);
     core.set_color(198.0 / 255.0, 3.0 / 255.0, 252.0 / 255.0);
@@ -167,7 +148,5 @@ fn main() {
 
     draw_cube(&cube, &mut window);
 
-    while window.render() {
-        // println!("{}", cam.view_transform());
-    }
+    while window.render_with_camera(&mut cam) {}
 }
