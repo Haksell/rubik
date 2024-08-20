@@ -203,12 +203,16 @@ pub const MOVES_RUL: [Move; 9] = [
     Move::L3,
 ];
 
-
-pub const MOVES_RU: [Move; 6] = [
+pub const MOVES_RUF: [Move; 9] = [
     Move::R,
     Move::U,
+    Move::F,
     Move::R2,
     Move::U2,
+    Move::F2,
     Move::R3,
     Move::U3,
+    Move::F3,
 ];
+
+pub const MOVES_RU: [Move; 6] = [Move::R, Move::U, Move::R2, Move::U2, Move::R3, Move::U3];

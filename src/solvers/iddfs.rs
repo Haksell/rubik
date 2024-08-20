@@ -1,4 +1,7 @@
-use crate::{r#move::Move, Cube};
+use crate::{
+    r#move::{Move, MOVES_RUF},
+    Cube,
+};
 
 pub fn iddfs(mut start: Cube<2>) -> Vec<Move> {
     fn search(cur: &mut Cube<2>, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
@@ -10,17 +13,7 @@ pub fn iddfs(mut start: Cube<2>) -> Vec<Move> {
             return None;
         }
 
-        for &move_ in &[
-            Move::R,
-            Move::R2,
-            Move::R3,
-            Move::F,
-            Move::F2,
-            Move::F3,
-            Move::U,
-            Move::U2,
-            Move::U3,
-        ] {
+        for &move_ in &MOVES_RUF {
             if !path.is_empty() && path.last().unwrap().same_face(&move_) {
                 continue;
             }
