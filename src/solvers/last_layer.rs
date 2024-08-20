@@ -1,5 +1,7 @@
 use crate::{color::Color, moves, r#move::Move, Cube};
 
+pub const NUM_1LLL: usize = (12 * 9 * 6) * (8 * 6 * 4) / 2;
+
 pub(super) fn solve_last_layer_step(
     cube: &mut Cube<3>,
     alg_matcher: fn(&Cube<3>) -> Option<Vec<Move>>,
@@ -180,75 +182,61 @@ impl Cube<3> {
             && self.faces[LF as usize] == Color::ORANGE
     }
 
-    // pub fn index_1lll(&self) -> usize {
-    //     use crate::Sticker::*;
-    //     fn zz_right_corner_index(cube: &Cube<3>) -> usize {
-    //         let mut yellow_green_red: usize = usize::MAX;
-    //         let mut yellow_red_blue: usize = usize::MAX;
-    //         for (i, &(s1, s2)) in [
-    //             (DFR, FRD),
-    //             (DRB, RBD),
-    //             (ULB, LBU),
-    //             (UFL, FLU),
-    //             (UBR, BRU),
-    //             (URF, RFU),
-    //         ]
-    //         .iter()
-    //         .enumerate()
-    //         {
-    //             match (cube.faces[s1 as usize], cube.faces[s2 as usize]) {
-    //                 (Color::YELLOW, Color::GREEN) => yellow_green_red = 3 * i,
-    //                 (Color::GREEN, Color::RED) => yellow_green_red = 3 * i + 1,
-    //                 (Color::RED, Color::YELLOW) => yellow_green_red = 3 * i + 2,
-    //                 (Color::YELLOW, Color::RED) => yellow_red_blue = 3 * i,
-    //                 (Color::RED, Color::BLUE) => yellow_red_blue = 3 * i + 1,
-    //                 (Color::BLUE, Color::YELLOW) => yellow_red_blue = 3 * i + 2,
-    //                 _ => {}
-    //             }
-    //         }
-    //         if yellow_red_blue > yellow_green_red {
-    //             yellow_red_blue -= 3;
-    //         }
-    //         yellow_red_blue + 15 * yellow_green_red
-    //     }
+    pub fn last_layer_index(&self) -> usize {
+        use crate::Sticker::*;
+        fn last_layer_corner_index(cube: &Cube<3>) -> usize {
+            let mut white_blue_red: usize = usize::MAX;
+            let mut white_red_green: usize = usize::MAX;
+            let mut white_green_orange: usize = usize::MAX;
+            for (i, &(s1, s2)) in [(UBR, BRU), (URF, RFU), (UFL, FLU), (ULB, LBU)]
+                .iter()
+                .enumerate()
+            {
+                match (cube.faces[s1 as usize], cube.faces[s2 as usize]) {
+                    (Color::WHITE, Color::BLUE) => white_blue_red = 3 * i,
+                    (Color::BLUE, Color::RED) => white_blue_red = 3 * i + 1,
+                    (Color::RED, Color::WHITE) => white_blue_red = 3 * i + 2,
+                    (Color::WHITE, Color::RED) => white_red_green = 3 * i,
+                    (Color::RED, Color::GREEN) => white_red_green = 3 * i + 1,
+                    (Color::GREEN, Color::WHITE) => white_red_green = 3 * i + 2,
+                    (Color::WHITE, Color::GREEN) => white_green_orange = 3 * i,
+                    (Color::GREEN, Color::ORANGE) => white_green_orange = 3 * i + 1,
+                    (Color::ORANGE, Color::WHITE) => white_green_orange = 3 * i + 2,
+                    _ => {}
+                }
+            }
+            white_red_green -= (white_red_green > white_blue_red) as usize * 3;
+            white_green_orange -= (white_green_orange > white_red_green) as usize * 3;
+            white_green_orange -= (white_green_orange > white_blue_red) as usize * 3;
+            white_green_orange + 6 * white_red_green + 6 * 9 * white_blue_red
+        }
 
-    //     fn zz_right_edge_index(cube: &Cube<3>) -> usize {
-    //         let mut green_red: usize = usize::MAX;
-    //         let mut yellow_red: usize = usize::MAX;
-    //         let mut blue_red: usize = usize::MAX;
-    //         for (i, &(s1, s2)) in [
-    //             (FR, RF),
-    //             (DR, RD),
-    //             (BR, RB),
-    //             (UL, LU),
-    //             (UR, RU),
-    //             (UF, FU),
-    //             (UB, BU),
-    //         ]
-    //         .iter()
-    //         .enumerate()
-    //         {
-    //             if cube.faces[s2 as usize] == Color::RED {
-    //                 match cube.faces[s1 as usize] {
-    //                     Color::GREEN => green_red = i,
-    //                     Color::YELLOW => yellow_red = i,
-    //                     Color::BLUE => blue_red = i,
-    //                     _ => {}
-    //                 }
-    //             }
-    //         }
-    //         blue_red -= (blue_red >= yellow_red) as usize;
-    //         blue_red -= (blue_red >= green_red) as usize;
-    //         yellow_red -= (yellow_red >= green_red) as usize;
-    //         blue_red + 5 * yellow_red + 6 * 5 * green_red
-    //     }
+        fn last_layer_edge_index(cube: &Cube<3>) -> usize {
+            let mut white_blue: usize = usize::MAX;
+            let mut white_red: usize = usize::MAX;
+            let mut white_green: usize = usize::MAX; // only checks orientation parity
+            for (i, &(s1, s2)) in [(UB, BU), (UR, RU), (UF, FU), (UL, LU)].iter().enumerate() {
+                match (cube.faces[s1 as usize], cube.faces[s2 as usize]) {
+                    (Color::WHITE, Color::BLUE) => white_blue = 2 * i,
+                    (Color::BLUE, Color::WHITE) => white_blue = 2 * i + 1,
+                    (Color::WHITE, Color::RED) => white_red = 2 * i,
+                    (Color::RED, Color::WHITE) => white_red = 2 * i + 1,
+                    (Color::WHITE, Color::GREEN) => white_green = 0,
+                    (Color::GREEN, Color::WHITE) => white_green = 1,
+                    _ => {}
+                }
+            }
+            white_red -= (white_red > white_blue) as usize * 2;
+            white_green + 2 * white_red + 2 * 6 * white_blue
+        }
 
-    //     zz_right_corner_index(self) + 18 * 15 * zz_right_edge_index(self)
-    // }
+        last_layer_corner_index(self) + 6 * 9 * 12 * last_layer_edge_index(self)
+    }
 }
 
 #[cfg(test)]
 mod tests {
+    use super::NUM_1LLL;
     use crate::{cub3, Cube};
 
     #[test]
@@ -265,5 +253,23 @@ mod tests {
         assert!(cube.is_f2l_solved());
         cube.scramble("R U R' U2 R U R'");
         assert!(!cube.is_f2l_solved());
+    }
+
+    #[test]
+    fn test_last_layer_index() {
+        assert_eq!(cub3!().last_layer_index(), 0);
+        for &scramble in &[
+            "R U R' F' R U R' U' R' F R2 U' R'",
+            "R U R' U' R U2 R'",
+            "F R U R' U' F'",
+            "R U R' U' R' F R F'",
+            "R U' L' U R' U' L",
+        ] {
+            let mut cube = cub3!();
+            cube.scramble(scramble);
+            let idx = cube.last_layer_index();
+            assert!(idx > 0, "{}: {}", scramble, idx);
+            assert!(idx < NUM_1LLL, "{}: {}", scramble, idx);
+        }
     }
 }
