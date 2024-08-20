@@ -2,7 +2,7 @@ use kiss3d::camera::ArcBall;
 use kiss3d::light::Light;
 use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
-use kiss3d::window::Window;
+use kiss3d::window::{CanvasSetup, Window};
 use rubik::color::Color;
 use rubik::cube::Cube;
 use rubik::r#move::Move;
@@ -10,9 +10,10 @@ use rubik::r#move::Move;
 const CUBIE_SIZE: f32 = 1.0;
 const MARGIN: f32 = 0.05;
 const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
-const ZOOM: f32 = 4.2;
+const ZOOM: f32 = 3.2;
 const N: usize = 3;
 const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
+const WINDOW_SIZE: u32 = 800;
 
 fn create_cubie_face(
     window: &mut Window,
@@ -123,17 +124,17 @@ fn draw_cube<const N: usize>(cube: &Cube<N>, window: &mut Window) {
 }
 
 fn main() {
-    let mut window = Window::new("Rubik's Cube");
+    let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 
     window.set_light(Light::StickToCamera);
 
     let mut cam = ArcBall::new(Point3::new(-4.0, 6.0, -10.0), Point3::new(0.0, 0.0, 0.0));
 
+    cam.set_dist_step(1.0);
     cam.set_dist(ZOOM * N as f32);
-    cam.set_min_dist(ZOOM * N as f32);
-    cam.set_max_dist(ZOOM * N as f32);
 
     let mut core = window.add_cube(CORE_SIZE, CORE_SIZE, CORE_SIZE);
+    core.set_local_translation(Translation3::new(0.0, 0.0, 0.0));
     core.set_color(198.0 / 255.0, 3.0 / 255.0, 252.0 / 255.0);
 
     let mut cube: Cube<N> = Cube::<N>::new();
