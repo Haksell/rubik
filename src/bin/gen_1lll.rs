@@ -1,45 +1,56 @@
-// use super::file_operations::write_moves;
-// use crate::{cub3, r#move::Move, Cube};
-// use std::{collections::VecDeque, io};
+use rubik::{
+    cub3,
+    r#move::{Move, MOVES_RUF},
+    solvers::NUM_1LLL,
+    Cube,
+};
+pub const DUMMY_MOVE: Move = Move::D; // could be anything
+const ARRAY_REPEAT_VALUE: Option<Vec<Move>> = None; // required because Vec<Move> is not Copy
 
-// pub const DUMMY_MOVE: Move = Move::U; // could be anything
+fn dfs(
+    solutions: &mut [Option<Vec<Move>>; NUM_1LLL],
+    cube: &mut Cube<3>,
+    moves: &mut Vec<Move>,
+    max_depth: usize,
+) -> usize {
+    let mut solved_cases = 0;
 
-// pub fn generate_table(
-//     filename: &str,
-//     num_cases: usize,
-//     calc_index: fn(&Cube<3>) -> usize,
-//     move_set: &[Move],
-// ) -> io::Result<()> {
-//     let cube = cub3!();
-//     let mut moves: Vec<Option<Move>> = vec![None; num_cases];
-//     let mut queue = VecDeque::new();
-//     queue.push_back((cube, DUMMY_MOVE));
-//     let mut remaining_cases = num_cases;
-//     while remaining_cases > 0 {
-//         let (cube, last_move) = queue.pop_front().unwrap();
-//         let idx = calc_index(&cube);
-//         if moves[idx].is_some() {
-//             continue;
-//         }
-//         remaining_cases -= 1;
-//         moves[idx] = Some(last_move.opposite());
-//         for &move_ in move_set {
-//             if remaining_cases == num_cases - 1 || !move_.same_face(&last_move) {
-//                 let mut next_cube = cube.clone();
-//                 next_cube.do_move(move_);
-//                 queue.push_back((next_cube, move_));
-//             }
-//         }
-//     }
+    if cube.is_f2l_solved() {
+        let idx = cube.last_layer_index();
+        if solutions[idx].is_none() {
+            solutions[idx] = Some(moves.clone());
+            solved_cases += 1;
+        }
+    }
 
-//     write_moves(filename, &moves)
-// }
+    if moves.len() == max_depth {
+        return solved_cases;
+    }
 
-// fn main() -> std::io::Result<()> {
-//     rubik::tables::generate_table(
-//         rubik::tables::FILE_1LLL,
-//         rubik::solvers::NUM_ZZ_RIGHT,
-//         rubik::Cube::zz_right_index,
-//         &rubik::r#move::MOVES_RU,
-//     )
-// }
+    for &move_ in &MOVES_RUF {
+        if moves.is_empty() || !moves.last().unwrap().same_face(&move_) {
+            cube.do_move(move_);
+            moves.push(move_);
+            solved_cases += dfs(solutions, cube, moves, max_depth);
+            moves.pop();
+            cube.do_move(move_.opposite());
+        }
+    }
+
+    solved_cases
+}
+
+fn main() {
+    let mut solutions: [Option<Vec<Move>>; NUM_1LLL] = [ARRAY_REPEAT_VALUE; NUM_1LLL];
+    let mut remaining_cases = NUM_1LLL;
+    for max_depth in 0.. {
+        remaining_cases -= dfs(&mut solutions, &mut cub3!(), &mut Vec::new(), max_depth);
+        println!(
+            "max_depth: {}, remaining_cases: {}/{}",
+            max_depth, remaining_cases, NUM_1LLL
+        );
+        if remaining_cases == 0 {
+            return;
+        }
+    }
+}

@@ -8,6 +8,7 @@ use crate::{r#move::Move, Cube};
 pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;
+pub use last_layer::NUM_1LLL;
 pub use zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT};
 
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
