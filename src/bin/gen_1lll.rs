@@ -6,7 +6,7 @@ use rubik::{
     solvers::NUM_1LLL,
     Cube,
 };
-use std::collections::{hash_map::Entry, HashMap, VecDeque};
+use std::collections::{hash_map::Entry, HashMap};
 
 pub const DUMMY_MOVE: Move = Move::D; // could be anything
 const ARRAY_REPEAT_VALUE: Option<Vec<Move>> = None; // required because Vec<Move> is not Copy
