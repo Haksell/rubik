@@ -1,6 +1,8 @@
 // TODO: in a mod with Move
 
-use crate::{moves, r#move::Move};
+use move_macro::moves;
+
+use crate::r#move::Move;
 
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)] // TODO: remove PartialOrd, Ord
@@ -46,33 +48,33 @@ impl Trigger {
     pub fn moves(&self) -> Vec<Move> {
         // TODO: use moves! macro everywhere
         match self {
-            Trigger::U => vec![Move::U],
-            Trigger::U2 => vec![Move::U2],
-            Trigger::U3 => vec![Move::U3],
-            Trigger::RUR3 => vec![Move::R, Move::U, Move::R3],
-            Trigger::RU2R3 => vec![Move::R, Move::U2, Move::R3],
-            Trigger::RU3R3 => vec![Move::R, Move::U3, Move::R3],
-            Trigger::R3UR => vec![Move::R3, Move::U, Move::R],
-            Trigger::R3U2R => vec![Move::R3, Move::U2, Move::R],
-            Trigger::R3U3R => vec![Move::R3, Move::U3, Move::R],
-            Trigger::FUF3 => vec![Move::F, Move::U, Move::F3],
-            Trigger::FU2F3 => vec![Move::F, Move::U2, Move::F3],
-            Trigger::FU3F3 => vec![Move::F, Move::U3, Move::F3],
-            Trigger::F3UF => vec![Move::F3, Move::U, Move::F],
-            Trigger::F3U2F => vec![Move::F3, Move::U2, Move::F],
-            Trigger::F3U3F => vec![Move::F3, Move::U3, Move::F],
-            Trigger::LUL3 => vec![Move::L, Move::U, Move::L3],
-            Trigger::LU2L3 => vec![Move::L, Move::U2, Move::L3],
-            Trigger::LU3L3 => vec![Move::L, Move::U3, Move::L3],
-            Trigger::L3UL => vec![Move::L3, Move::U, Move::L],
-            Trigger::L3U2L => vec![Move::L3, Move::U2, Move::L],
-            Trigger::L3U3L => vec![Move::L3, Move::U3, Move::L],
-            Trigger::BUB3 => vec![Move::B, Move::U, Move::B3],
-            Trigger::BU2B3 => vec![Move::B, Move::U2, Move::B3],
-            Trigger::BU3B3 => vec![Move::B, Move::U3, Move::B3],
-            Trigger::B3UB => vec![Move::B3, Move::U, Move::B],
-            Trigger::B3U2B => vec![Move::B3, Move::U2, Move::B],
-            Trigger::B3U3B => vec![Move::B3, Move::U3, Move::B],
+            Trigger::U => moves!("U"),
+            Trigger::U2 => moves!("U2"),
+            Trigger::U3 => moves!("U'"),
+            Trigger::RUR3 => moves!("R U R'"),
+            Trigger::RU2R3 => moves!("R U2 R'"),
+            Trigger::RU3R3 => moves!("R U' R'"),
+            Trigger::R3UR => moves!("R' U R"),
+            Trigger::R3U2R => moves!("R' U2 R"),
+            Trigger::R3U3R => moves!("R' U' R"),
+            Trigger::FUF3 => moves!("F U F'"),
+            Trigger::FU2F3 => moves!("F U2 F'"),
+            Trigger::FU3F3 => moves!("F U' F'"),
+            Trigger::F3UF => moves!("F' U F"),
+            Trigger::F3U2F => moves!("F' U2 F"),
+            Trigger::F3U3F => moves!("F' U' F"),
+            Trigger::LUL3 => moves!("L U L'"),
+            Trigger::LU2L3 => moves!("L U2 L'"),
+            Trigger::LU3L3 => moves!("L U' L'"),
+            Trigger::L3UL => moves!("L' U L"),
+            Trigger::L3U2L => moves!("L' U2 L"),
+            Trigger::L3U3L => moves!("L' U' L"),
+            Trigger::BUB3 => moves!("B U B'"),
+            Trigger::BU2B3 => moves!("B U2 B'"),
+            Trigger::BU3B3 => moves!("B U' B'"),
+            Trigger::B3UB => moves!("B' U B"),
+            Trigger::B3U2B => moves!("B' U2 B"),
+            Trigger::B3U3B => moves!("B' U' B"),
             Trigger::Sledge0 => moves!("R B' R' B"),
             Trigger::Sledge1 => moves!("R' F R F'"),
             Trigger::Sledge2 => moves!("L F' L' F"),

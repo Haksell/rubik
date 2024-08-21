@@ -117,7 +117,7 @@ impl TryFrom<u8> for Move {
 }
 
 impl TryFrom<&str> for Move {
-    type Error = ();
+    type Error = String;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         match value {
@@ -139,7 +139,7 @@ impl TryFrom<&str> for Move {
             "D" => Ok(Move::D),
             "D2" => Ok(Move::D2),
             "D'" | "D’" => Ok(Move::D3),
-            _ => Err(()),
+            _ => Err(format!("Invalid move '{value}'")),
         }
     }
 }
@@ -203,12 +203,4 @@ pub const MOVES_RUL: [Move; 9] = [
     Move::L3,
 ];
 
-
-pub const MOVES_RU: [Move; 6] = [
-    Move::R,
-    Move::U,
-    Move::R2,
-    Move::U2,
-    Move::R3,
-    Move::U3,
-];
+pub const MOVES_RU: [Move; 6] = [Move::R, Move::U, Move::R2, Move::U2, Move::R3, Move::U3];

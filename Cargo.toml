@@ -5,5 +5,7 @@ edition = "2021"
 default-run = "rubik"
 
 [dependencies]
+clap = { version = "4.5.11", features = ["derive"] }
 colored = "2.1.0"
 rand = "0.8.5"
+move_macro = { path = "move_macro" }

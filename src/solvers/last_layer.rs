@@ -1,4 +1,6 @@
-use crate::{color::Color, moves, r#move::Move, Cube};
+use move_macro::moves;
+
+use crate::{color::Color, r#move::Move, Cube};
 
 pub(super) fn solve_last_layer_step(
     cube: &mut Cube<3>,
