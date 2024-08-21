@@ -1,7 +1,7 @@
 // TODO: only ZBLL?
 
 use rubik::{
-    cub3,
+    cub3, moves,
     r#move::{Move, MOVES_RUF},
     solvers::NUM_1LLL,
     Cube,
@@ -59,12 +59,40 @@ fn dfs(
     max_depth: usize,
 ) -> usize {
     let mut solved_cases = 0;
+    let serialized = cube.serialize();
 
-    if cube.is_f2l_solved() {
-        let idx = cube.last_layer_index();
-        if solutions[idx].is_none() {
-            solutions[idx] = Some(moves.clone());
-            solved_cases += 1;
+    if *moves == moves!("R U R' U R") {
+        println!("{:?}", get_sequence(table, serialized));
+        println!("???");
+    }
+
+    if table.contains_key(&serialized) {
+        let mut clone = cube.clone();
+        let sequence = get_sequence(table, serialized);
+        for &move_ in &sequence {
+            clone.do_move(move_);
+        }
+        let idx = clone.last_layer_index();
+        // println!("{idx}: {moves:?}+{sequence:?}");
+        if idx != 0 {
+            println!("{idx}: {moves:?}+{sequence:?}");
+            match &solutions[idx] {
+                None => {
+                    solutions[idx] = Some(moves.clone());
+                    solved_cases += 1;
+                }
+                Some(solution) => {
+                    if moves.len() + sequence.len() < solution.len() {
+                        solutions[idx] = Some(
+                            moves
+                                .iter()
+                                .cloned()
+                                .chain(sequence.into_iter())
+                                .collect::<Vec<_>>(),
+                        );
+                    }
+                }
+            }
         }
     }
 
@@ -86,9 +114,10 @@ fn dfs(
 }
 
 fn main() {
-    let table = generate_nearly_solved(8);
+    let table = generate_nearly_solved(5); // TODO: 10
     let mut solutions: [Option<Vec<Move>>; NUM_1LLL] = [ARRAY_REPEAT_VALUE; NUM_1LLL];
-    let mut remaining_cases = NUM_1LLL;
+    solutions[0] = Some(vec![]);
+    let mut remaining_cases = NUM_1LLL - 1;
     for max_depth in 0.. {
         remaining_cases -= dfs(
             &table,
