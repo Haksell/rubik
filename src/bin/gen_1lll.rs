@@ -6,7 +6,7 @@ use rubik::{
     solvers::NUM_1LLL,
     Cube,
 };
-use std::collections::{HashMap, VecDeque};
+use std::collections::{hash_map::Entry, HashMap, VecDeque};
 
 pub const DUMMY_MOVE: Move = Move::D; // could be anything
 const ARRAY_REPEAT_VALUE: Option<Vec<Move>> = None; // required because Vec<Move> is not Copy
@@ -19,11 +19,10 @@ fn generate_nearly_solved(max_depth: usize) -> HashMap<u128, Move> {
         let mut next_level = Vec::new();
         for (serialized, last_move) in level {
             let cube = Cube::deserialize(serialized);
-            // TODO: only find once in HashMap
-            if table.get(&serialized).is_some() {
-                continue;
-            }
-            table.insert(serialized, last_move.opposite());
+            match table.entry(serialized) {
+                Entry::Occupied(_) => continue,
+                Entry::Vacant(entry) => entry.insert(last_move.opposite()),
+            };
 
             if depth == max_depth {
                 continue;
