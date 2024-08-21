@@ -23,11 +23,9 @@ fn generate_nearly_solved(max_depth: usize) -> HashMap<u128, Move> {
                 Entry::Occupied(_) => continue,
                 Entry::Vacant(entry) => entry.insert(last_move.opposite()),
             };
-
             if depth == max_depth {
                 continue;
             }
-
             for &move_ in &MOVES_RUF {
                 if serialized == solved_serialized || !move_.same_face(&last_move) {
                     let mut next_cube = cube.clone();
