@@ -305,7 +305,7 @@ mod tests {
             let move_ = Move::random();
             cube.do_move(move_);
             let idx = cube.eo_line_index();
-            println!("{:?} {}", move_, idx);
+            // println!("{:?} {}", move_, idx);
             assert!(idx < NUM_EO_LINES);
             if cube.is_eo_line_solved() {
                 assert_eq!(idx, 0);

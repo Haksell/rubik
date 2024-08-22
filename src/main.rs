@@ -1,10 +1,8 @@
 #![allow(dead_code)] // TODO: REMOVE
 
 use clap::Parser;
-use move_macro::moves;
 use rubik::{
     cub3,
-    r#move::Move,
     solvers::{premover, zz},
     tables::clear_cache,
     Cube,

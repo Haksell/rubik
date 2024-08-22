@@ -13,7 +13,7 @@ pub enum Color {
 }
 
 impl TryFrom<u8> for Color {
-    type Error = ();
+    type Error = &'static str;
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
@@ -23,7 +23,7 @@ impl TryFrom<u8> for Color {
             3 => Ok(Color::YELLOW),
             4 => Ok(Color::ORANGE),
             5 => Ok(Color::BLUE),
-            _ => Err(()),
+            _ => Err("Colors are from 0 to 5 included"),
         }
     }
 }

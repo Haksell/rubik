@@ -24,19 +24,6 @@ pub enum Move {
 }
 
 impl Move {
-    // TODO: there is probably a better way
-    pub fn iterator() -> Vec<Move> {
-        (0..18)
-            .map(|m| Move::try_from(m).unwrap())
-            .collect::<Vec<Move>>()
-    }
-
-    // fn iterator() -> impl Iterator<Item = Move> {
-    //     [Move::U, Move::D, Move::L, Move::R, Move::F, Move::B]
-    //         .iter()
-    //         .copied()
-    // }
-
     pub fn as_int(&self) -> u8 {
         *self as u8
     }
@@ -58,6 +45,7 @@ impl Move {
     pub fn same_face(&self, move_: &Move) -> bool {
         // TODO: one modulo
         return self.as_int() % 6 == move_.as_int() % 6;
+        return (self.as_int() + 18 - move_.as_int()) % 6 == 0;
     }
 
     pub fn random() -> Self {
@@ -89,7 +77,7 @@ impl Move {
 }
 
 impl TryFrom<u8> for Move {
-    type Error = ();
+    type Error = &'static str;
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
@@ -111,7 +99,7 @@ impl TryFrom<u8> for Move {
             15 => Ok(Move::B3),
             16 => Ok(Move::L3),
             17 => Ok(Move::D3),
-            _ => Err(()),
+            _ => Err("Moves are from 0 to 17 included"),
         }
     }
 }

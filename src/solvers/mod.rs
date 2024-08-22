@@ -4,7 +4,7 @@ mod kociemba;
 mod last_layer;
 mod zz;
 
-use crate::{r#move::Move, Cube};
+use crate::{r#move::Move, r#move::MOVES, Cube};
 pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;
@@ -34,7 +34,7 @@ fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
 }
 
 pub fn premover(cube: &mut Cube<3>, solver: fn(&mut Cube<3>) -> Vec<Move>) -> Vec<Move> {
-    let solution = Move::iterator()
+    let solution = MOVES
         .into_iter()
         .map(|move_| {
             let mut clone = cube.clone();

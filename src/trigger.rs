@@ -162,6 +162,10 @@ impl Trigger {
             | Trigger::Hedge3 => 4,
         }
     }
+
+    pub fn opposite(&self) -> Trigger {
+        todo!()
+    }
 }
 
 pub const TRIGGERS_BY_SLOT: &[&[Trigger]] = &[
