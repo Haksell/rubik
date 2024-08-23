@@ -4,7 +4,10 @@ mod kociemba;
 mod last_layer;
 mod zz;
 
-use crate::{r#move::Move, r#move::MOVES, Cube};
+use crate::{
+    r#move::{Move, MOVES},
+    Cube, Puzzle,
+};
 pub use cfop::{cfop, NUM_CROSSES};
 pub use iddfs::iddfs;
 pub use kociemba::kociemba;

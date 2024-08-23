@@ -1,6 +1,7 @@
 use crate::color::Color;
 use crate::r#move::Move;
 use crate::trigger::Trigger;
+use crate::{moves_runtime, Puzzle};
 use colored::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
@@ -42,21 +43,6 @@ macro_rules! cub3 {
     };
 }
 
-#[macro_export]
-macro_rules! moves_runtime {
-    ($sequence:expr) => {{
-        let mut moves_vec = Vec::new();
-        let as_moves = $sequence.split_whitespace().map(Move::try_from);
-        for move_ in as_moves {
-            match move_ {
-                Ok(m) => moves_vec.push(m),
-                Err(_) => panic!("Invalid move in scramble sequence: {}", $sequence),
-            }
-        }
-        moves_vec
-    }};
-}
-
 // Always fronting Green face
 impl<const N: usize> Cube<N> {
     pub fn new() -> Cube<N> {
@@ -86,7 +72,61 @@ impl<const N: usize> Cube<N> {
         }
     }
 
-    pub fn do_move(&mut self, move_: Move) {
+    pub fn scramble(&mut self, sequence: &str) {
+        moves_runtime!(sequence)
+            .iter()
+            .for_each(|&move_| self.do_move(move_));
+    }
+
+    pub fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
+        let mut sequence: Vec<Move> = Vec::new();
+
+        while sequence.len() < iterations {
+            let move_ = Move::random();
+            if !sequence.is_empty() && move_ == sequence.last().unwrap().opposite() {
+                continue;
+            }
+            self.do_move(move_);
+            sequence.push(move_);
+        }
+        sequence
+    }
+
+    fn rotate_clockwise(&mut self, face: Color) {
+        // Transpose
+        let start = face as usize * N * N;
+        for y in 0..N {
+            for x in y + 1..N {
+                self.faces.swap(start + y * N + x, start + x * N + y);
+            }
+        }
+
+        // Reverse rows
+        for y in 0..N {
+            let start = start + y * N;
+            let end = start + N;
+            self.faces[start..end].reverse();
+        }
+    }
+
+    pub fn get_face(&self, face: Color) -> Vec<Color> {
+        let start = face as usize * N * N;
+        let end = (face as usize + 1) * N * N;
+        self.faces[start..end].to_vec()
+    }
+}
+
+impl Cube<3> {
+    // TODO: optimize
+    pub fn do_trigger(&mut self, trigger: Trigger) {
+        for move_ in trigger.moves() {
+            self.do_move(move_);
+        }
+    }
+}
+
+impl<const N: usize> Puzzle for Cube<N> {
+    fn do_move(&mut self, move_: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
         // TODO: Implement double and prime moves without loops
         match move_ {
@@ -322,82 +362,14 @@ impl<const N: usize> Cube<N> {
         // println!("{:?}", self.faces);
         //println!("{}", self);
     }
-
-    pub fn scramble(&mut self, sequence: &str) {
-        moves_runtime!(sequence)
-            .iter()
-            .for_each(|&move_| self.do_move(move_));
-    }
-
-    pub fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
-        let mut sequence: Vec<Move> = Vec::new();
-
-        while sequence.len() < iterations {
-            let move_ = Move::random();
-            if !sequence.is_empty() && move_ == sequence.last().unwrap().opposite() {
-                continue;
-            }
-            self.do_move(move_);
-            sequence.push(move_);
-        }
-        sequence
-    }
-
-    fn rotate_clockwise(&mut self, face: Color) {
-        // Transpose
-        let start = face as usize * N * N;
-        for y in 0..N {
-            for x in y + 1..N {
-                self.faces.swap(start + y * N + x, start + x * N + y);
-            }
-        }
-
-        // Reverse rows
-        for y in 0..N {
-            let start = start + y * N;
-            let end = start + N;
-            self.faces[start..end].reverse();
-        }
-    }
-
-    pub fn get_face(&self, face: Color) -> Vec<Color> {
-        let start = face as usize * N * N;
-        let end = (face as usize + 1) * N * N;
-        self.faces[start..end].to_vec()
-    }
-}
-
-impl Cube<3> {
-    // TODO: optimize
-    pub fn do_trigger(&mut self, trigger: Trigger) {
-        for move_ in trigger.moves() {
-            self.do_move(move_);
-        }
-    }
 }
 
 impl<const N: usize> Display for Cube<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        //for i in 0..6 {
-        //    println!("{:?}", &self.faces[i * N * N..(i + 1) * N * N]);
-        //}
-
-        fn colored(color: &Color) -> String {
-            match color {
-                Color::WHITE => "■".truecolor(0xff, 0xff, 0xff),
-                Color::RED => "■".truecolor(0xff, 0x12, 0x34),
-                Color::GREEN => "■".truecolor(0x00, 0x9b, 0x48),
-                Color::YELLOW => "■".truecolor(0xff, 0xd5, 0x00),
-                Color::ORANGE => "■".truecolor(0xff, 0x58, 0x00),
-                Color::BLUE => "■".truecolor(0x00, 0x46, 0xad),
-            }
-            .to_string()
-        }
-
         fn format(face: &[Color], size: usize, line: usize) -> String {
             face[line * size..(line + 1) * size]
                 .iter()
-                .map(|c| colored(c))
+                .map(ToString::to_string)
                 .collect::<Vec<_>>()
                 .join(" ")
         }
@@ -438,7 +410,7 @@ impl<const N: usize> Display for Cube<N> {
 #[cfg(test)]
 mod tests {
     use super::Cube;
-    use crate::r#move::Move;
+    use crate::{r#move::Move, Puzzle};
 
     #[test]
     fn test_is_solved_generic() {

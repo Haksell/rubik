@@ -1,4 +1,4 @@
-use crate::{r#move::Move, Cube};
+use crate::{r#move::Move, Cube, Puzzle};
 
 pub fn iddfs(mut start: Cube<2>) -> Vec<Move> {
     fn search(cur: &mut Cube<2>, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {

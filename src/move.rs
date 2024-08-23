@@ -1,5 +1,20 @@
 use std::fmt::{Debug, Formatter};
 
+#[macro_export]
+macro_rules! moves_runtime {
+    ($sequence:expr) => {{
+        let mut moves_vec = Vec::new();
+        let as_moves = $sequence.split_whitespace().map(Move::try_from);
+        for move_ in as_moves {
+            match move_ {
+                Ok(m) => moves_vec.push(m),
+                Err(_) => panic!("Invalid move in scramble sequence: {}", $sequence),
+            }
+        }
+        moves_vec
+    }};
+}
+
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq)]
 pub enum Move {
@@ -43,8 +58,6 @@ impl Move {
     }
 
     pub fn same_face(&self, move_: &Move) -> bool {
-        // TODO: one modulo
-        return self.as_int() % 6 == move_.as_int() % 6;
         return (self.as_int() + 18 - move_.as_int()) % 6 == 0;
     }
 

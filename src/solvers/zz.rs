@@ -4,7 +4,7 @@ use crate::color::Color;
 use crate::sticker::CORNERS;
 use crate::tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT};
 use crate::{r#move::Move, Cube};
-use crate::{Sticker, EDGES};
+use crate::{Puzzle, Sticker, EDGES};
 
 const NUM_LINES: usize = 12 * 11;
 pub const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;
@@ -268,7 +268,7 @@ mod tests {
     use crate::{
         cub3,
         r#move::{Move, MOVES_RUL},
-        Cube,
+        Cube, Puzzle,
     };
 
     #[test]

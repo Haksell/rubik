@@ -2,14 +2,15 @@
 
 use clap::Parser;
 use rubik::{
-    cub3,
-    solvers::{premover, zz},
+    cub2, cub3,
+    r#move::Move,
+    solvers::{self, premover, zz},
     tables::clear_cache,
-    Cube,
+    Cube, Puzzle, Pyraminx,
 };
 
 #[derive(Parser, Debug)]
-#[command(about, long_about = None)]
+#[command(name = "rubik", about, long_about = None)]
 struct Args {
     #[arg(short, long)]
     visualize: bool,
@@ -17,8 +18,11 @@ struct Args {
     #[arg(long)]
     explain: bool, // TODO Comprendre
 
-    #[arg(long)]
-    pyraminx: bool,
+    #[arg(long, default_value_t = String::from("Cube"))]
+    puzzle: String,
+
+    #[arg(long, default_value_t = 3)]
+    size: usize,
 
     #[arg(index(1))]
     scramble: Option<String>,
@@ -27,13 +31,27 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut cube = cub3!();
+    match args.size {
+        2..=3 => (),
+        _ => panic!("Size should be between 2 or 3 included"),
+    };
+
+    let mut puzzle: Box<dyn Puzzle> = match (args.puzzle.to_lowercase().as_str(), args.size) {
+        ("cube", 2) => Box::new(cub2!()),
+        ("cube", 3) => Box::new(cub3!()),
+        ("pyraminx", 2) => panic!("Pyraminx can only be of size 3"),
+        ("pyraminx", 3) => Box::new(Pyraminx::new()),
+        _ => panic!(
+            "Invalid puzzle '{}'. Expected 'Cube' or 'Pyraminx'",
+            args.puzzle
+        ),
+    };
 
     if let Some(sequence) = args.scramble {
-        cube.scramble(&sequence);
-        println!("{cube}");
+        puzzle.scramble(&sequence);
+        println!("{puzzle}");
     } else {
-        let sequence = cube.rand_scramble(50);
+        let sequence = puzzle.rand_scramble(50);
         println!(
             "No scramble sequence provided, using the following one:\n{}",
             sequence
@@ -44,8 +62,13 @@ fn main() {
         );
     }
 
-    if args.visualize {
-        // TODO Visualize solution
+    // TODO Use corresponding solver
+    if let Some(solution) = Some(<Vec<Move>>::new()) {
+        if args.visualize {
+            // TODO Visualize solution
+        }
+    } else {
+        println!("Failed to find solution");
     }
     clear_cache();
 }
