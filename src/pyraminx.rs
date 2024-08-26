@@ -1,80 +1,97 @@
+use move_macro::moves;
+
 use crate::color::Color;
 use crate::r#move::Move;
-use crate::trigger::Trigger;
 use crate::Puzzle;
-use colored::*;
 use std::convert::TryFrom;
-use std::fmt::{Display, Error, Formatter};
+use std::fmt::{Display, Formatter};
 use std::hash::Hash;
 
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub struct Pyraminx {
+pub struct Pyraminx<const N: usize> {
     pub faces: Vec<Color>,
 }
 
-impl Pyraminx {
-    pub fn new() -> Pyraminx {
-        const N: usize = 3;
+impl<const N: usize> Pyraminx<N> {
+    pub fn new() -> Pyraminx<N> {
+        const ORDER: [Color; 4] = [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW];
+
         Pyraminx {
-            faces: (0..4 * N * N)
-                .map(|i| Color::try_from((i / (N * N)) as u8).unwrap())
+            faces: (0..ORDER.len() * N * N)
+                .map(|i| ORDER[i / (N * N)])
                 .collect(),
         }
     }
 
-    pub fn get_face(&self, face: Color) -> Vec<Color> {
-        const N: usize = 3;
-        let start = face as usize * N * N;
-        let end = (face as usize + 1) * N * N;
-        self.faces[start..end].to_vec()
+    fn get_face(&self, face: usize) -> &[Color] {
+        let start = face * N * N;
+        let end = (face + 1) * N * N;
+        &self.faces[start..end]
     }
 }
 
-impl Puzzle for Pyraminx {
+impl<const N: usize> Puzzle for Pyraminx<N> {
     fn do_move(&mut self, move_: Move) {
-        todo!()
+        match move_ {
+            Move::F => todo!(),
+            Move::R => todo!(),
+            Move::U => todo!(),
+            Move::B => todo!(),
+            Move::L => todo!(),
+            Move::D => todo!(),
+            Move::F2 => todo!(),
+            Move::R2 => todo!(),
+            Move::U2 => todo!(),
+            Move::B2 => todo!(),
+            Move::L2 => todo!(),
+            Move::D2 => todo!(),
+            _ => panic!("Invalid move for pyraminx: '{:?}'", move_), // TODO Or maybe ignore ?
+        }
+    }
+
+    fn allowed_moves(&self) -> Vec<Move> {
+        moves!("R L U B R2 L2 U2 B2")
     }
 }
 
-impl Display for Pyraminx {
+impl<const N: usize> Display for Pyraminx<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        const N: usize = 3;
-
-        todo!();
-
-        fn format(face: &[Color], size: usize, line: usize) -> String {
-            face[line * size..(line + 1) * size]
+        fn format(face: &[Color], line: usize) -> String {
+            let start: usize = line * line;
+            face[start..start + (line * 2 + 1)]
                 .iter()
                 .map(ToString::to_string)
                 .collect::<Vec<_>>()
                 .join(" ")
         }
 
-        let face = self.get_face(Color::WHITE);
-        for line in 0..N {
-            writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
-        }
-
-        let faces: Vec<Vec<Color>> = vec![4, 2, 1, 5]
+        let faces: Vec<&[Color]> = vec![0, 1, 2]
             .into_iter()
-            .map(|f| self.get_face(Color::try_from(f).unwrap()))
+            .map(|f| self.get_face(f))
             .collect();
 
         for line in 0..N {
             writeln!(
                 f,
-                "{}",
+                "{}{}",
+                " ".repeat((N - line - 1) * 2).as_str(),
                 faces
                     .iter()
-                    .map(|face| format(face, N, line))
+                    .map(|face| format(face, line))
                     .collect::<Vec<String>>()
-                    .join(" ")
+                    .join(" ".repeat((N - line - 1) * 4 + 1).as_str())
             )?;
         }
 
-        let face = self.get_face(Color::YELLOW);
+        let face = self.get_face(3);
         for line in 0..N {
-            writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
+            writeln!(
+                f,
+                "{}{}{}",
+                " ".repeat((N + N - 1) * 2).as_str(),
+                " ".repeat((line) * 2).as_str(),
+                format(&face, N - line - 1)
+            )?;
         }
 
         Ok(())

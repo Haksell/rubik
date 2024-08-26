@@ -3,6 +3,8 @@ use std::fmt;
 use crate::{moves_runtime, r#move::Move};
 
 pub trait Puzzle: fmt::Display {
+    fn allowed_moves(&self) -> Vec<Move>; // TODO Maybe return a reference or something
+
     fn do_move(&mut self, move_: Move);
 
     fn scramble(&mut self, sequence: &str) {
@@ -12,6 +14,7 @@ pub trait Puzzle: fmt::Display {
     }
 
     fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
+        // TODO Better scrambler
         let mut sequence: Vec<Move> = Vec::new();
 
         while sequence.len() < iterations {

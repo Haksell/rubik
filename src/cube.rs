@@ -2,7 +2,6 @@ use crate::color::Color;
 use crate::r#move::Move;
 use crate::trigger::Trigger;
 use crate::{moves_runtime, Puzzle};
-use colored::*;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
@@ -46,9 +45,18 @@ macro_rules! cub3 {
 // Always fronting Green face
 impl<const N: usize> Cube<N> {
     pub fn new() -> Cube<N> {
+        const ORDER: [Color; 6] = [
+            Color::WHITE,
+            Color::RED,
+            Color::GREEN,
+            Color::YELLOW,
+            Color::ORANGE,
+            Color::BLUE,
+        ];
+
         Cube {
-            faces: (0..6 * N * N)
-                .map(|i| Color::try_from((i / (N * N)) as u8).unwrap())
+            faces: (0..ORDER.len() * N * N)
+                .map(|i| ORDER[i / (N * N)])
                 .collect(),
         }
     }
@@ -72,26 +80,6 @@ impl<const N: usize> Cube<N> {
         }
     }
 
-    pub fn scramble(&mut self, sequence: &str) {
-        moves_runtime!(sequence)
-            .iter()
-            .for_each(|&move_| self.do_move(move_));
-    }
-
-    pub fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
-        let mut sequence: Vec<Move> = Vec::new();
-
-        while sequence.len() < iterations {
-            let move_ = Move::random();
-            if !sequence.is_empty() && move_ == sequence.last().unwrap().opposite() {
-                continue;
-            }
-            self.do_move(move_);
-            sequence.push(move_);
-        }
-        sequence
-    }
-
     fn rotate_clockwise(&mut self, face: Color) {
         // Transpose
         let start = face as usize * N * N;
@@ -109,10 +97,10 @@ impl<const N: usize> Cube<N> {
         }
     }
 
-    pub fn get_face(&self, face: Color) -> Vec<Color> {
+    fn get_face(&self, face: usize) -> &[Color] {
         let start = face as usize * N * N;
         let end = (face as usize + 1) * N * N;
-        self.faces[start..end].to_vec()
+        &self.faces[start..end]
     }
 }
 
@@ -362,6 +350,10 @@ impl<const N: usize> Puzzle for Cube<N> {
         // println!("{:?}", self.faces);
         //println!("{}", self);
     }
+
+    fn allowed_moves(&self) -> Vec<Move> {
+        todo!();
+    }
 }
 
 impl<const N: usize> Display for Cube<N> {
@@ -370,18 +362,18 @@ impl<const N: usize> Display for Cube<N> {
             face[line * size..(line + 1) * size]
                 .iter()
                 .map(ToString::to_string)
-                .collect::<Vec<_>>()
+                .collect::<Vec<String>>()
                 .join(" ")
         }
 
-        let face = self.get_face(Color::WHITE);
+        let face = self.get_face(0);
         for line in 0..N {
             writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
         }
 
-        let faces: Vec<Vec<Color>> = vec![4, 2, 1, 5]
+        let faces: Vec<&[Color]> = vec![4, 2, 1, 5]
             .into_iter()
-            .map(|f| self.get_face(Color::try_from(f).unwrap()))
+            .map(|f| self.get_face(f))
             .collect();
 
         for line in 0..N {
@@ -396,7 +388,7 @@ impl<const N: usize> Display for Cube<N> {
             )?;
         }
 
-        let face = self.get_face(Color::YELLOW);
+        let face = self.get_face(3);
         for line in 0..N {
             writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
         }

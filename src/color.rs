@@ -57,7 +57,6 @@ impl Display for Color {
                 Color::ORANGE => "■".truecolor(0xff, 0x58, 0x00),
                 Color::BLUE => "■".truecolor(0x00, 0x46, 0xad),
             }
-            .to_string()
         )
     }
 }

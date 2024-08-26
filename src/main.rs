@@ -40,7 +40,7 @@ fn main() {
         ("cube", 2) => Box::new(cub2!()),
         ("cube", 3) => Box::new(cub3!()),
         ("pyraminx", 2) => panic!("Pyraminx can only be of size 3"),
-        ("pyraminx", 3) => Box::new(Pyraminx::new()),
+        ("pyraminx", 3) => Box::new(Pyraminx::<3>::new()),
         _ => panic!(
             "Invalid puzzle '{}'. Expected 'Cube' or 'Pyraminx'",
             args.puzzle
@@ -49,7 +49,6 @@ fn main() {
 
     if let Some(sequence) = args.scramble {
         puzzle.scramble(&sequence);
-        println!("{puzzle}");
     } else {
         let sequence = puzzle.rand_scramble(50);
         println!(
@@ -62,8 +61,19 @@ fn main() {
         );
     }
 
+    println!("{puzzle}");
+
     // TODO Use corresponding solver
     if let Some(solution) = Some(<Vec<Move>>::new()) {
+        println!("Solution of {} moves found:", solution.len());
+        println!(
+            "{}",
+            solution
+                .iter()
+                .map(|move_| format!("{:?}", move_))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
         if args.visualize {
             // TODO Visualize solution
         }
@@ -79,7 +89,7 @@ mod tests {
         cub3,
         solvers::{premover, zz},
         tables::clear_cache,
-        Cube,
+        Cube, Puzzle,
     };
 
     fn test_performances_n(n: usize) {
