@@ -18,11 +18,11 @@ struct Args {
     #[arg(long)]
     explain: bool, // TODO Comprendre
 
-    #[arg(long, default_value_t = String::from("Cube"))]
-    puzzle: String,
+    #[arg(long)]
+    puzzle: Option<String>,
 
-    #[arg(long, default_value_t = 3)]
-    size: usize,
+    #[arg(long)]
+    size: Option<usize>,
 
     #[arg(index(1))]
     scramble: Option<String>,
@@ -31,19 +31,22 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    match args.size {
+    let size: usize = args.size.unwrap_or(3);
+    let puzzle_name: String = args.puzzle.unwrap_or("Cube".to_string());
+
+    match size {
         2..=3 => (),
         _ => panic!("Size should be between 2 or 3 included"),
     };
 
-    let mut puzzle: Box<dyn Puzzle> = match (args.puzzle.to_lowercase().as_str(), args.size) {
+    let mut puzzle: Box<dyn Puzzle> = match (puzzle_name.to_lowercase().as_str(), size) {
         ("cube", 2) => Box::new(cub2!()),
         ("cube", 3) => Box::new(cub3!()),
         ("pyraminx", 2) => panic!("Pyraminx can only be of size 3"),
         ("pyraminx", 3) => Box::new(Pyraminx::<3>::new()),
         _ => panic!(
             "Invalid puzzle '{}'. Expected 'Cube' or 'Pyraminx'",
-            args.puzzle
+            puzzle_name
         ),
     };
 
@@ -66,7 +69,7 @@ fn main() {
     // TODO Use corresponding solver
     if let Some(solution) = Some(<Vec<Move>>::new()) {
         if solution.is_empty() {
-            println!("The {} was already solved!", args.puzzle.to_lowercase());
+            println!("The {} was already solved!", puzzle_name.to_lowercase());
         } else {
             println!("Solution of {} moves found:", solution.len());
             println!(
