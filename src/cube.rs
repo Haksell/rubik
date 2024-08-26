@@ -1,7 +1,7 @@
 use crate::color::Color;
 use crate::r#move::Move;
 use crate::trigger::Trigger;
-use crate::{moves_runtime, Puzzle};
+use crate::Puzzle;
 use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;

@@ -65,15 +65,19 @@ fn main() {
 
     // TODO Use corresponding solver
     if let Some(solution) = Some(<Vec<Move>>::new()) {
-        println!("Solution of {} moves found:", solution.len());
-        println!(
-            "{}",
-            solution
-                .iter()
-                .map(|move_| format!("{:?}", move_))
-                .collect::<Vec<String>>()
-                .join(", ")
-        );
+        if solution.is_empty() {
+            println!("The {} was already solved!", args.puzzle.to_lowercase());
+        } else {
+            println!("Solution of {} moves found:", solution.len());
+            println!(
+                "{}",
+                solution
+                    .iter()
+                    .map(|move_| format!("{:?}", move_))
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            );
+        }
         if args.visualize {
             // TODO Visualize solution
         }
