@@ -115,4 +115,9 @@ mod tests {
     fn test_performances_1000() {
         test_performances_n(1000);
     }
+
+    #[test]
+    fn test_performances_100000() {
+        test_performances_n(100000);
+    }
 }

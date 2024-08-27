@@ -354,10 +354,6 @@ impl<const N: usize> Puzzle for Cube<N> {
         //println!("{}", self);
     }
 
-    fn allowed_moves(&self) -> Vec<Move> {
-        todo!();
-    }
-
     fn solve(&self) -> Option<Vec<Move>> {
         match N {
             2 => Some(iddfs(self.to_cube2().unwrap())),
@@ -436,7 +432,19 @@ impl<const N: usize> Display for Cube<N> {
     }
 }
 
-impl DFSAble for Cube<2> {}
+impl DFSAble for Cube<2> {
+    const ALLOWED_MOVES: &'static [Move] = &[
+        Move::R,
+        Move::R2,
+        Move::R3,
+        Move::F,
+        Move::F2,
+        Move::F3,
+        Move::U,
+        Move::U2,
+        Move::U3,
+    ];
+}
 
 // TODO: impl Cube[Sticker]
 

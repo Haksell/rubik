@@ -1,9 +1,15 @@
 use crate::{r#move::Move, Puzzle};
 
-pub trait DFSAble: Puzzle {}
+pub trait DFSAble: Puzzle {
+    const ALLOWED_MOVES: &'static [Move];
+}
 
-pub fn iddfs(mut start: impl DFSAble) -> Vec<Move> {
-    fn search(cur: &mut impl DFSAble, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
+pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
+    fn search<T: DFSAble>(
+        cur: &mut T,
+        path: &mut Vec<Move>,
+        max_depth: usize,
+    ) -> Option<Vec<Move>> {
         if cur.is_solved() {
             return Some(path.clone());
         }
@@ -12,17 +18,7 @@ pub fn iddfs(mut start: impl DFSAble) -> Vec<Move> {
             return None;
         }
 
-        for &move_ in &[
-            Move::R,
-            Move::R2,
-            Move::R3,
-            Move::F,
-            Move::F2,
-            Move::F3,
-            Move::U,
-            Move::U2,
-            Move::U3,
-        ] {
+        for &move_ in T::ALLOWED_MOVES {
             if !path.is_empty() && path.last().unwrap().same_face(&move_) {
                 continue;
             }
@@ -41,10 +37,12 @@ pub fn iddfs(mut start: impl DFSAble) -> Vec<Move> {
     }
 
     let mut max_depth = 1;
+    let mut path = Vec::new();
     loop {
-        if let Some(path) = search(&mut start, &mut Vec::new(), max_depth) {
-            return path;
+        if let Some(moves) = search(&mut start, &mut path, max_depth) {
+            return moves;
         }
+        path.clear();
         max_depth += 1;
     }
 }

@@ -1,10 +1,7 @@
-use move_macro::moves;
-
 use crate::color::Color;
 use crate::r#move::Move;
 use crate::solvers::{iddfs, DFSAble};
 use crate::Puzzle;
-use std::convert::TryFrom;
 use std::fmt::{Display, Formatter};
 use std::hash::Hash;
 
@@ -54,24 +51,42 @@ impl<const N: usize> Pyraminx<N> {
 impl<const N: usize> Puzzle for Pyraminx<N> {
     fn do_move(&mut self, move_: Move) {
         match move_ {
-            Move::F => todo!(),
             Move::R => todo!(),
-            Move::U => todo!(),
+            Move::U => {
+                let idxs: Vec<usize> = (0..N * N - (N + N - 1)).collect();
+
+                // Face 1 to face 0
+
+                idxs.iter().for_each(|&i| self.faces.swap(N * N + i, i));
+
+                // Face 1 to face 2
+                idxs.iter()
+                    .for_each(|&i| self.faces.swap(N * N + i, N * N * 2 + i));
+            }
             Move::B => todo!(),
             Move::L => todo!(),
-            Move::D => todo!(),
-            Move::F2 => todo!(),
-            Move::R2 => todo!(),
-            Move::U2 => todo!(),
-            Move::B2 => todo!(),
-            Move::L2 => todo!(),
-            Move::D2 => todo!(),
+            Move::R2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::R);
+                }
+            }
+            Move::U2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::U);
+                }
+            }
+            Move::B2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::B);
+                }
+            }
+            Move::L2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::L);
+                }
+            }
             _ => panic!("Invalid move for pyraminx: '{:?}'", move_), // TODO Or maybe ignore ?
-        }
-    }
-
-    fn allowed_moves(&self) -> Vec<Move> {
-        moves!("R L U B R2 L2 U2 B2")
+        };
     }
 
     fn solve(&self) -> Option<Vec<Move>> {
@@ -92,8 +107,30 @@ impl<const N: usize> Puzzle for Pyraminx<N> {
     }
 }
 
-impl DFSAble for Pyraminx<2> {}
-impl DFSAble for Pyraminx<3> {}
+impl DFSAble for Pyraminx<2> {
+    const ALLOWED_MOVES: &'static [Move] = &[
+        Move::R,
+        Move::U,
+        Move::B,
+        Move::L,
+        Move::R2,
+        Move::U2,
+        Move::B2,
+        Move::L2,
+    ];
+}
+impl DFSAble for Pyraminx<3> {
+    const ALLOWED_MOVES: &'static [Move] = &[
+        Move::R,
+        Move::U,
+        Move::B,
+        Move::L,
+        Move::R2,
+        Move::U2,
+        Move::B2,
+        Move::L2,
+    ];
+}
 
 impl<const N: usize> Display for Pyraminx<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
