@@ -5,6 +5,10 @@ use crate::{moves_runtime, r#move::Move};
 pub trait Puzzle: fmt::Display {
     fn allowed_moves(&self) -> Vec<Move>; // TODO Maybe return a reference or something
 
+    fn solve(&self) -> Option<Vec<Move>>;
+
+    fn is_solved(&self) -> bool;
+
     fn do_move(&mut self, move_: Move);
 
     fn scramble(&mut self, sequence: &str) {

@@ -1,7 +1,9 @@
-use crate::{r#move::Move, Cube, Puzzle};
+use crate::{r#move::Move, Puzzle};
 
-pub fn iddfs(mut start: Cube<2>) -> Vec<Move> {
-    fn search(cur: &mut Cube<2>, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
+pub trait DFSAble: Puzzle {}
+
+pub fn iddfs(mut start: impl DFSAble) -> Vec<Move> {
+    fn search(cur: &mut impl DFSAble, path: &mut Vec<Move>, max_depth: usize) -> Option<Vec<Move>> {
         if cur.is_solved() {
             return Some(path.clone());
         }

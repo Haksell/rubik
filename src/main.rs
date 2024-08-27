@@ -1,13 +1,7 @@
 #![allow(dead_code)] // TODO: REMOVE
 
 use clap::Parser;
-use rubik::{
-    cub2, cub3,
-    r#move::Move,
-    solvers::{self, premover, zz},
-    tables::clear_cache,
-    Cube, Puzzle, Pyraminx,
-};
+use rubik::{cub2, cub3, tables::clear_cache, Cube, Puzzle, Pyraminx};
 
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
@@ -66,8 +60,7 @@ fn main() {
 
     println!("{puzzle}");
 
-    // TODO Use corresponding solver
-    if let Some(solution) = Some(<Vec<Move>>::new()) {
+    if let Some(solution) = puzzle.solve() {
         if solution.is_empty() {
             println!("The {} was already solved!", puzzle_name.to_lowercase());
         } else {

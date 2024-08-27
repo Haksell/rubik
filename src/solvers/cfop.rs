@@ -5,7 +5,7 @@ use crate::trigger::{Trigger, TRIGGERS_BY_SLOT};
 use crate::Puzzle;
 use crate::{color::Color, r#move::Move, Cube, EDGES};
 use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::collections::BinaryHeap;
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 

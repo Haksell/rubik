@@ -1,8 +1,8 @@
 use crate::color::Color;
 use crate::r#move::Move;
+use crate::solvers::{iddfs, premover, zz, DFSAble};
 use crate::trigger::Trigger;
 use crate::Puzzle;
-use std::convert::TryFrom;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
 
@@ -61,24 +61,27 @@ impl<const N: usize> Cube<N> {
         }
     }
 
-    // TODO: from_scramble
-
-    // Kind of sucks, but we can't implement the same method for Cube<2> and Cube<N >= 3> without nightly
-    pub fn is_solved(&self) -> bool {
+    pub fn to_cube2(&self) -> Result<Cube<2>, &'static str> {
         if N == 2 {
-            self.faces[16] == self.faces[18]
-                && self.faces[17] == self.faces[18]
-                && self.faces[19] == self.faces[18]
-                && self.faces[20] == self.faces[23]
-                && self.faces[21] == self.faces[23]
-                && self.faces[22] == self.faces[23]
-                && self.faces[12] == self.faces[14]
-                && self.faces[13] == self.faces[14]
-                && self.faces[15] == self.faces[14]
+            Ok(Cube {
+                faces: self.faces.clone(),
+            })
         } else {
-            (0..6 * N * N).all(|i| self.faces[i] == Color::try_from((i / (N * N)) as u8).unwrap())
+            Err("Cannot convert Cube<N> to Cube<3>: N is not 3")
         }
     }
+
+    pub fn to_cube3(&self) -> Result<Cube<3>, &'static str> {
+        if N == 3 {
+            Ok(Cube {
+                faces: self.faces.clone(),
+            })
+        } else {
+            Err("Cannot convert Cube<N> to Cube<3>: N is not 3")
+        }
+    }
+
+    // TODO: from_scramble
 
     fn rotate_clockwise(&mut self, face: Color) {
         // Transpose
@@ -354,6 +357,42 @@ impl<const N: usize> Puzzle for Cube<N> {
     fn allowed_moves(&self) -> Vec<Move> {
         todo!();
     }
+
+    fn solve(&self) -> Option<Vec<Move>> {
+        match N {
+            2 => Some(iddfs(self.to_cube2().unwrap())),
+            3 => Some(premover(&mut self.to_cube3().unwrap(), zz)),
+            _ => None,
+        }
+    }
+
+    // Kind of sucks, but we can't implement the same method for Cube<2> and Cube<N >= 3> without nightly
+    fn is_solved(&self) -> bool {
+        if N == 2 {
+            self.faces[16] == self.faces[18]
+                && self.faces[17] == self.faces[18]
+                && self.faces[19] == self.faces[18]
+                && self.faces[20] == self.faces[23]
+                && self.faces[21] == self.faces[23]
+                && self.faces[22] == self.faces[23]
+                && self.faces[12] == self.faces[14]
+                && self.faces[13] == self.faces[14]
+                && self.faces[15] == self.faces[14]
+        } else {
+            const ORDER: [Color; 6] = [
+                Color::WHITE,
+                Color::RED,
+                Color::GREEN,
+                Color::YELLOW,
+                Color::ORANGE,
+                Color::BLUE,
+            ];
+            self.faces
+                .iter()
+                .enumerate()
+                .all(|(i, &col)| col == ORDER[i / (N * N)])
+        }
+    }
 }
 
 impl<const N: usize> Display for Cube<N> {
@@ -396,6 +435,8 @@ impl<const N: usize> Display for Cube<N> {
         Ok(())
     }
 }
+
+impl DFSAble for Cube<2> {}
 
 // TODO: impl Cube[Sticker]
 

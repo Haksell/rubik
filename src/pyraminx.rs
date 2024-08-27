@@ -2,6 +2,7 @@ use move_macro::moves;
 
 use crate::color::Color;
 use crate::r#move::Move;
+use crate::solvers::{iddfs, DFSAble};
 use crate::Puzzle;
 use std::convert::TryFrom;
 use std::fmt::{Display, Formatter};
@@ -20,6 +21,26 @@ impl<const N: usize> Pyraminx<N> {
             faces: (0..ORDER.len() * N * N)
                 .map(|i| ORDER[i / (N * N)])
                 .collect(),
+        }
+    }
+
+    pub fn to_pyraminx2(&self) -> Result<Pyraminx<2>, &'static str> {
+        if N == 2 {
+            Ok(Pyraminx {
+                faces: self.faces.clone(),
+            })
+        } else {
+            Err("Cannot convert Pyraminx<N> to Pyraminx<3>: N is not 3")
+        }
+    }
+
+    pub fn to_pyraminx3(&self) -> Result<Pyraminx<3>, &'static str> {
+        if N == 3 {
+            Ok(Pyraminx {
+                faces: self.faces.clone(),
+            })
+        } else {
+            Err("Cannot convert Pyraminx<N> to Pyraminx<3>: N is not 3")
         }
     }
 
@@ -52,7 +73,27 @@ impl<const N: usize> Puzzle for Pyraminx<N> {
     fn allowed_moves(&self) -> Vec<Move> {
         moves!("R L U B R2 L2 U2 B2")
     }
+
+    fn solve(&self) -> Option<Vec<Move>> {
+        match N {
+            2 => Some(iddfs(self.to_pyraminx2().unwrap())),
+            3 => Some(iddfs(self.to_pyraminx3().unwrap())),
+            _ => None,
+        }
+    }
+
+    // TODO Better check ?
+    fn is_solved(&self) -> bool {
+        const ORDER: [Color; 4] = [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW];
+        self.faces
+            .iter()
+            .enumerate()
+            .all(|(i, &col)| col == ORDER[i / (N * N)])
+    }
 }
+
+impl DFSAble for Pyraminx<2> {}
+impl DFSAble for Pyraminx<3> {}
 
 impl<const N: usize> Display for Pyraminx<N> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -61,7 +102,7 @@ impl<const N: usize> Display for Pyraminx<N> {
             face[start..start + (line * 2 + 1)]
                 .iter()
                 .map(ToString::to_string)
-                .collect::<Vec<_>>()
+                .collect::<Vec<String>>()
                 .join(" ")
         }
 

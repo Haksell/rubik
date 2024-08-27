@@ -9,7 +9,7 @@ use crate::{
     Cube, Puzzle,
 };
 pub use cfop::{cfop, NUM_CROSSES};
-pub use iddfs::iddfs;
+pub use iddfs::{iddfs, DFSAble};
 pub use kociemba::kociemba;
 pub use zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT};
 
