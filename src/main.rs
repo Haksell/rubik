@@ -1,12 +1,12 @@
-use std::sync::{Arc, Mutex};
-use std::thread;
-use std::time::Duration;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use kiss3d::camera::ArcBall;
 use kiss3d::light::Light;
 use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use rubik::color::Color;
 use rubik::cube::Cube;
 use rubik::r#move::Move;
@@ -18,7 +18,7 @@ const ZOOM: f32 = 3.2;
 const N: usize = 3;
 const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
 const WINDOW_SIZE: u32 = 800;
-const MOVE_INTERVAL_MS: u64 = 500;
+const MOVE_INTERVAL_MS: f64 = 100.0;
 
 fn create_cubie_face(
     window: &mut Window,
@@ -33,15 +33,19 @@ fn create_cubie_face(
     face
 }
 
-fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
-    let display_color = |c: Color| match c {
+fn display_color(color: Color) -> [f32; 3] {
+    match color {
         Color::WHITE => [1.0, 1.0, 1.0],
         Color::RED => [1.0, 0.071, 0.204],
         Color::GREEN => [0.0, 0.608, 0.282],
         Color::YELLOW => [1.0, 0.835, 0.0],
         Color::ORANGE => [1.0, 0.345, 0.0],
         Color::BLUE => [0.0, 0.275, 0.678],
-    };
+    }
+}
+
+fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) -> Vec<SceneNode> {
+    let mut squares: Vec<SceneNode> = Vec::new();
 
     let translation_addition = match face {
         Color::WHITE => -Vector3::y() * 0.5,
@@ -80,13 +84,14 @@ fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
             (z as f32 - 2.0) * CUBIE_SIZE,
         );
 
-        create_cubie_face(
+        squares.push(create_cubie_face(
             window,
             display_color(col),
             translation.vector + translation_addition,
             rotation,
-        );
+        ));
     }
+    squares
 }
 
 fn get_coords(i: usize, n: usize, face: Color) -> (f32, f32, f32) {
@@ -122,10 +127,25 @@ fn get_coords(i: usize, n: usize, face: Color) -> (f32, f32, f32) {
     }
 }
 
-fn draw_cube<const N: usize>(cube: &Cube<N>, window: &mut Window) {
+fn draw_cube<const N: usize>(cube: &Cube<N>, window: &mut Window) -> Vec<SceneNode> {
     (0..6)
         .map(|i| Color::try_from(i).unwrap())
-        .for_each(|face| draw_face(cube, window, face));
+        .flat_map(|face| draw_face(cube, window, face))
+        .collect::<Vec<SceneNode>>()
+}
+
+const MOVE_SET: [Move; 6] = [Move::R, Move::U, Move::F, Move::L, Move::D, Move::B];
+
+fn random_moves(num_moves: usize) -> Vec<Move> {
+    let mut rng = thread_rng();
+    let mut sequence = Vec::with_capacity(num_moves);
+
+    for _ in 0..num_moves {
+        let random_move = MOVE_SET.choose(&mut rng).unwrap();
+        sequence.push(*random_move);
+    }
+
+    sequence
 }
 
 fn main() {
@@ -140,26 +160,42 @@ fn main() {
 
     let mut core = window.add_cube(CORE_SIZE, CORE_SIZE, CORE_SIZE);
     core.set_local_translation(Translation3::new(0.0, 0.0, 0.0));
-    core.set_color(198.0 / 255.0, 3.0 / 255.0, 252.0 / 255.0);
+    core.set_color(0.0, 0.0, 0.0);
 
-    let cube = Arc::new(Mutex::new(Cube::<N>::new()));
+    let mut cube = Cube::<N>::new();
 
-    // Spawn a new thread to perform moves on the cube
-    let cube_clone = Arc::clone(&cube);
-    thread::spawn(move || {
-        loop {
-            {
-                let mut cube = cube_clone.lock().unwrap();
-                cube.do_move(Move::R); // Perform any move you want
-                println!("{:?}", cube.faces);
-            }
-            thread::sleep(Duration::from_millis(MOVE_INTERVAL_MS)); // Sleep for X seconds
-        }
-    });
+    let t0 = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_millis();
+
+    let moves = vec![Move::R, Move::U, Move::R3, Move::U3].repeat(6 * 10); // Sexy spam
+                                                                           // let moves = random_moves(500);
+
+    let mut i: usize = 0;
+
+    let mut visualized = draw_cube(&cube, &mut window);
 
     while window.render_with_camera(&mut cam) {
-        // Lock the cube to prevent concurrent access during rendering
-        let cube = cube.lock().unwrap();
-        draw_cube(&*cube, &mut window);
+        if i < moves.len() {
+            let now = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis();
+            let idx = ((now - t0) as f64 / MOVE_INTERVAL_MS).floor() as usize;
+
+            if idx > i {
+                cube.do_move(moves[i]);
+                i = idx;
+            }
+
+            visualized
+                .iter_mut()
+                .zip(cube.faces.iter())
+                .for_each(|(node, &color)| {
+                    let [r, g, b] = display_color(color);
+                    node.set_color(r, g, b)
+                });
+        }
     }
 }
