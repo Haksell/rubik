@@ -1,8 +1,12 @@
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+
 use kiss3d::camera::ArcBall;
 use kiss3d::light::Light;
 use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
-use kiss3d::window::{CanvasSetup, Window};
+use kiss3d::window::Window;
 use rubik::color::Color;
 use rubik::cube::Cube;
 use rubik::r#move::Move;
@@ -14,6 +18,7 @@ const ZOOM: f32 = 3.2;
 const N: usize = 3;
 const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
 const WINDOW_SIZE: u32 = 800;
+const MOVE_INTERVAL_MS: u64 = 500;
 
 fn create_cubie_face(
     window: &mut Window,
@@ -44,7 +49,7 @@ fn draw_face<const N: usize>(cube: &Cube<N>, window: &mut Window, face: Color) {
         Color::GREEN => -Vector3::z() * 0.5,
         Color::YELLOW => Vector3::y() * 0.5,
         Color::ORANGE => Vector3::x() * 0.5,
-        Color::BLUE => -Vector3::z() * 0.5,
+        Color::BLUE => Vector3::z() * 0.5,
     };
 
     let rotation = match face {
@@ -103,7 +108,7 @@ fn get_coords(i: usize, n: usize, face: Color) -> (f32, f32, f32) {
             i % n + 1.0
         };
         let y = n - (i.div_euclid(n)) % n - 1.0;
-        let z = if face == Color::GREEN { 1.0 } else { n + 1.0 };
+        let z = if face == Color::GREEN { 1.0 } else { n };
         (x, y, z)
     } else {
         let x = if face == Color::ORANGE { n } else { 1.0 };
@@ -137,17 +142,24 @@ fn main() {
     core.set_local_translation(Translation3::new(0.0, 0.0, 0.0));
     core.set_color(198.0 / 255.0, 3.0 / 255.0, 252.0 / 255.0);
 
-    let mut cube: Cube<N> = Cube::<N>::new();
+    let cube = Arc::new(Mutex::new(Cube::<N>::new()));
 
-    // cube.do_move(Move::R);
-    // cube.do_move(Move::U);
-    // cube.do_move(Move::R3);
-    // cube.do_move(Move::U3);
+    // Spawn a new thread to perform moves on the cube
+    let cube_clone = Arc::clone(&cube);
+    thread::spawn(move || {
+        loop {
+            {
+                let mut cube = cube_clone.lock().unwrap();
+                cube.do_move(Move::R); // Perform any move you want
+                println!("{:?}", cube.faces);
+            }
+            thread::sleep(Duration::from_millis(MOVE_INTERVAL_MS)); // Sleep for X seconds
+        }
+    });
 
-    println!("{cube}");
-    println!("{:?}", cube.faces);
-
-    draw_cube(&cube, &mut window);
-
-    while window.render_with_camera(&mut cam) {}
+    while window.render_with_camera(&mut cam) {
+        // Lock the cube to prevent concurrent access during rendering
+        let cube = cube.lock().unwrap();
+        draw_cube(&*cube, &mut window);
+    }
 }
