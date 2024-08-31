@@ -390,8 +390,8 @@ impl<const N: usize> Puzzle for Cube<N> {
         }
     }
 
-    fn visualize(&self, moves: &Vec<Move>) {
-        todo!()
+    fn get_faces(&self) -> &Vec<Color> {
+        &self.faces
     }
 }
 

@@ -75,8 +75,7 @@ fn main() {
             );
         }
         if args.visualize {
-            // TODO Visualize solution
-            puzzle.visualize(&solution);
+            visualize(puzzle, &solution);
         }
     } else {
         println!("Failed to find solution");

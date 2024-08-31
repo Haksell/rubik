@@ -42,6 +42,17 @@ impl Color {
             _ => unimplemented!(),
         }
     }
+
+    pub fn as_rgb(&self) -> [f32; 3] {
+        match self {
+            Color::WHITE => [1.0, 1.0, 1.0],
+            Color::RED => [1.0, 0.071, 0.204],
+            Color::GREEN => [0.0, 0.608, 0.282],
+            Color::YELLOW => [1.0, 0.835, 0.0],
+            Color::ORANGE => [1.0, 0.345, 0.0],
+            Color::BLUE => [0.0, 0.275, 0.678],
+        }
+    }
 }
 
 impl Display for Color {

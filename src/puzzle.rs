@@ -1,11 +1,13 @@
 use std::fmt;
 
-use crate::{moves_runtime, r#move::Move};
+use crate::{color::Color, moves_runtime, r#move::Move, Drawable};
 
-pub trait Puzzle: fmt::Display {
+pub trait Puzzle: fmt::Display + Drawable {
     fn solve(&self) -> Option<Vec<Move>>;
 
     fn is_solved(&self) -> bool;
+
+    fn get_faces(&self) -> &Vec<Color>;
 
     fn do_move(&mut self, move_: Move);
 
@@ -29,6 +31,4 @@ pub trait Puzzle: fmt::Display {
         }
         sequence
     }
-
-    fn visualize(&self, moves: &Vec<Move>);
 }

@@ -34,7 +34,7 @@ pub(super) fn solve_last_layer_step(
 }
 
 pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
-    let auf = match cube.faces[crate::Sticker::FU as usize] {
+    let auf = match cube.get_faces()[crate::Sticker::FU as usize] {
         Color::GREEN => vec![],
         Color::ORANGE => vec![Move::U],
         Color::BLUE => vec![Move::U2],
@@ -49,15 +49,16 @@ pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
 
 pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
     use crate::Sticker::*;
-    match ((cube.faces[BUL as usize] == Color::WHITE) as u16) << 8
-        | ((cube.faces[LBU as usize] == Color::WHITE) as u16) << 7
-        | ((cube.faces[LU as usize] == Color::WHITE) as u16) << 6
-        | ((cube.faces[LUF as usize] == Color::WHITE) as u16) << 5
-        | ((cube.faces[FLU as usize] == Color::WHITE) as u16) << 4
-        | ((cube.faces[FU as usize] == Color::WHITE) as u16) << 3
-        | ((cube.faces[FUR as usize] == Color::WHITE) as u16) << 2
-        | ((cube.faces[RFU as usize] == Color::WHITE) as u16) << 1
-        | ((cube.faces[RU as usize] == Color::WHITE) as u16) << 0
+    let faces = cube.get_faces();
+    match ((faces[BUL as usize] == Color::WHITE) as u16) << 8
+        | ((faces[LBU as usize] == Color::WHITE) as u16) << 7
+        | ((faces[LU as usize] == Color::WHITE) as u16) << 6
+        | ((faces[LUF as usize] == Color::WHITE) as u16) << 5
+        | ((faces[FLU as usize] == Color::WHITE) as u16) << 4
+        | ((faces[FU as usize] == Color::WHITE) as u16) << 3
+        | ((faces[FUR as usize] == Color::WHITE) as u16) << 2
+        | ((faces[RFU as usize] == Color::WHITE) as u16) << 1
+        | ((faces[RU as usize] == Color::WHITE) as u16) << 0
     {
         0b000000000 => Some(vec![]),
         0b011101011 => Some(moves!("R U2 R2 F R F' U2 R' F R F'")),
@@ -124,12 +125,13 @@ pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
 pub(super) fn pll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
     use crate::Sticker::*;
 
-    let reference_sticker = cube.faces[FLU as usize].side();
+    let faces = cube.get_faces();
+    let reference_sticker = faces[FLU as usize].side();
     match (
-        (reference_sticker - cube.faces[FU as usize].side()) & 3,
-        (reference_sticker - cube.faces[FUR as usize].side()) & 3,
-        (reference_sticker - cube.faces[RU as usize].side()) & 3,
-        (reference_sticker - cube.faces[RUB as usize].side()) & 3,
+        (reference_sticker - faces[FU as usize].side()) & 3,
+        (reference_sticker - faces[FUR as usize].side()) & 3,
+        (reference_sticker - faces[RU as usize].side()) & 3,
+        (reference_sticker - faces[RUB as usize].side()) & 3,
     ) {
         (0, 0, 1, 1) => Some(vec![]),
         (1, 1, 2, 0) => Some(moves!("L2 B2 L' F' L B2 L' F L'")),
