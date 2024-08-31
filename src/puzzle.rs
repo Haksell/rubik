@@ -29,4 +29,6 @@ pub trait Puzzle: fmt::Display {
         }
         sequence
     }
+
+    fn visualize(&self, moves: &Vec<Move>);
 }

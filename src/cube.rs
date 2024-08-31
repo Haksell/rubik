@@ -389,6 +389,10 @@ impl<const N: usize> Puzzle for Cube<N> {
                 .all(|(i, &col)| col == ORDER[i / (N * N)])
         }
     }
+
+    fn visualize(&self, moves: &Vec<Move>) {
+        todo!()
+    }
 }
 
 impl<const N: usize> Display for Cube<N> {

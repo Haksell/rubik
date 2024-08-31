@@ -105,6 +105,10 @@ impl<const N: usize> Puzzle for Pyraminx<N> {
             .enumerate()
             .all(|(i, &col)| col == ORDER[i / (N * N)])
     }
+
+    fn visualize(&self, moves: &Vec<Move>) {
+        todo!()
+    }
 }
 
 impl DFSAble for Pyraminx<2> {

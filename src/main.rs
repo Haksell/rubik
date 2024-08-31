@@ -1,7 +1,7 @@
 #![allow(dead_code)] // TODO: REMOVE
 
 use clap::Parser;
-use rubik::{cub2, cub3, tables::clear_cache, Cube, Puzzle, Pyraminx};
+use rubik::{cub2, cub3, tables::clear_cache, visualize, Cube, Puzzle, Pyraminx};
 
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
@@ -76,6 +76,7 @@ fn main() {
         }
         if args.visualize {
             // TODO Visualize solution
+            puzzle.visualize(&solution);
         }
     } else {
         println!("Failed to find solution");
