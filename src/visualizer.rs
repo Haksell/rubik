@@ -13,8 +13,6 @@ const CUBIE_SIZE: f32 = 1.0;
 const MARGIN: f32 = 0.05;
 const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
 const ZOOM: f32 = 3.2;
-const N: usize = 3;
-const CORE_SIZE: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
 const WINDOW_SIZE: u32 = 800;
 const MOVE_INTERVAL_MS: usize = 200;
 
@@ -78,9 +76,9 @@ impl<const N: usize> Drawable for Cube<N> {
                 let color = cube.faces[i];
                 let (x, y, z) = get_coords(i, N, face);
                 let translation = Translation3::new(
-                    (x as f32 - 2.0) * CUBIE_SIZE,
-                    (y as f32 - 1.0) * CUBIE_SIZE,
-                    (z as f32 - 2.0) * CUBIE_SIZE,
+                    (x as f32) * CUBIE_SIZE,
+                    (y as f32) * CUBIE_SIZE,
+                    (z as f32) * CUBIE_SIZE,
                 );
 
                 squares.push(create_cubie_face(
@@ -126,8 +124,14 @@ impl<const N: usize> Drawable for Cube<N> {
             }
         }
 
-        let mut core = window.add_cube(CORE_SIZE, CORE_SIZE, CORE_SIZE);
-        // core.set_local_translation(Translation3::new(0.0, 0.0, 0.0)); // TODO Move it to the right place (so that it works for any cube)
+        let core_size: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
+
+        let mut core = window.add_cube(core_size, core_size, core_size);
+        core.set_local_translation(Translation3::new(
+            (N - 1) as f32 * 0.5 + 1.0,
+            (N - 1) as f32 * 0.5,
+            (N - 1) as f32 * 0.5 + 1.0,
+        ));
         core.set_color(0.0, 0.0, 0.0);
 
         (0..6)
@@ -138,7 +142,7 @@ impl<const N: usize> Drawable for Cube<N> {
 }
 
 impl<const N: usize> Drawable for Pyraminx<N> {
-    fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
+    fn draw(&self, _window: &mut Window) -> Vec<SceneNode> {
         todo!()
     }
 }
@@ -148,10 +152,11 @@ pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>) {
 
     window.set_light(Light::StickToCamera);
 
-    let mut cam = ArcBall::new(Point3::new(-4.0, 6.0, -10.0), Point3::origin());
+    let mut cam = ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.5, 1.5, 1.5));
 
     // Lock zoom
     cam.set_dist_step(1.0);
+    const N: usize = 3;
     cam.set_dist(ZOOM * N as f32); // TODO Real N maybe need for puzzle<N> ?
 
     let start = SystemTime::now();

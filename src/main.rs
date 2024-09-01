@@ -54,7 +54,7 @@ fn main() {
                 .iter()
                 .map(|move_| format!("{:?}", move_))
                 .collect::<Vec<String>>()
-                .join(", ")
+                .join(" ")
         );
     }
 
@@ -71,7 +71,7 @@ fn main() {
                     .iter()
                     .map(|move_| format!("{:?}", move_))
                     .collect::<Vec<String>>()
-                    .join(", ")
+                    .join(" ")
             );
         }
         if args.visualize {

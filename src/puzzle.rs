@@ -23,7 +23,7 @@ pub trait Puzzle: fmt::Display + Drawable {
 
         while sequence.len() < iterations {
             let move_ = Move::random();
-            if !sequence.is_empty() && move_ == sequence.last().unwrap().opposite() {
+            if !sequence.is_empty() && move_.same_face(sequence.last().unwrap()) {
                 continue;
             }
             self.do_move(move_);
