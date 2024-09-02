@@ -2,8 +2,9 @@ use std::time::SystemTime;
 
 use kiss3d::camera::ArcBall;
 use kiss3d::light::Light;
-use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
+use kiss3d::nalgebra::{Point2, Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
+use kiss3d::text::Font;
 use kiss3d::window::Window;
 
 use crate::color::Color;
@@ -91,6 +92,7 @@ impl<const N: usize> Drawable for Cube<N> {
             squares
         }
 
+        // TODO Cleanup
         fn get_coords(i: usize, n: usize, face: Color) -> (f32, f32, f32) {
             let n = n as f32;
             let i = i as f32;
@@ -147,7 +149,58 @@ impl<const N: usize> Drawable for Pyraminx<N> {
     }
 }
 
-pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>) {
+fn draw_karaoke(text: &str, start: &SystemTime, total: usize, window: &mut Window) {
+    const SCALE: f32 = 115.0;
+    let font = Font::default();
+    let elapsed = start.elapsed().unwrap().as_millis() as f64;
+    let end = total as f64 * MOVE_INTERVAL_MS as f64;
+
+    if elapsed >= end {
+        window.draw_text(
+            text,
+            &Point2::origin(),
+            SCALE,
+            &font,
+            &Point3::new(0.0, 1.0, 0.0),
+        );
+        return;
+    }
+
+    let idx = ((elapsed * text.len() as f64) / end).ceil() as usize;
+
+    window.draw_text(
+        &text[..idx],
+        &Point2::origin(),
+        SCALE,
+        &font,
+        &Point3::new(0.0, 1.0, 0.0),
+    );
+
+    let startx: f32 = text[..idx]
+        .chars()
+        .map(|c| {
+            font.font()
+                .glyph(c)
+                .scaled(rusttype::Scale::uniform(SCALE))
+                .h_metrics()
+                .advance_width
+        })
+        .sum();
+
+    let line = text[..idx].chars().filter(|&c| c == '\n').count();
+    let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(SCALE));
+    let starty: f32 = (vmetrics.ascent - vmetrics.descent) * line as f32;
+
+    window.draw_text(
+        &text[idx..],
+        &Point2::from(Point2::origin().coords + Point2::new(startx, starty).coords),
+        SCALE,
+        &font,
+        &Point3::new(1.0, 0.0, 0.0),
+    );
+}
+
+pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 
     window.set_light(Light::StickToCamera);
@@ -165,7 +218,24 @@ pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>) {
 
     let mut stickers = puzzle.draw(&mut window);
 
+    let mut text = String::new();
+
+    moves.iter().enumerate().for_each(|(i, &move_)| {
+        if i > 0 {
+            if i % 10 == 0 {
+                text.push('\n');
+            } else {
+                text.push(' ');
+            }
+        }
+        text.push_str(&format!("{:?}", move_));
+    });
+
     while window.render_with_camera(&mut cam) {
+        if karaoke {
+            draw_karaoke(&text, &start, moves.len(), &mut window);
+        }
+
         if i < moves.len() {
             let elapsed = start.elapsed().unwrap().as_millis();
             let idx = elapsed as usize / MOVE_INTERVAL_MS;

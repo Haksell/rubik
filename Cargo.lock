@@ -1478,6 +1478,7 @@ dependencies = [
  "kiss3d",
  "move_macro",
  "rand",
+ "rusttype 0.8.3",
 ]
 
 [[package]]

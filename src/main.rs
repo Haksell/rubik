@@ -1,13 +1,16 @@
 #![allow(dead_code)] // TODO: REMOVE
 
 use clap::Parser;
-use rubik::{cub2, cub3, tables::clear_cache, visualize, Cube, Puzzle, Pyraminx};
+use rubik::{cub2, cub3, r#move::Move, tables::clear_cache, visualize, Cube, Puzzle, Pyraminx};
 
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
 struct Args {
     #[arg(short, long)]
     visualize: bool,
+
+    #[arg(long)]
+    karaoke: bool,
 
     #[arg(long)]
     explain: bool, // TODO Comprendre
@@ -50,11 +53,7 @@ fn main() {
         let sequence = puzzle.rand_scramble(50);
         println!(
             "No scramble sequence provided, using the following one:\n{}",
-            sequence
-                .iter()
-                .map(|move_| format!("{:?}", move_))
-                .collect::<Vec<String>>()
-                .join(" ")
+            Move::format_sequence(&sequence)
         );
     }
 
@@ -65,17 +64,10 @@ fn main() {
             println!("The {} was already solved!", puzzle_name.to_lowercase());
         } else {
             println!("Solution of {} moves found:", solution.len());
-            println!(
-                "{}",
-                solution
-                    .iter()
-                    .map(|move_| format!("{:?}", move_))
-                    .collect::<Vec<String>>()
-                    .join(" ")
-            );
+            println!("{}", Move::format_sequence(&solution));
         }
         if args.visualize {
-            visualize(puzzle, &solution);
+            visualize(puzzle, &solution, args.karaoke);
         }
     } else {
         println!("Failed to find solution");

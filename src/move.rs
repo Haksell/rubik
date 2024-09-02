@@ -87,6 +87,14 @@ impl Move {
             _ => *self,
         }
     }
+
+    pub fn format_sequence(sequence: &Vec<Move>) -> String {
+        sequence
+            .iter()
+            .map(|move_| format!("{:?}", move_))
+            .collect::<Vec<String>>()
+            .join(" ")
+    }
 }
 
 impl TryFrom<u8> for Move {
