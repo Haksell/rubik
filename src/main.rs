@@ -26,6 +26,8 @@ struct Args {
 }
 
 fn main() {
+    visualize(Box::new(cub3!()), &vec![Move::U2].repeat(50), true);
+    return;
     let args = Args::parse();
 
     let size: usize = args.size.unwrap_or(3);

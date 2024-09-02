@@ -150,7 +150,7 @@ impl<const N: usize> Drawable for Pyraminx<N> {
 }
 
 fn draw_karaoke(text: &str, start: &SystemTime, total: usize, window: &mut Window) {
-    const SCALE: f32 = 115.0;
+    const SCALE: f32 = 96.0;
     let font = Font::default();
     let elapsed = start.elapsed().unwrap().as_millis() as f64;
     let end = total as f64 * MOVE_INTERVAL_MS as f64;
@@ -167,37 +167,38 @@ fn draw_karaoke(text: &str, start: &SystemTime, total: usize, window: &mut Windo
     }
 
     let idx = ((elapsed * text.len() as f64) / end).ceil() as usize;
-
-    window.draw_text(
-        &text[..idx],
-        &Point2::origin(),
-        SCALE,
-        &font,
-        &Point3::new(0.0, 1.0, 0.0),
-    );
-
-    let startx: f32 = text[..idx]
-        .chars()
-        .map(|c| {
-            font.font()
-                .glyph(c)
-                .scaled(rusttype::Scale::uniform(SCALE))
-                .h_metrics()
-                .advance_width
-        })
-        .sum();
-
-    let line = text[..idx].chars().filter(|&c| c == '\n').count();
+    let cur_line = text[..idx].chars().filter(|&c| c == '\n').count();
     let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(SCALE));
-    let starty: f32 = (vmetrics.ascent - vmetrics.descent) * line as f32;
+    let line_height = vmetrics.ascent - vmetrics.descent;
+    let mut jsp = 0;
 
-    window.draw_text(
-        &text[idx..],
-        &Point2::from(Point2::origin().coords + Point2::new(startx, starty).coords),
-        SCALE,
-        &font,
-        &Point3::new(1.0, 0.0, 0.0),
-    );
+    text.lines().enumerate().for_each(|(i, line)| {
+        if i < cur_line {
+            window.draw_text(
+                &line,
+                &Point2::new(0.0, i as f32 * line_height),
+                SCALE,
+                &font,
+                &Point3::new(0.0, 1.0, 0.0),
+            );
+            jsp += line.len() + 1;
+        } else {
+            window.draw_text(
+                &line[..idx - jsp],
+                &Point2::new(0.0, i as f32 * line_height),
+                SCALE,
+                &font,
+                &Point3::new(0.0, 1.0, 0.0),
+            );
+            window.draw_text(
+                &line[idx - jsp..],
+                &Point2::new(0.0, i as f32 * line_height),
+                SCALE,
+                &font,
+                &Point3::new(1.0, 0.0, 0.0),
+            );
+        }
+    });
 }
 
 pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
@@ -222,7 +223,7 @@ pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) 
 
     moves.iter().enumerate().for_each(|(i, &move_)| {
         if i > 0 {
-            if i % 10 == 0 {
+            if i % 12 == 0 {
                 text.push('\n');
             } else {
                 text.push(' ');
