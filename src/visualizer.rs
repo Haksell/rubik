@@ -16,6 +16,7 @@ const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
 const ZOOM: f32 = 3.2;
 const WINDOW_SIZE: u32 = 800;
 const MOVE_INTERVAL_MS: usize = 200;
+const TEXT_SCALE: f32 = 100.0;
 
 pub trait Drawable {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
@@ -149,54 +150,68 @@ impl<const N: usize> Drawable for Pyraminx<N> {
     }
 }
 
+fn display_size(text: &str) -> f32 {
+    text.chars()
+        .map(|c| {
+            Font::default()
+                .font()
+                .glyph(c)
+                .scaled(rusttype::Scale::uniform(TEXT_SCALE))
+                .h_metrics()
+                .advance_width
+        })
+        .sum()
+}
+
 fn draw_karaoke(text: &str, start: &SystemTime, total: usize, window: &mut Window) {
-    const SCALE: f32 = 96.0;
     let font = Font::default();
     let elapsed = start.elapsed().unwrap().as_millis() as f64;
     let end = total as f64 * MOVE_INTERVAL_MS as f64;
 
-    if elapsed >= end {
-        window.draw_text(
-            text,
-            &Point2::origin(),
-            SCALE,
-            &font,
-            &Point3::new(0.0, 1.0, 0.0),
-        );
-        return;
+    let mut idx = ((elapsed * text.chars().count() as f64) / end).floor() as usize;
+    if idx > text.chars().count() {
+        idx = text.chars().count();
     }
-
-    let idx = ((elapsed * text.len() as f64) / end).ceil() as usize;
     let cur_line = text[..idx].chars().filter(|&c| c == '\n').count();
-    let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(SCALE));
+    let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(TEXT_SCALE));
     let line_height = vmetrics.ascent - vmetrics.descent;
-    let mut jsp = 0;
+    let mut char_sum = 0;
 
     text.lines().enumerate().for_each(|(i, line)| {
-        if i < cur_line {
+        let starty = i as f32 * line_height;
+        let centerx = ((WINDOW_SIZE * 2) as f32 - display_size(line)) / 2.0;
+        if i == cur_line {
             window.draw_text(
-                &line,
-                &Point2::new(0.0, i as f32 * line_height),
-                SCALE,
+                &line[..idx - char_sum],
+                &Point2::new(centerx, starty),
+                TEXT_SCALE,
                 &font,
                 &Point3::new(0.0, 1.0, 0.0),
             );
-            jsp += line.len() + 1;
-        } else {
+
+            let startx = display_size(&line[..idx - char_sum]);
+
             window.draw_text(
-                &line[..idx - jsp],
-                &Point2::new(0.0, i as f32 * line_height),
-                SCALE,
-                &font,
-                &Point3::new(0.0, 1.0, 0.0),
-            );
-            window.draw_text(
-                &line[idx - jsp..],
-                &Point2::new(0.0, i as f32 * line_height),
-                SCALE,
+                &line[idx - char_sum..],
+                &Point2::new(centerx + startx, starty),
+                TEXT_SCALE,
                 &font,
                 &Point3::new(1.0, 0.0, 0.0),
             );
+        } else {
+            let color = if i < cur_line {
+                Point3::new(0.0, 1.0, 0.0)
+            } else {
+                Point3::new(1.0, 0.0, 0.0)
+            };
+            window.draw_text(
+                &line,
+                &Point2::new(centerx, starty),
+                TEXT_SCALE,
+                &font,
+                &color,
+            );
+            char_sum += line.chars().count() + 1;
         }
     });
 }
@@ -221,16 +236,26 @@ pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) 
 
     let mut text = String::new();
 
-    moves.iter().enumerate().for_each(|(i, &move_)| {
-        if i > 0 {
-            if i % 12 == 0 {
-                text.push('\n');
-            } else {
-                text.push(' ');
+    if karaoke {
+        let mut chars_width = 0.0;
+        moves.iter().enumerate().for_each(|(i, &move_)| {
+            let mut move_str = format!("{:?}", move_);
+            if i > 0 {
+                move_str.insert(0, ' ');
             }
-        }
-        text.push_str(&format!("{:?}", move_));
-    });
+            let mut move_display_size = display_size(&move_str);
+            if chars_width + move_display_size > (WINDOW_SIZE * 2 - 5) as f32 {
+                text.push('\n');
+                if move_str.starts_with(" ") {
+                    move_str.remove(0);
+                    move_display_size = display_size(&move_str);
+                }
+                chars_width = 0.0;
+            }
+            chars_width += move_display_size;
+            text.push_str(&move_str);
+        });
+    }
 
     while window.render_with_camera(&mut cam) {
         if karaoke {
