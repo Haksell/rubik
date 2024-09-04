@@ -1,22 +1,17 @@
 use std::time::SystemTime;
 
 use kiss3d::camera::ArcBall;
+use kiss3d::event::{Action, WindowEvent};
 use kiss3d::light::Light;
-use kiss3d::nalgebra::{Point2, Point3, Translation3, UnitQuaternion, Vector3};
+use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::scene::SceneNode;
-use kiss3d::text::Font;
 use kiss3d::window::Window;
 
 use crate::color::Color;
 use crate::r#move::Move;
+use crate::visualizer::karaoke::{draw_karaoke, karaoke_format};
+use crate::visualizer::{MOVE_INTERVAL_MS, WINDOW_SIZE, ZOOM};
 use crate::{Cube, Puzzle, Pyraminx};
-const CUBIE_SIZE: f32 = 1.0;
-const MARGIN: f32 = 0.05;
-const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
-const ZOOM: f32 = 3.2;
-const WINDOW_SIZE: u32 = 800;
-const MOVE_INTERVAL_MS: usize = 200;
-const TEXT_SCALE: f32 = 100.0;
 
 pub trait Drawable {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
@@ -24,6 +19,11 @@ pub trait Drawable {
 
 impl<const N: usize> Drawable for Cube<N> {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
+        const CUBIE_SIZE: f32 = 1.0;
+        const MARGIN: f32 = 0.05;
+
+        const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
+
         fn create_cubie_face(
             window: &mut Window,
             color: &[f32; 3],
@@ -150,70 +150,14 @@ impl<const N: usize> Drawable for Pyraminx<N> {
     }
 }
 
-fn display_size(text: &str) -> f32 {
-    text.chars()
-        .map(|c| {
-            Font::default()
-                .font()
-                .glyph(c)
-                .scaled(rusttype::Scale::uniform(TEXT_SCALE))
-                .h_metrics()
-                .advance_width
-        })
-        .sum()
-}
-
-fn draw_karaoke(text: &str, start: &SystemTime, total: usize, window: &mut Window) {
-    let font = Font::default();
-    let elapsed = start.elapsed().unwrap().as_millis() as f64;
-    let end = total as f64 * MOVE_INTERVAL_MS as f64;
-
-    let mut idx = ((elapsed * text.chars().count() as f64) / end).floor() as usize;
-    if idx > text.chars().count() {
-        idx = text.chars().count();
-    }
-    let cur_line = text[..idx].chars().filter(|&c| c == '\n').count();
-    let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(TEXT_SCALE));
-    let line_height = vmetrics.ascent - vmetrics.descent;
-    let mut char_sum = 0;
-
-    text.lines().enumerate().for_each(|(i, line)| {
-        let starty = i as f32 * line_height;
-        let centerx = ((WINDOW_SIZE * 2) as f32 - display_size(line)) / 2.0;
-        if i == cur_line {
-            window.draw_text(
-                &line[..idx - char_sum],
-                &Point2::new(centerx, starty),
-                TEXT_SCALE,
-                &font,
-                &Point3::new(0.0, 1.0, 0.0),
-            );
-
-            let startx = display_size(&line[..idx - char_sum]);
-
-            window.draw_text(
-                &line[idx - char_sum..],
-                &Point2::new(centerx + startx, starty),
-                TEXT_SCALE,
-                &font,
-                &Point3::new(1.0, 0.0, 0.0),
-            );
-        } else {
-            let color = if i < cur_line {
-                Point3::new(0.0, 1.0, 0.0)
-            } else {
-                Point3::new(1.0, 0.0, 0.0)
-            };
-            window.draw_text(
-                &line,
-                &Point2::new(centerx, starty),
-                TEXT_SCALE,
-                &font,
-                &color,
-            );
-            char_sum += line.chars().count() + 1;
-        }
-    });
+fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &Box<dyn Puzzle>) {
+    stickers
+        .iter_mut()
+        .zip(puzzle.get_faces().iter())
+        .for_each(|(node, &color)| {
+            let [r, g, b] = color.as_rgb();
+            node.set_color(r, g, b)
+        });
 }
 
 pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
@@ -237,24 +181,7 @@ pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) 
     let mut text = String::new();
 
     if karaoke {
-        let mut chars_width = 0.0;
-        moves.iter().enumerate().for_each(|(i, &move_)| {
-            let mut move_str = format!("{:?}", move_);
-            if i > 0 {
-                move_str.insert(0, ' ');
-            }
-            let mut move_display_size = display_size(&move_str);
-            if chars_width + move_display_size > (WINDOW_SIZE * 2 - 5) as f32 {
-                text.push('\n');
-                if move_str.starts_with(" ") {
-                    move_str.remove(0);
-                    move_display_size = display_size(&move_str);
-                }
-                chars_width = 0.0;
-            }
-            chars_width += move_display_size;
-            text.push_str(&move_str);
-        });
+        text = karaoke_format(moves);
     }
 
     while window.render_with_camera(&mut cam) {
@@ -270,14 +197,17 @@ pub fn visualize(mut puzzle: Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) 
                 puzzle.do_move(moves[i]);
                 i = idx;
 
-                // Refresh colors
-                stickers
-                    .iter_mut()
-                    .zip(puzzle.get_faces().iter())
-                    .for_each(|(node, &color)| {
-                        let [r, g, b] = color.as_rgb();
-                        node.set_color(r, g, b)
-                    });
+                refresh_stickers(&mut stickers, &puzzle);
+            }
+        } else {
+            for mut event in window.events().iter() {
+                if let WindowEvent::Key(button, Action::Release, mods) = event.value {
+                    if let Ok(move_) = Move::try_from((button, mods)) {
+                        puzzle.do_move(move_);
+                        refresh_stickers(&mut stickers, &puzzle);
+                        event.inhibited = true
+                    }
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::{color::Color, moves_runtime, r#move::Move, Drawable};
+use crate::{color::Color, moves_runtime, r#move::Move, visualizer::Drawable};
 
 pub trait Puzzle: fmt::Display + Drawable {
     fn solve(&self) -> Option<Vec<Move>>;

@@ -1,5 +1,7 @@
 use std::fmt::{Debug, Formatter};
 
+use kiss3d::event::{Key, Modifiers};
+
 #[macro_export]
 macro_rules! moves_runtime {
     ($sequence:expr) => {{
@@ -121,6 +123,29 @@ impl TryFrom<u8> for Move {
             16 => Ok(Move::L3),
             17 => Ok(Move::D3),
             _ => Err("Moves are from 0 to 17 included"),
+        }
+    }
+}
+
+impl TryFrom<(Key, Modifiers)> for Move {
+    type Error = &'static str;
+
+    fn try_from(value: (Key, Modifiers)) -> Result<Self, Self::Error> {
+        let (key, mods) = value;
+        let move_ = match key {
+            Key::F => Ok(Move::F),
+            Key::R => Ok(Move::R),
+            Key::U => Ok(Move::U),
+            Key::B => Ok(Move::B),
+            Key::L => Ok(Move::L),
+            Key::D => Ok(Move::D),
+            _ => Err("Invalid key"),
+        };
+
+        if move_.is_ok() && mods.contains(Modifiers::Shift) {
+            Ok(move_.unwrap().opposite())
+        } else {
+            move_
         }
     }
 }
