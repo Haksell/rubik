@@ -1,6 +1,6 @@
 use crate::color::Color;
 use crate::r#move::Move;
-use crate::solvers::{iddfs, premover, zz, DFSAble};
+use crate::solvers::{cfop, iddfs, premover, zz, DFSAble};
 use crate::trigger::Trigger;
 use crate::Puzzle;
 use std::fmt::{Display, Error, Formatter};

@@ -5,7 +5,7 @@ use crate::trigger::{Trigger, TRIGGERS_BY_SLOT};
 use crate::Puzzle;
 use crate::{color::Color, r#move::Move, Cube, EDGES};
 use std::cmp::Reverse;
-use std::collections::BinaryHeap;
+use std::collections::{BinaryHeap, HashMap};
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 
@@ -58,100 +58,64 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
     solution
 }
 
+fn reconstruct_path<const N: usize>(
+    cube: &mut Cube<N>,
+    came_from: &HashMap<Cube<N>, Option<Trigger>>,
+) -> Vec<Trigger> {
+    let mut path: Vec<Trigger> = vec![];
+
+    while let Some(trigger) = came_from[&cube] {
+        trigger
+            .moves()
+            .iter()
+            .rev()
+            .map(Move::opposite)
+            .for_each(|move_| cube.do_move(move_));
+        path.insert(0, trigger);
+    }
+
+    path
+}
+
 fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
-    // TODO: came_from like n_puzzle
+    let mut came_from: HashMap<Cube<3>, Option<Trigger>> = HashMap::new();
+    let mut g_cost: HashMap<Cube<3>, usize> = HashMap::new();
+    let mut heap: BinaryHeap<(Reverse<usize>, Cube<3>)> = BinaryHeap::new();
 
-    let mut heap: BinaryHeap<(Reverse<usize>, Cube<3>, Vec<Trigger>)> = BinaryHeap::new();
+    came_from.insert(cube.clone(), None);
+    g_cost.insert(cube.clone(), 0);
 
-    heap.push((Reverse(0), cube.clone(), vec![]));
+    heap.push((Reverse(0), cube.clone()));
 
     loop {
-        let (Reverse(num_moves), cube, pair_solution) = heap.pop().unwrap();
-        let slot = match pair_solution.last() {
+        let (Reverse(num_moves), mut cube) = heap.pop().unwrap();
+        let slot = match came_from[&cube] {
             Some(trigger) => trigger.slot(),
             None => usize::MAX,
         };
 
         if slot != usize::MAX && cube.is_pair_solved(slot) {
-            return pair_solution;
+            return reconstruct_path(&mut cube, &came_from);
         }
 
         for &trigger in triggers {
-            if pair_solution.is_empty() || trigger.slot() != slot {
+            if slot == usize::MAX || trigger.slot() != slot {
                 let mut next_cube = cube.clone();
-                let mut next_vec = pair_solution.clone();
 
                 next_cube.do_trigger(trigger);
-                next_vec.push(trigger);
 
-                heap.push((Reverse(num_moves + trigger.len()), next_cube, next_vec));
+                if *g_cost.get(&next_cube).unwrap_or(&usize::MAX) <= num_moves + trigger.len() {
+                    continue;
+                }
+
+                g_cost.insert(next_cube.clone(), num_moves + trigger.len());
+                came_from.insert(next_cube.clone(), Some(trigger));
+
+                heap.push((Reverse(num_moves + trigger.len()), next_cube));
             }
         }
     }
 }
-
-// fn reconstruct_path(
-//     cube: &mut Cube<3>,
-//     came_from: &HashMap<String, Option<Trigger>>,
-// ) -> Vec<Trigger> {
-//     let mut path: Vec<Trigger> = vec![];
-
-//     println!("Came_from {}", came_from.len());
-
-//     let mut seen: HashSet<String> = HashSet::new();
-
-//     while let Some(trigger) = came_from[&cube.to_string()] {
-//         if !seen.insert(cube.to_string()) {
-//             panic!("Loop detected");
-//         }
-//         // TODO Infinite loop bc of collisions (maybe)
-//         // do opposite of the trigger
-//         trigger
-//             .moves()
-//             .iter()
-//             .rev()
-//             .map(Move::opposite)
-//             .for_each(|move_| cube.do_move(move_));
-//         path.insert(0, trigger);
-//     }
-
-//     println!("END");
-
-//     path
-// }
-
-// fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
-//     let mut came_from: HashMap<String, Option<Trigger>> = HashMap::new();
-//     let mut heap: BinaryHeap<(Reverse<usize>, Cube<3>)> = BinaryHeap::new();
-
-//     came_from.insert(cube.to_string(), None);
-
-//     heap.push((Reverse(0), cube.clone()));
-
-//     loop {
-//         let (Reverse(num_moves), mut cube) = heap.pop().unwrap();
-//         let slot = match came_from[&cube.to_string()] {
-//             Some(trigger) => trigger.slot(),
-//             None => usize::MAX,
-//         };
-
-//         if slot != usize::MAX && cube.is_pair_solved(slot) {
-//             return reconstruct_path(&mut cube, &came_from);
-//         }
-
-//         for &trigger in triggers {
-//             if slot == usize::MAX || trigger.slot() != slot {
-//                 let mut next_cube = cube.clone();
-
-//                 next_cube.do_trigger(trigger);
-
-//                 came_from.insert(next_cube.to_string(), Some(trigger));
-
-//                 heap.push((Reverse(num_moves + trigger.len()), next_cube));
-//             }
-//         }
-//     }
-// }
 
 impl Cube<3> {
     #[cfg(test)]

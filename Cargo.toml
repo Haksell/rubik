@@ -11,3 +11,4 @@ rand = "0.8.5"
 move_macro = { path = "move_macro" }
 kiss3d = "0.35.0"
 rusttype = "0.8.3"
+serial_test = "3.1.1"

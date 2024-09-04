@@ -99,6 +99,7 @@ mod tests {
         tables::clear_cache,
         Cube, Puzzle,
     };
+    use serial_test::serial;
 
     fn test_performances_n(n: usize) {
         const SCRAMBLE_LENGTH: usize = 200;
@@ -115,16 +116,19 @@ mod tests {
             // println!("{cube}");
             total_moves += solution.len();
         }
+
         println!("{} avg", total_moves as f32 / n as f32);
         clear_cache();
     }
 
     #[test]
+    #[serial]
     fn test_performances_1000() {
         test_performances_n(1000);
     }
 
     #[test]
+    #[serial]
     fn test_performances_100000() {
         test_performances_n(100000);
     }
