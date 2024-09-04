@@ -15,6 +15,9 @@ struct Args {
     karaoke: bool,
 
     #[arg(long)]
+    playground: bool,
+
+    #[arg(long)]
     explain: bool, // TODO Comprendre
 
     #[arg(long)]
@@ -49,6 +52,11 @@ fn main() {
         ),
     };
 
+    if args.playground {
+        visualize(&mut puzzle, &vec![], false);
+        return;
+    }
+
     if let Some(sequence) = args.scramble {
         puzzle.scramble(&sequence);
     } else {
@@ -69,7 +77,7 @@ fn main() {
             println!("{}", Move::format_sequence(&solution));
         }
         if args.visualize {
-            visualize(puzzle, &solution, args.karaoke);
+            visualize(&mut puzzle, &solution, args.karaoke);
         }
     } else {
         println!("Failed to find solution");
