@@ -8,24 +8,30 @@ use rubik::{
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
 struct Args {
+    /// Enable visualizer window after solve.
     #[arg(short, long)]
     visualize: bool,
 
+    /// Display solving movements colored gradually in the visualizer.
     #[arg(long)]
     karaoke: bool,
 
+    /// Start a movable visualizer with the specified or default puzzle and size.
     #[arg(long)]
     playground: bool,
 
     #[arg(long)]
     explain: bool, // TODO Comprendre
 
+    /// Select the puzzle between "Pyraminx" and "Cube". Defaults to Cube.
     #[arg(long)]
     puzzle: Option<String>,
 
+    /// Size of the puzzle (2 <= size <= 3). Defaults to 3.
     #[arg(long)]
     size: Option<usize>,
 
+    /// Specify a scramble sequence for the puzzle
     #[arg(index(1))]
     scramble: Option<String>,
 }
