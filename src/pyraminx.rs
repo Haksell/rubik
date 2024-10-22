@@ -51,7 +51,21 @@ impl<const N: usize> Pyraminx<N> {
 impl<const N: usize> Puzzle for Pyraminx<N> {
     fn do_move(&mut self, move_: Move) {
         match move_ {
-            Move::R => todo!(),
+            Move::R => {
+                // N = 3
+
+                //     0
+                //   1 2 3
+                // 4 5 6 7 8
+
+                // On green face : 3 6 7 8
+                //                 | | | |
+                // On blue face  : 6 1 5 4
+                //                 | | | |
+                // on yellow face: 6 1 5 4
+                //                 | | | |
+                // on green face : 3 6 7 8
+            }
             Move::U => {
                 let idxs: Vec<usize> = (0..N * N - (N + N - 1)).collect();
 

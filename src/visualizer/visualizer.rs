@@ -3,7 +3,8 @@ use std::time::SystemTime;
 use kiss3d::camera::ArcBall;
 use kiss3d::event::{Action, WindowEvent};
 use kiss3d::light::Light;
-use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
+use kiss3d::nalgebra::{coordinates, Point2, Point3, Translation3, UnitQuaternion, Vector3};
+use kiss3d::ncollide3d::procedural::TriMesh;
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 
@@ -45,13 +46,13 @@ impl<const N: usize> Drawable for Cube<N> {
             let mut squares: Vec<SceneNode> = Vec::new();
 
             let translation_addition = match face {
-                Color::WHITE => -Vector3::y() * 0.5,
-                Color::RED => -Vector3::x() * 0.5,
-                Color::GREEN => -Vector3::z() * 0.5,
-                Color::YELLOW => Vector3::y() * 0.5,
-                Color::ORANGE => Vector3::x() * 0.5,
-                Color::BLUE => Vector3::z() * 0.5,
-            };
+                Color::WHITE => -Vector3::y(),
+                Color::RED => -Vector3::x(),
+                Color::GREEN => -Vector3::z(),
+                Color::YELLOW => Vector3::y(),
+                Color::ORANGE => Vector3::x(),
+                Color::BLUE => Vector3::z(),
+            } / 2.0;
 
             let rotation = match face {
                 Color::WHITE => {
@@ -131,9 +132,9 @@ impl<const N: usize> Drawable for Cube<N> {
 
         let mut core = window.add_cube(core_size, core_size, core_size);
         core.set_local_translation(Translation3::new(
-            (N - 1) as f32 * 0.5 + 1.0,
-            (N - 1) as f32 * 0.5,
-            (N - 1) as f32 * 0.5 + 1.0,
+            (N - 1) as f32 / 2.0 + 1.0,
+            (N - 1) as f32 / 2.0,
+            (N - 1) as f32 / 2.0 + 1.0,
         ));
         core.set_color(0.0, 0.0, 0.0);
 
@@ -145,8 +146,72 @@ impl<const N: usize> Drawable for Cube<N> {
 }
 
 impl<const N: usize> Drawable for Pyraminx<N> {
-    fn draw(&self, _window: &mut Window) -> Vec<SceneNode> {
-        todo!()
+    fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
+        // TODO WIP
+
+        // Core
+        let size = N as f32;
+        let scale = Vector3::new(1.0, 1.0, 1.0);
+
+        let v1 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0); // Top vertex
+        let v2 = Point3::new(-size / 2.0, 0.0, 0.0); // Bottom-left vertex
+        let v3 = Point3::new(size / 2.0, 0.0, 0.0); // Bottom-right vertex
+        let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
+        let indices = vec![Point2::new(0.0, 1.0)];
+
+        let trimesh = TriMesh::new(
+            vec![v1, v2, v3],
+            Some(normals.clone()),
+            Some(indices.clone()),
+            None,
+        );
+        let mut down = window.add_trimesh(trimesh, scale);
+        down.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
+        down.set_color(1.0, 1.0, 0.0);
+
+        let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
+        let v2 = Point3::new(size / 2.0, 0.0, 0.0);
+        let v3 = Point3::new(-size / 2.0, 0.0, 0.0);
+
+        let trimesh = TriMesh::new(
+            vec![v1, v2, v3],
+            Some(normals.clone()),
+            Some(indices.clone()),
+            None,
+        );
+        let mut front = window.add_trimesh(trimesh, scale);
+        front.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
+        front.set_color(0.0, 1.0, 0.0);
+
+        let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
+        let v2 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0);
+        let v3 = Point3::new(size / 2.0, 0.0, 0.0);
+
+        let trimesh = TriMesh::new(
+            vec![v1, v2, v3],
+            Some(normals.clone()),
+            Some(indices.clone()),
+            None,
+        );
+        let mut left = window.add_trimesh(trimesh, scale);
+        left.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
+        left.set_color(1.0, 0.0, 0.0);
+
+        let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
+        let v2 = Point3::new(-size / 2.0, 0.0, 0.0);
+        let v3 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0);
+
+        let trimesh = TriMesh::new(
+            vec![v1, v2, v3],
+            Some(normals.clone()),
+            Some(indices.clone()),
+            None,
+        );
+        let mut right = window.add_trimesh(trimesh, scale);
+        right.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
+        right.set_color(0.0, 0.0, 1.0);
+
+        vec![]
     }
 }
 
@@ -165,7 +230,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
 
     window.set_light(Light::StickToCamera);
 
-    let mut cam = ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.5, 1.5, 1.5));
+    let mut cam = ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.75, 1.5, 1.5));
 
     // Lock zoom
     cam.set_dist_step(1.0);
