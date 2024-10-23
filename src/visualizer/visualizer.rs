@@ -152,6 +152,7 @@ impl<const N: usize> Drawable for Pyraminx<N> {
         // Core
         let size = N as f32;
         let scale = Vector3::new(1.0, 1.0, 1.0);
+        let translation = Translation3::new(1.7, 0.7, 1.0);
 
         let v1 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0); // Top vertex
         let v2 = Point3::new(-size / 2.0, 0.0, 0.0); // Bottom-left vertex
@@ -166,8 +167,8 @@ impl<const N: usize> Drawable for Pyraminx<N> {
             None,
         );
         let mut down = window.add_trimesh(trimesh, scale);
-        down.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
-        down.set_color(1.0, 1.0, 0.0);
+        down.set_local_translation(translation);
+        down.set_color(1.0, 1.0, 0.25);
 
         let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
         let v2 = Point3::new(size / 2.0, 0.0, 0.0);
@@ -180,8 +181,8 @@ impl<const N: usize> Drawable for Pyraminx<N> {
             None,
         );
         let mut front = window.add_trimesh(trimesh, scale);
-        front.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
-        front.set_color(0.0, 1.0, 0.0);
+        front.set_local_translation(translation);
+        front.set_color(0.25, 1.0, 0.25);
 
         let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
         let v2 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0);
@@ -194,8 +195,8 @@ impl<const N: usize> Drawable for Pyraminx<N> {
             None,
         );
         let mut left = window.add_trimesh(trimesh, scale);
-        left.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
-        left.set_color(1.0, 0.0, 0.0);
+        left.set_local_translation(translation);
+        left.set_color(1.0, 0.25, 0.25);
 
         let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
         let v2 = Point3::new(-size / 2.0, 0.0, 0.0);
@@ -208,9 +209,10 @@ impl<const N: usize> Drawable for Pyraminx<N> {
             None,
         );
         let mut right = window.add_trimesh(trimesh, scale);
-        right.set_local_translation(Translation3::new(1.0, 1.0, 1.0));
-        right.set_color(0.0, 0.0, 1.0);
+        right.set_local_translation(translation);
+        right.set_color(0.25, 0.25, 1.0);
 
+        let mut core: [SceneNode; 4] = [down, front, left, right];
         vec![]
     }
 }
