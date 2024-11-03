@@ -152,8 +152,6 @@ impl<const N: usize> Drawable for Cube<N> {
 
 impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
-        let scale = Vector3::new(2.0, 2.0, 2.0);
-
         let v1 = Point3::new(0., 0., 0.);
         let v2 = Point3::new(1., 0., 1.);
         let v3 = Point3::new(0., 1., 1.);
@@ -161,6 +159,7 @@ impl Drawable for Pyraminx {
 
         let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
         let indices = vec![Point2::new(0.0, 1.0)];
+        let scale = Vector3::new(2.0, 2.0, 2.0);
 
         let trimesh = TriMesh::new(
             vec![v1, v2, v3],
@@ -189,14 +188,33 @@ impl Drawable for Pyraminx {
         let mut face3 = window.add_trimesh(trimesh, scale);
         face3.set_color(0.25, 0.25, 1.0);
 
-        let trimesh = TriMesh::new(
-            vec![v1, v4, v2],
-            Some(normals.clone()),
-            Some(indices.clone()),
-            None,
-        );
-        let mut face4 = window.add_trimesh(trimesh, scale);
-        face4.set_color(0.25, 1.0, 0.25);
+        fn render_sticker_face(
+            window: &mut Window,
+            v0: Point3<f32>,
+            v6: Point3<f32>,
+            v9: Point3<f32>,
+        ) {
+            let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
+            let indices = vec![Point2::new(0.0, 1.0)];
+            let scale = Vector3::new(2.0, 2.0, 2.0);
+
+            let v1 = v0 + (v6 - v0) / 3.0;
+            let v2 = v0 + (v9 - v0) / 3.0;
+            let v3 = v0 + (v6 - v0) * 2.0 / 3.0;
+            let v4 = Point3::from((v0.coords + v9.coords + v6.coords) / 3.);
+            let v5 = v0 + (v9 - v0) * 2.0 / 3.0;
+            let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
+            let v8 = v9 + (v6 - v9) / 3.0;
+
+            for triplet in [vec![v0, v1, v2], vec![v1, v3, v4], vec![v1, v4, v2]] {
+                let trimesh =
+                    TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
+                let mut sticker = window.add_trimesh(trimesh, scale);
+                sticker.set_color(0.25, 1.0, 0.25);
+            }
+        }
+
+        render_sticker_face(window, v4, v2, v1);
 
         vec![]
     }
