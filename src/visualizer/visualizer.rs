@@ -3,7 +3,7 @@ use std::time::SystemTime;
 use kiss3d::camera::ArcBall;
 use kiss3d::event::{Action, WindowEvent};
 use kiss3d::light::Light;
-use kiss3d::nalgebra::{coordinates, Point2, Point3, Translation3, UnitQuaternion, Vector3};
+use kiss3d::nalgebra::{Point2, Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::ncollide3d::procedural::TriMesh;
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
@@ -13,6 +13,8 @@ use crate::r#move::Move;
 use crate::visualizer::karaoke::{draw_karaoke, karaoke_format};
 use crate::visualizer::{MOVE_INTERVAL_MS, WINDOW_SIZE, ZOOM};
 use crate::{Cube, Puzzle, Pyraminx};
+
+const PYRAMINX_STICKER_MARGIN: f32 = 0.1; // TODO: part of Drawable
 
 pub trait Drawable {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
@@ -206,11 +208,28 @@ impl Drawable for Pyraminx {
             let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
             let v8 = v9 + (v6 - v9) / 3.0;
 
-            for triplet in [vec![v0, v1, v2], vec![v1, v3, v4], vec![v1, v4, v2]] {
+            for mut triplet in [
+                vec![v0, v1, v2],
+                vec![v1, v3, v4],
+                vec![v1, v4, v2],
+                vec![v2, v4, v5],
+                vec![v3, v6, v7],
+                vec![v7, v4, v3],
+                vec![v7, v8, v4],
+                vec![v8, v5, v4],
+                vec![v8, v9, v5],
+            ] {
+                let middle =
+                    Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
+                for i in 0..3 {
+                    let t = triplet[i];
+                    triplet[i] += (middle - t) * PYRAMINX_STICKER_MARGIN;
+                }
                 let trimesh =
                     TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
                 let mut sticker = window.add_trimesh(trimesh, scale);
                 sticker.set_color(0.25, 1.0, 0.25);
+                // TODO: remove culling
             }
         }
 
