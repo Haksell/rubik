@@ -16,6 +16,7 @@ use crate::{Cube, Puzzle, Pyraminx};
 
 pub trait Drawable {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
+    fn default_cam(&self) -> ArcBall;
 }
 
 impl<const N: usize> Drawable for Cube<N> {
@@ -143,14 +144,15 @@ impl<const N: usize> Drawable for Cube<N> {
             .flat_map(|face| draw_face(self, window, face))
             .collect::<Vec<SceneNode>>()
     }
+
+    fn default_cam(&self) -> ArcBall {
+        ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.75, 1.5, 1.5))
+    }
 }
 
 impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
-        // TODO WIP
-        let scale = Vector3::new(1.0, 1.0, 1.0);
-        let translation = Translation3::new(1.7, 0.7, 1.0);
-        window.add_sphere(0.2);
+        let scale = Vector3::new(2.0, 2.0, 2.0);
 
         let v1 = Point3::new(0., 0., 0.);
         let v2 = Point3::new(1., 0., 1.);
@@ -176,7 +178,7 @@ impl Drawable for Pyraminx {
             None,
         );
         let mut face2 = window.add_trimesh(trimesh, scale);
-        face2.set_color(0.25, 1.0, 0.25);
+        face2.set_color(1.0, 0.25, 0.25);
 
         let trimesh = TriMesh::new(
             vec![v3, v4, v1],
@@ -185,7 +187,7 @@ impl Drawable for Pyraminx {
             None,
         );
         let mut face3 = window.add_trimesh(trimesh, scale);
-        face3.set_color(1.0, 0.25, 0.25);
+        face3.set_color(0.25, 0.25, 1.0);
 
         let trimesh = TriMesh::new(
             vec![v1, v4, v2],
@@ -194,9 +196,13 @@ impl Drawable for Pyraminx {
             None,
         );
         let mut face4 = window.add_trimesh(trimesh, scale);
-        face4.set_color(0.25, 0.25, 1.0);
+        face4.set_color(0.25, 1.0, 0.25);
 
         vec![]
+    }
+
+    fn default_cam(&self) -> ArcBall {
+        ArcBall::new(Point3::new(1., 0., 0.), Point3::new(0.5, 0.5, 0.5))
     }
 }
 
@@ -215,7 +221,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
 
     window.set_light(Light::StickToCamera);
 
-    let mut cam = ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.75, 1.5, 1.5));
+    let mut cam = puzzle.default_cam();
 
     // Lock zoom
     cam.set_dist_step(1.0);
