@@ -1,3 +1,9 @@
+mod cube;
+mod pyraminx;
+
+pub use cube::Cube;
+pub use pyraminx::Pyraminx;
+
 use crate::{color::Color, moves_runtime, r#move::Move, visualizer::Drawable};
 use std::fmt;
 
