@@ -50,8 +50,7 @@ fn main() {
     let mut puzzle: Box<dyn Puzzle> = match (puzzle_name.to_lowercase().as_str(), size) {
         ("cube", 2) => Box::new(cub2!()),
         ("cube", 3) => Box::new(cub3!()),
-        ("pyraminx", 2) => panic!("Pyraminx can only be of size 3"),
-        ("pyraminx", 3) => Box::new(Pyraminx::<3>::new()),
+        ("pyraminx", 3) => Box::new(Pyraminx::new()), // TODO: different pyraminx sizes
         _ => panic!(
             "Invalid puzzle '{}'. Expected 'Cube' or 'Pyraminx'",
             puzzle_name

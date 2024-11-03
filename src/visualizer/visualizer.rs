@@ -145,18 +145,18 @@ impl<const N: usize> Drawable for Cube<N> {
     }
 }
 
-impl<const N: usize> Drawable for Pyraminx<N> {
+impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
         // TODO WIP
-
-        // Core
-        let size = N as f32;
         let scale = Vector3::new(1.0, 1.0, 1.0);
         let translation = Translation3::new(1.7, 0.7, 1.0);
+        window.add_sphere(0.2);
 
-        let v1 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0); // Top vertex
-        let v2 = Point3::new(-size / 2.0, 0.0, 0.0); // Bottom-left vertex
-        let v3 = Point3::new(size / 2.0, 0.0, 0.0); // Bottom-right vertex
+        let v1 = Point3::new(0., 0., 0.);
+        let v2 = Point3::new(1., 0., 1.);
+        let v3 = Point3::new(0., 1., 1.);
+        let v4 = Point3::new(1., 1., 0.);
+
         let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
         let indices = vec![Point2::new(0.0, 1.0)];
 
@@ -166,53 +166,36 @@ impl<const N: usize> Drawable for Pyraminx<N> {
             Some(indices.clone()),
             None,
         );
-        let mut down = window.add_trimesh(trimesh, scale);
-        down.set_local_translation(translation);
-        down.set_color(1.0, 1.0, 0.25);
-
-        let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
-        let v2 = Point3::new(size / 2.0, 0.0, 0.0);
-        let v3 = Point3::new(-size / 2.0, 0.0, 0.0);
+        let mut face1 = window.add_trimesh(trimesh, scale);
+        face1.set_color(1.0, 1.0, 0.25);
 
         let trimesh = TriMesh::new(
-            vec![v1, v2, v3],
+            vec![v3, v2, v4],
             Some(normals.clone()),
             Some(indices.clone()),
             None,
         );
-        let mut front = window.add_trimesh(trimesh, scale);
-        front.set_local_translation(translation);
-        front.set_color(0.25, 1.0, 0.25);
-
-        let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
-        let v2 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0);
-        let v3 = Point3::new(size / 2.0, 0.0, 0.0);
+        let mut face2 = window.add_trimesh(trimesh, scale);
+        face2.set_color(0.25, 1.0, 0.25);
 
         let trimesh = TriMesh::new(
-            vec![v1, v2, v3],
+            vec![v3, v4, v1],
             Some(normals.clone()),
             Some(indices.clone()),
             None,
         );
-        let mut left = window.add_trimesh(trimesh, scale);
-        left.set_local_translation(translation);
-        left.set_color(1.0, 0.25, 0.25);
-
-        let v1 = Point3::new(0.0, size * 3.0f32.sqrt() / 2.0, size * 3.0f32.sqrt() / 6.0);
-        let v2 = Point3::new(-size / 2.0, 0.0, 0.0);
-        let v3 = Point3::new(0.0, 0.0, size * 3.0f32.sqrt() / 2.0);
+        let mut face3 = window.add_trimesh(trimesh, scale);
+        face3.set_color(1.0, 0.25, 0.25);
 
         let trimesh = TriMesh::new(
-            vec![v1, v2, v3],
+            vec![v1, v4, v2],
             Some(normals.clone()),
             Some(indices.clone()),
             None,
         );
-        let mut right = window.add_trimesh(trimesh, scale);
-        right.set_local_translation(translation);
-        right.set_color(0.25, 0.25, 1.0);
+        let mut face4 = window.add_trimesh(trimesh, scale);
+        face4.set_color(0.25, 0.25, 1.0);
 
-        let mut core: [SceneNode; 4] = [down, front, left, right];
         vec![]
     }
 }

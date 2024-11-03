@@ -6,109 +6,39 @@ use std::fmt::{Display, Formatter};
 use std::hash::Hash;
 
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub struct Pyraminx<const N: usize> {
+pub struct Pyraminx {
     pub faces: Vec<Color>,
 }
 
-impl<const N: usize> Pyraminx<N> {
-    pub fn new() -> Pyraminx<N> {
+impl Pyraminx {
+    pub fn new() -> Pyraminx {
         const ORDER: [Color; 4] = [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW];
 
         Pyraminx {
-            faces: (0..ORDER.len() * N * N)
-                .map(|i| ORDER[i / (N * N)])
-                .collect(),
+            faces: (0..ORDER.len() * 9).map(|i| ORDER[i / 9]).collect(),
         }
     }
 
-    pub fn to_pyraminx2(&self) -> Result<Pyraminx<2>, &'static str> {
-        if N == 2 {
-            Ok(Pyraminx {
-                faces: self.faces.clone(),
-            })
-        } else {
-            Err("Cannot convert Pyraminx<N> to Pyraminx<3>: N is not 3")
-        }
-    }
-
-    pub fn to_pyraminx3(&self) -> Result<Pyraminx<3>, &'static str> {
-        if N == 3 {
-            Ok(Pyraminx {
-                faces: self.faces.clone(),
-            })
-        } else {
-            Err("Cannot convert Pyraminx<N> to Pyraminx<3>: N is not 3")
-        }
+    pub fn to_pyraminx3(&self) -> Result<Pyraminx, &'static str> {
+        Ok(Pyraminx {
+            faces: self.faces.clone(),
+        })
     }
 
     fn get_face(&self, face: usize) -> &[Color] {
-        let start = face * N * N;
-        let end = (face + 1) * N * N;
+        let start = face * 9;
+        let end = (face + 1) * 9;
         &self.faces[start..end]
     }
 }
 
-impl<const N: usize> Puzzle for Pyraminx<N> {
+impl Puzzle for Pyraminx {
     fn do_move(&mut self, move_: Move) {
-        match move_ {
-            Move::R => {
-                // N = 3
-
-                //     0
-                //   1 2 3
-                // 4 5 6 7 8
-
-                // On green face : 3 6 7 8
-                //                 | | | |
-                // On blue face  : 6 1 5 4
-                //                 | | | |
-                // on yellow face: 6 1 5 4
-                //                 | | | |
-                // on green face : 3 6 7 8
-            }
-            Move::U => {
-                let idxs: Vec<usize> = (0..N * N - (N + N - 1)).collect();
-
-                // Face 1 to face 0
-
-                idxs.iter().for_each(|&i| self.faces.swap(N * N + i, i));
-
-                // Face 1 to face 2
-                idxs.iter()
-                    .for_each(|&i| self.faces.swap(N * N + i, N * N * 2 + i));
-            }
-            Move::B => todo!(),
-            Move::L => todo!(),
-            Move::R2 => {
-                for _ in 0..2 {
-                    self.do_move(Move::R);
-                }
-            }
-            Move::U2 => {
-                for _ in 0..2 {
-                    self.do_move(Move::U);
-                }
-            }
-            Move::B2 => {
-                for _ in 0..2 {
-                    self.do_move(Move::B);
-                }
-            }
-            Move::L2 => {
-                for _ in 0..2 {
-                    self.do_move(Move::L);
-                }
-            }
-            _ => panic!("Invalid move for pyraminx: '{:?}'", move_), // TODO Or maybe ignore ?
-        };
+        // TODO
     }
 
     fn solve(&self) -> Option<Vec<Move>> {
-        match N {
-            2 => Some(iddfs(self.to_pyraminx2().unwrap())),
-            3 => Some(iddfs(self.to_pyraminx3().unwrap())),
-            _ => None,
-        }
+        Some(iddfs(self.clone()))
     }
 
     // TODO Better check ?
@@ -117,7 +47,7 @@ impl<const N: usize> Puzzle for Pyraminx<N> {
         self.faces
             .iter()
             .enumerate()
-            .all(|(i, &col)| col == ORDER[i / (N * N)])
+            .all(|(i, &col)| col == ORDER[i / 9])
     }
 
     fn get_faces(&self) -> &Vec<Color> {
@@ -125,19 +55,7 @@ impl<const N: usize> Puzzle for Pyraminx<N> {
     }
 }
 
-impl DFSAble for Pyraminx<2> {
-    const ALLOWED_MOVES: &'static [Move] = &[
-        Move::R,
-        Move::U,
-        Move::B,
-        Move::L,
-        Move::R2,
-        Move::U2,
-        Move::B2,
-        Move::L2,
-    ];
-}
-impl DFSAble for Pyraminx<3> {
+impl DFSAble for Pyraminx {
     const ALLOWED_MOVES: &'static [Move] = &[
         Move::R,
         Move::U,
@@ -150,7 +68,7 @@ impl DFSAble for Pyraminx<3> {
     ];
 }
 
-impl<const N: usize> Display for Pyraminx<N> {
+impl Display for Pyraminx {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         fn format(face: &[Color], line: usize) -> String {
             let start: usize = line * line;
@@ -166,27 +84,27 @@ impl<const N: usize> Display for Pyraminx<N> {
             .map(|f| self.get_face(f))
             .collect();
 
-        for line in 0..N {
+        for line in 0..3 {
             writeln!(
                 f,
                 "{}{}",
-                " ".repeat((N - line - 1) * 2).as_str(),
+                " ".repeat((2 - line) * 2).as_str(),
                 faces
                     .iter()
                     .map(|face| format(face, line))
                     .collect::<Vec<String>>()
-                    .join(" ".repeat((N - line - 1) * 4 + 1).as_str())
+                    .join(" ".repeat((2 - line) * 4 + 1).as_str())
             )?;
         }
 
         let face = self.get_face(3);
-        for line in 0..N {
+        for line in 0..3 {
             writeln!(
                 f,
                 "{}{}{}",
-                " ".repeat((N + N - 1) * 2).as_str(),
+                " ".repeat((3 + 3 - 1) * 2).as_str(),
                 " ".repeat((line) * 2).as_str(),
-                format(&face, N - line - 1)
+                format(&face, 3 - line - 1)
             )?;
         }
 
