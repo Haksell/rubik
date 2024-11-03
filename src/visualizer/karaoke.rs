@@ -1,14 +1,11 @@
-use std::time::SystemTime;
-
+use super::{MOVE_INTERVAL_MS, WINDOW_SIZE};
+use crate::r#move::Move;
 use kiss3d::{
     nalgebra::{Point2, Point3},
     text::Font,
     window::Window,
 };
-
-use crate::r#move::Move;
-
-use super::{MOVE_INTERVAL_MS, WINDOW_SIZE};
+use std::time::SystemTime;
 
 const TEXT_SCALE: f32 = 100.0;
 
