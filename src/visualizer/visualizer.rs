@@ -14,8 +14,6 @@ use crate::visualizer::karaoke::{draw_karaoke, karaoke_format};
 use crate::visualizer::{MOVE_INTERVAL_MS, WINDOW_SIZE, ZOOM};
 use crate::{Cube, Puzzle, Pyraminx};
 
-const PYRAMINX_STICKER_MARGIN: f32 = 0.1; // TODO: part of Drawable
-
 pub trait Drawable {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
     fn default_cam(&self) -> ArcBall;
@@ -154,6 +152,32 @@ impl<const N: usize> Drawable for Cube<N> {
 
 impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
+        const CORE_MARGIN: f32 = 0.04;
+        const STICKER_MARGIN: f32 = 0.1;
+
+        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
+            let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
+            let indices = vec![Point2::new(0.0, 1.0)];
+            let scale = Vector3::new(2.0, 2.0, 2.0);
+
+            let middle = Point3::from(
+                (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
+                    / 4.,
+            );
+            for v in vertices.iter_mut() {
+                *v += (middle - *v) * CORE_MARGIN;
+            }
+
+            for i in 0..4 {
+                let triplet = vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]];
+                let trimesh =
+                    TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
+                let mut sticker = window.add_trimesh(trimesh, scale);
+                sticker.set_color(0., 0., 0.);
+                sticker.enable_backface_culling(false);
+            }
+        }
+
         fn render_pyra_face(
             window: &mut Window,
             v0: Point3<f32>,
@@ -186,10 +210,10 @@ impl Drawable for Pyraminx {
             ] {
                 let middle =
                     Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
-                for i in 0..3 {
-                    let t = triplet[i];
-                    triplet[i] += (middle - t) * PYRAMINX_STICKER_MARGIN;
+                for v in triplet.iter_mut() {
+                    *v += (middle - *v) * STICKER_MARGIN;
                 }
+
                 let trimesh =
                     TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
                 let mut sticker = window.add_trimesh(trimesh, scale);
@@ -202,9 +226,10 @@ impl Drawable for Pyraminx {
         let v2 = Point3::new(1., 0., 1.);
         let v3 = Point3::new(0., 1., 1.);
         let v4 = Point3::new(1., 1., 0.);
-        render_pyra_face(window, v3, v2, v4, Color::RED.as_rgb());
+        render_core(window, [v1, v2, v3, v4]);
+        render_pyra_face(window, v4, v3, v2, Color::RED.as_rgb());
         render_pyra_face(window, v4, v2, v1, Color::GREEN.as_rgb());
-        render_pyra_face(window, v3, v4, v1, Color::BLUE.as_rgb());
+        render_pyra_face(window, v4, v1, v3, Color::BLUE.as_rgb());
         render_pyra_face(window, v1, v2, v3, Color::YELLOW.as_rgb());
 
         vec![]
