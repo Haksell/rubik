@@ -33,6 +33,7 @@ impl TryFrom<u8> for Color {
 
 impl Color {
     // TODO: better name
+    // TODO: specific for Cube<3>
     pub fn side(&self) -> i8 {
         match self {
             Color::BLUE => 0,
