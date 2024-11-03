@@ -154,47 +154,12 @@ impl<const N: usize> Drawable for Cube<N> {
 
 impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
-        let v1 = Point3::new(0., 0., 0.);
-        let v2 = Point3::new(1., 0., 1.);
-        let v3 = Point3::new(0., 1., 1.);
-        let v4 = Point3::new(1., 1., 0.);
-
-        let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
-        let indices = vec![Point2::new(0.0, 1.0)];
-        let scale = Vector3::new(2.0, 2.0, 2.0);
-
-        let trimesh = TriMesh::new(
-            vec![v1, v2, v3],
-            Some(normals.clone()),
-            Some(indices.clone()),
-            None,
-        );
-        let mut face1 = window.add_trimesh(trimesh, scale);
-        face1.set_color(1.0, 1.0, 0.25);
-
-        let trimesh = TriMesh::new(
-            vec![v3, v2, v4],
-            Some(normals.clone()),
-            Some(indices.clone()),
-            None,
-        );
-        let mut face2 = window.add_trimesh(trimesh, scale);
-        face2.set_color(1.0, 0.25, 0.25);
-
-        let trimesh = TriMesh::new(
-            vec![v3, v4, v1],
-            Some(normals.clone()),
-            Some(indices.clone()),
-            None,
-        );
-        let mut face3 = window.add_trimesh(trimesh, scale);
-        face3.set_color(0.25, 0.25, 1.0);
-
-        fn render_sticker_face(
+        fn render_pyra_face(
             window: &mut Window,
             v0: Point3<f32>,
             v6: Point3<f32>,
             v9: Point3<f32>,
+            [r, g, b]: [f32; 3],
         ) {
             let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
             let indices = vec![Point2::new(0.0, 1.0)];
@@ -228,12 +193,19 @@ impl Drawable for Pyraminx {
                 let trimesh =
                     TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
                 let mut sticker = window.add_trimesh(trimesh, scale);
-                sticker.set_color(0.25, 1.0, 0.25);
-                // TODO: remove culling
+                sticker.set_color(r, g, b);
+                sticker.enable_backface_culling(false);
             }
         }
 
-        render_sticker_face(window, v4, v2, v1);
+        let v1 = Point3::new(0., 0., 0.);
+        let v2 = Point3::new(1., 0., 1.);
+        let v3 = Point3::new(0., 1., 1.);
+        let v4 = Point3::new(1., 1., 0.);
+        render_pyra_face(window, v3, v2, v4, Color::RED.as_rgb());
+        render_pyra_face(window, v4, v2, v1, Color::GREEN.as_rgb());
+        render_pyra_face(window, v3, v4, v1, Color::BLUE.as_rgb());
+        render_pyra_face(window, v1, v2, v3, Color::YELLOW.as_rgb());
 
         vec![]
     }
