@@ -3,7 +3,7 @@ use std::time::SystemTime;
 use kiss3d::camera::ArcBall;
 use kiss3d::event::{Action, WindowEvent};
 use kiss3d::light::Light;
-use kiss3d::nalgebra::{coordinates, Point2, Point3, Translation3, UnitQuaternion, Vector3};
+use kiss3d::nalgebra::{Point2, Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::ncollide3d::procedural::TriMesh;
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
