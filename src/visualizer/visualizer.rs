@@ -1,7 +1,9 @@
+// TODO: center puzzles
+
 use std::time::SystemTime;
 
 use kiss3d::camera::ArcBall;
-use kiss3d::event::{Action, WindowEvent};
+use kiss3d::event::{Action, Modifiers, MouseButton, WindowEvent};
 use kiss3d::light::Light;
 use kiss3d::nalgebra::{Point2, Point3, Translation3, UnitQuaternion, Vector3};
 use kiss3d::ncollide3d::procedural::TriMesh;
@@ -158,7 +160,7 @@ impl Drawable for Pyraminx {
         fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
             let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
             let indices = vec![Point2::new(0.0, 1.0)];
-            let scale = Vector3::new(2.0, 2.0, 2.0);
+            let scale = Vector3::new(3.0, 3.0, 3.0);
 
             let middle = Point3::from(
                 (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
@@ -187,7 +189,7 @@ impl Drawable for Pyraminx {
         ) {
             let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
             let indices = vec![Point2::new(0.0, 1.0)];
-            let scale = Vector3::new(2.0, 2.0, 2.0);
+            let scale = Vector3::new(3.0, 3.0, 3.0);
 
             let v1 = v0 + (v6 - v0) / 3.0;
             let v2 = v0 + (v9 - v0) / 3.0;
@@ -222,10 +224,10 @@ impl Drawable for Pyraminx {
             }
         }
 
-        let v1 = Point3::new(0., 0., 0.);
-        let v2 = Point3::new(1., 0., 1.);
-        let v3 = Point3::new(0., 1., 1.);
-        let v4 = Point3::new(1., 1., 0.);
+        let v1 = Point3::new(-0.5, -0.5, -0.5);
+        let v2 = Point3::new(0.5, -0.5, 0.5);
+        let v3 = Point3::new(-0.5, 0.5, 0.5);
+        let v4 = Point3::new(0.5, 0.5, -0.5);
         render_core(window, [v1, v2, v3, v4]);
         render_pyra_face(window, v4, v3, v2, Color::RED.as_rgb());
         render_pyra_face(window, v4, v2, v1, Color::GREEN.as_rgb());
@@ -236,7 +238,7 @@ impl Drawable for Pyraminx {
     }
 
     fn default_cam(&self) -> ArcBall {
-        ArcBall::new(Point3::new(1., 0., 0.), Point3::new(0.5, 0.5, 0.5))
+        ArcBall::new(Point3::new(0.5, -0.5, -0.5), Point3::new(0., 0., 0.))
     }
 }
 
