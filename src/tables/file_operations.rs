@@ -47,11 +47,12 @@ pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
     Ok(())
 }
 
-pub fn clear_cache() {
-    unsafe {
-        if let Some(cache) = MOVE_CACHE.as_mut() {
-            cache.clear();
-            MOVE_CACHE = None;
-        }
-    }
-}
+// TODO: use at each std::process::exit (useless)
+// fn clear_cache() {
+//     unsafe {
+//         if let Some(cache) = MOVE_CACHE.as_mut() {
+//             cache.clear();
+//             MOVE_CACHE = None;
+//         }
+//     }
+// }

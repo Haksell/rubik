@@ -30,6 +30,7 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &Box<dyn Puzzle>) {
 }
 
 // TODO: disable translation with right-click
+// TODO: flag for playground mode
 pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 

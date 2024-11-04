@@ -1,11 +1,12 @@
 mod cube;
 mod pyraminx;
 
+use clap::ValueEnum;
 pub use cube::Cube;
 pub use pyraminx::Pyraminx;
 
-use crate::{color::Color, moves_runtime, r#move::Move, visualizer::Drawable};
-use std::fmt::Display;
+use crate::{color::Color, cub2, cub3, moves_runtime, r#move::Move, visualizer::Drawable};
+use std::fmt::{self, Display};
 
 pub trait Puzzle: Display + Drawable {
     fn solve(&self) -> Option<Vec<Move>>;
@@ -35,5 +36,32 @@ pub trait Puzzle: Display + Drawable {
             sequence.push(move_);
         }
         sequence
+    }
+}
+
+#[derive(ValueEnum, Clone, Debug, PartialEq)]
+pub enum PuzzleArg {
+    Cube2,
+    Cube3,
+    Pyraminx,
+}
+
+impl PuzzleArg {
+    pub fn build(&self) -> Box<dyn Puzzle> {
+        match self {
+            PuzzleArg::Cube2 => Box::new(cub2!()),
+            PuzzleArg::Cube3 => Box::new(cub3!()),
+            PuzzleArg::Pyraminx => Box::new(Pyraminx::new()),
+        }
+    }
+}
+
+impl fmt::Display for PuzzleArg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            PuzzleArg::Cube2 => write!(f, "cube2"),
+            PuzzleArg::Cube3 => write!(f, "cube3"),
+            PuzzleArg::Pyraminx => write!(f, "pyraminx"),
+        }
     }
 }

@@ -1,59 +1,33 @@
-use clap::Parser;
-use rubik::{
-    cub2, cub3, r#move::Move, tables::clear_cache, visualizer::visualize, Cube, Puzzle, Pyraminx,
-};
+use clap::{Parser, ValueEnum};
+use rubik::{puzzles::PuzzleArg, r#move::Move, visualizer::visualize};
+
+// TODO: help messages
+#[derive(ValueEnum, Clone, Debug, PartialEq)]
+pub enum Mode {
+    Cli,
+    Gui,
+    Karaoke,
+}
 
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
 struct Args {
-    /// Enable visualizer window after solve.
-    #[arg(short, long)]
-    visualize: bool,
-
-    /// Display solving movements colored gradually in the visualizer.
-    #[arg(long)]
-    karaoke: bool,
-
-    /// Start a movable visualizer with the specified or default puzzle and size.
-    #[arg(long)]
-    playground: bool,
-
-    #[arg(long)]
-    explain: bool, // TODO Comprendre
-
-    /// Select the puzzle between "Pyraminx" and "Cube". Defaults to Cube.
-    #[arg(long)]
-    puzzle: Option<String>,
-
-    /// Size of the puzzle (2 <= size <= 3). Defaults to 3.
-    #[arg(long)]
-    size: Option<usize>,
-
-    /// Specify a scramble sequence for the puzzle
-    #[arg(index(1))]
+    #[arg(index(1), help = "Specify a scramble sequence for the puzzle")]
     scramble: Option<String>,
+
+    #[arg(long, value_enum, default_value_t = Mode::Cli)]
+    mode: Mode,
+
+    #[arg(long, default_value_t = PuzzleArg::Cube3)]
+    puzzle: PuzzleArg,
+
+    #[arg(long, help = "Show the different steps")]
+    explain: bool,
 }
 
 fn main() {
     let args = Args::parse();
-
-    let size: usize = args.size.unwrap_or(3);
-    let puzzle_name: String = args.puzzle.unwrap_or("Cube".to_string());
-
-    match size {
-        2..=3 => (),
-        _ => panic!("Size should be between 2 or 3 included"),
-    };
-
-    let mut puzzle: Box<dyn Puzzle> = match (puzzle_name.to_lowercase().as_str(), size) {
-        ("cube", 2) => Box::new(cub2!()),
-        ("cube", 3) => Box::new(cub3!()),
-        ("pyraminx", 3) => Box::new(Pyraminx::new()), // TODO: different pyraminx sizes
-        _ => panic!(
-            "Invalid puzzle '{}'. Expected 'Cube' or 'Pyraminx'",
-            puzzle_name
-        ),
-    };
+    let mut puzzle = args.puzzle.build();
 
     if let Some(sequence) = args.scramble {
         puzzle.scramble(&sequence);
@@ -65,27 +39,28 @@ fn main() {
         );
     }
 
-    if args.playground {
-        visualize(&mut puzzle, &vec![], false);
-        return;
-    }
-
     println!("{puzzle}");
 
-    if let Some(solution) = puzzle.solve() {
-        if solution.is_empty() {
-            println!("The {} was already solved!", puzzle_name.to_lowercase());
-        } else {
-            println!("Solution of {} moves found:", solution.len());
-            println!("{}", Move::format_sequence(&solution));
-        }
-        if args.visualize {
-            visualize(&mut puzzle, &solution, args.karaoke);
-        }
+    let solution = puzzle.solve().unwrap_or_else(|| {
+        println!("Failed to find solution.");
+        std::process::exit(1);
+    });
+
+    if solution.is_empty() {
+        println!("The puzzle was already solved!");
     } else {
-        println!("Failed to find solution");
+        println!("Solution of {} moves found:", solution.len());
+        println!("{}", Move::format_sequence(&solution));
     }
-    clear_cache();
+
+    if args.mode != Mode::Cli {
+        visualize(
+            &mut puzzle,
+            &solution,
+            args.mode == Mode::Karaoke,
+            // TODO: no playground bool
+        );
+    }
 }
 
 #[cfg(test)]
@@ -93,7 +68,6 @@ mod tests {
     use rubik::{
         cub3,
         solvers::{premover, zz},
-        tables::clear_cache,
         Cube, Puzzle,
     };
     use serial_test::serial;
@@ -115,7 +89,6 @@ mod tests {
         }
 
         println!("{} avg", total_moves as f32 / n as f32);
-        clear_cache();
     }
 
     #[test]
