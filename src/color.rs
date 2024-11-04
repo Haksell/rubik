@@ -1,8 +1,7 @@
+use colored::Colorize;
 use std::convert::TryFrom;
 use std::fmt::Display;
 use std::hash::Hash;
-
-use colored::Colorize;
 
 #[repr(u8)]
 #[derive(Clone, Debug, Copy, PartialEq, Eq, Hash)]
@@ -58,17 +57,15 @@ impl Color {
 
 impl Display for Color {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        let [r, g, b] = self.as_rgb();
         write!(
             f,
             "{}",
-            match self {
-                Color::WHITE => "■".truecolor(0xff, 0xff, 0xff),
-                Color::RED => "■".truecolor(0xff, 0x12, 0x34),
-                Color::GREEN => "■".truecolor(0x00, 0x9b, 0x48),
-                Color::YELLOW => "■".truecolor(0xff, 0xd5, 0x00),
-                Color::ORANGE => "■".truecolor(0xff, 0x58, 0x00),
-                Color::BLUE => "■".truecolor(0x00, 0x46, 0xad),
-            }
+            "■".truecolor(
+                (r * 255.0).round() as u8,
+                (g * 255.0).round() as u8,
+                (b * 255.0).round() as u8
+            ),
         )
     }
 }
