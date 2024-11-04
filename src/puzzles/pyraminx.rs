@@ -25,12 +25,6 @@ impl Pyraminx {
         }
     }
 
-    pub fn to_pyraminx3(&self) -> Result<Pyraminx, &'static str> {
-        Ok(Pyraminx {
-            faces: self.faces.clone(),
-        })
-    }
-
     fn get_face(&self, face: usize) -> &[Color] {
         let start = face * 9;
         let end = (face + 1) * 9;
@@ -39,8 +33,33 @@ impl Pyraminx {
 }
 
 impl Puzzle for Pyraminx {
-    fn do_move(&mut self, _: Move) {
-        // TODO
+    fn do_move(&mut self, move_: Move) {
+        // TODO: per puzzle moves enum
+        // TODO: per puzzle sticker enum
+        match move_ {
+            Move::R => todo!(),
+            Move::U => todo!(),
+            Move::B => todo!(),
+            Move::L => todo!(),
+            Move::TR => {
+                let tmp = self.faces[17];
+                self.faces[17] = self.faces[31];
+                self.faces[31] = self.faces[22];
+                self.faces[22] = tmp;
+            }
+            Move::TU => todo!(),
+            Move::TB => todo!(),
+            Move::TL => todo!(),
+            Move::R2 => todo!(),
+            Move::U2 => todo!(),
+            Move::B2 => todo!(),
+            Move::L2 => todo!(),
+            Move::TR2 => todo!(),
+            Move::TU2 => todo!(),
+            Move::TB2 => todo!(),
+            Move::TL2 => todo!(),
+            _ => panic!("Invalid move for pyraminx {:?}", move_),
+        }
     }
 
     fn solve(&self) -> Option<Vec<Move>> {
@@ -123,7 +142,7 @@ impl Drawable for Pyraminx {
             let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
             let v8 = v9 + (v6 - v9) / 3.0;
 
-            for (i, mut triplet) in [
+            for (mut triplet, sticker) in [
                 vec![v0, v1, v2],
                 vec![v1, v3, v4],
                 vec![v1, v4, v2],
@@ -135,19 +154,14 @@ impl Drawable for Pyraminx {
                 vec![v8, v9, v5],
             ]
             .into_iter()
-            .enumerate()
+            .zip(face)
             {
                 let middle =
                     Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
                 for v in triplet.iter_mut() {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
-                let [mut r, mut g, mut b] = face[i].as_rgb();
-                draw_triangle(
-                    window,
-                    triplet,
-                    [r * i as f32 / 8., g * i as f32 / 8., b * i as f32 / 8.],
-                );
+                draw_triangle(window, triplet, sticker.as_rgb());
             }
         }
 

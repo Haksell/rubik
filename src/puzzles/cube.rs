@@ -357,6 +357,7 @@ impl<const N: usize> Puzzle for Cube<N> {
                     self.do_move(Move::D);
                 }
             }
+            _ => panic!("REMOVE THIS CRAP"),
         }
         // println!("{:?}", self.faces);
         //println!("{}", self);
