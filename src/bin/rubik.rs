@@ -55,11 +55,6 @@ fn main() {
         ),
     };
 
-    if args.playground {
-        visualize(&mut puzzle, &vec![], false);
-        return;
-    }
-
     if let Some(sequence) = args.scramble {
         puzzle.scramble(&sequence);
     } else {
@@ -68,6 +63,11 @@ fn main() {
             "No scramble sequence provided, using the following one:\n{}",
             Move::format_sequence(&sequence)
         );
+    }
+
+    if args.playground {
+        visualize(&mut puzzle, &vec![], false);
+        return;
     }
 
     println!("{puzzle}");

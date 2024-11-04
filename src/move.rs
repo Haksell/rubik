@@ -38,6 +38,14 @@ pub enum Move {
     B3,
     L3,
     D3,
+    TR,
+    TU,
+    TB,
+    TL,
+    TR2,
+    TU2,
+    TB2,
+    TL2,
 }
 
 impl Move {
@@ -173,6 +181,14 @@ impl TryFrom<&str> for Move {
             "D" => Ok(Move::D),
             "D2" => Ok(Move::D2),
             "D'" | "D’" => Ok(Move::D3),
+            "r" => Ok(Move::TR),
+            "u" => Ok(Move::TU),
+            "b" => Ok(Move::TB),
+            "l" => Ok(Move::TL),
+            "r'" | "r’" => Ok(Move::TR2),
+            "u'" | "u’" => Ok(Move::TU2),
+            "b'" | "b’" => Ok(Move::TB2),
+            "l'" | "l’" => Ok(Move::TL2),
             _ => Err(format!("Invalid move '{value}'")),
         }
     }
@@ -199,6 +215,14 @@ impl Debug for Move {
             Move::B3 => "B'",
             Move::L3 => "L'",
             Move::D3 => "D'",
+            Move::TR => "r",
+            Move::TU => "u",
+            Move::TB => "b",
+            Move::TL => "l",
+            Move::TR2 => "r'",
+            Move::TU2 => "u'",
+            Move::TB2 => "b'",
+            Move::TL2 => "l'",
         };
         write!(f, "{s}")
     }
