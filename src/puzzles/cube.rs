@@ -1,4 +1,4 @@
-// TODO: center the cube at the origin and make the camera look at it
+// TODO: center the Cube<N> at the origin and make the camera look at it
 
 use kiss3d::camera::ArcBall;
 use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
@@ -9,7 +9,6 @@ use crate::color::Color;
 use crate::r#move::Move;
 use crate::solvers::{iddfs, premover, zz, DFSAble};
 use crate::trigger::Trigger;
-use crate::visualizer::Drawable;
 use crate::Puzzle;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
@@ -402,9 +401,7 @@ impl<const N: usize> Puzzle for Cube<N> {
     fn get_faces(&self) -> &Vec<Color> {
         &self.faces
     }
-}
 
-impl<const N: usize> Drawable for Cube<N> {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
         const CUBIE_SIZE: f32 = 1.0;
         const MARGIN: f32 = 0.05;

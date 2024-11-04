@@ -12,16 +12,16 @@ pub enum Mode {
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
 struct Args {
-    #[arg(index(1), help = "Specify a scramble sequence for the puzzle")]
+    #[arg(long, short, help = "Specify a scramble sequence for the puzzle")]
     scramble: Option<String>,
 
-    #[arg(long, value_enum, default_value_t = Mode::Cli)]
+    #[arg(long,short, value_enum, default_value_t = Mode::Cli)]
     mode: Mode,
 
-    #[arg(long, default_value_t = PuzzleArg::Cube3)]
+    #[arg(long,short,value_enum, default_value_t = PuzzleArg::Cube3)]
     puzzle: PuzzleArg,
 
-    #[arg(long, help = "Show the different steps")]
+    #[arg(long, short, help = "Show the different steps")]
     explain: bool,
 }
 
@@ -55,7 +55,7 @@ fn main() {
 
     if args.mode != Mode::Cli {
         visualize(
-            &mut puzzle,
+            &mut *puzzle,
             &solution,
             args.mode == Mode::Karaoke,
             // TODO: no playground bool

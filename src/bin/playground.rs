@@ -5,12 +5,12 @@ use rubik::{puzzles::PuzzleArg, visualizer::visualize};
 #[derive(Parser, Debug)]
 #[command(name = "playground", about, long_about = None)]
 struct Args {
-    #[arg(long, default_value_t = PuzzleArg::Cube3)]
+    #[arg(long, short, value_enum,default_value_t = PuzzleArg::Cube3)]
     puzzle: PuzzleArg,
 }
 
 fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();
-    visualize(&mut puzzle, &vec![], false);
+    visualize(&mut *puzzle, &vec![], false);
 }

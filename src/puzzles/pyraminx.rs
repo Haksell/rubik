@@ -1,7 +1,6 @@
 use crate::color::Color;
 use crate::r#move::Move;
 use crate::solvers::{iddfs, DFSAble};
-use crate::visualizer::Drawable;
 use crate::Puzzle;
 use kiss3d::camera::ArcBall;
 use kiss3d::nalgebra::{Point2, Point3, Vector3};
@@ -136,22 +135,7 @@ impl Puzzle for Pyraminx {
     fn get_faces(&self) -> &Vec<Color> {
         &self.faces
     }
-}
 
-impl DFSAble for Pyraminx {
-    const ALLOWED_MOVES: &'static [Move] = &[
-        Move::R,
-        Move::U,
-        Move::B,
-        Move::L,
-        Move::R2,
-        Move::U2,
-        Move::B2,
-        Move::L2,
-    ];
-}
-
-impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
         fn draw_triangle(window: &mut Window, vertices: Vec<Point3<f32>>, [r, g, b]: [f32; 3]) {
             let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
@@ -239,6 +223,19 @@ impl Drawable for Pyraminx {
     fn default_cam(&self) -> ArcBall {
         ArcBall::new(Point3::new(0.5, -0.5, -0.5), Point3::new(0., 0., 0.))
     }
+}
+
+impl DFSAble for Pyraminx {
+    const ALLOWED_MOVES: &'static [Move] = &[
+        Move::R,
+        Move::U,
+        Move::B,
+        Move::L,
+        Move::R2,
+        Move::U2,
+        Move::B2,
+        Move::L2,
+    ];
 }
 
 impl Display for Pyraminx {

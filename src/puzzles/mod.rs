@@ -3,12 +3,13 @@ mod pyraminx;
 
 use clap::ValueEnum;
 pub use cube::Cube;
+use kiss3d::{camera::ArcBall, scene::SceneNode, window::Window};
 pub use pyraminx::Pyraminx;
 
-use crate::{color::Color, cub2, cub3, moves_runtime, r#move::Move, visualizer::Drawable};
+use crate::{color::Color, cub2, cub3, moves_runtime, r#move::Move};
 use std::fmt::{self, Display};
 
-pub trait Puzzle: Display + Drawable {
+pub trait Puzzle: Display {
     fn solve(&self) -> Option<Vec<Move>>;
 
     fn is_solved(&self) -> bool;
@@ -37,6 +38,9 @@ pub trait Puzzle: Display + Drawable {
         }
         sequence
     }
+
+    fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
+    fn default_cam(&self) -> ArcBall;
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq)]
@@ -52,16 +56,6 @@ impl PuzzleArg {
             PuzzleArg::Cube2 => Box::new(cub2!()),
             PuzzleArg::Cube3 => Box::new(cub3!()),
             PuzzleArg::Pyraminx => Box::new(Pyraminx::new()),
-        }
-    }
-}
-
-impl fmt::Display for PuzzleArg {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            PuzzleArg::Cube2 => write!(f, "cube2"),
-            PuzzleArg::Cube3 => write!(f, "cube3"),
-            PuzzleArg::Pyraminx => write!(f, "pyraminx"),
         }
     }
 }
