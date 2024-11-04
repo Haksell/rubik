@@ -1,9 +1,10 @@
 use super::last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step};
 use super::reduce_moves;
+use crate::puzzles::Move;
 use crate::tables::{read_moves, FILE_CROSSES};
 use crate::trigger::{Trigger, TRIGGERS_BY_SLOT};
 use crate::Puzzle;
-use crate::{color::Color, r#move::Move, Cube, EDGES};
+use crate::{color::Color, Cube, EDGES};
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap};
 
@@ -215,7 +216,7 @@ impl Cube<3> {
 #[cfg(test)]
 mod tests {
     use super::{cfop, solve_cross, NUM_CROSSES};
-    use crate::{cub3, r#move::Move, Cube, Puzzle};
+    use crate::{cub3, puzzles::Move, Cube, Puzzle};
 
     #[test]
     fn test_is_cross_solved() {

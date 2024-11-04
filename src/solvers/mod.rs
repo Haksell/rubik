@@ -5,7 +5,7 @@ mod last_layer;
 mod zz;
 
 use crate::{
-    r#move::{Move, MOVES},
+    puzzles::{Move, MOVES},
     Cube, Puzzle,
 };
 pub use cfop::{cfop, NUM_CROSSES};
@@ -56,7 +56,8 @@ pub fn premover(cube: &mut Cube<3>, solver: fn(&mut Cube<3>) -> Vec<Move>) -> Ve
 
 #[cfg(test)]
 mod tests {
-    use super::{reduce_moves, Move};
+    use super::reduce_moves;
+    use crate::puzzles::Move;
     use move_macro::moves;
 
     #[test]

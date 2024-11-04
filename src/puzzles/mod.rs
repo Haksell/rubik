@@ -1,11 +1,13 @@
 mod cube;
+mod r#move;
 mod pyraminx;
 
-use clap::ValueEnum;
 pub use cube::Cube;
 pub use pyraminx::Pyraminx;
+pub use r#move::{Move, MOVES, MOVES_RU, MOVES_RUL};
 
-use crate::{color::Color, cub2, cub3, moves_runtime, r#move::Move, visualizer::Drawable};
+use crate::{color::Color, cub2, cub3, moves_runtime, visualizer::Drawable};
+use clap::ValueEnum;
 use std::fmt::{self, Display};
 
 pub trait Puzzle: Display + Drawable {

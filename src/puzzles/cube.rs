@@ -6,13 +6,14 @@ use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 
 use crate::color::Color;
-use crate::r#move::Move;
 use crate::solvers::{iddfs, premover, zz, DFSAble};
 use crate::trigger::Trigger;
 use crate::visualizer::Drawable;
 use crate::Puzzle;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
+
+use super::Move;
 
 // TODO: handle N > 3
 #[derive(Clone, Eq, PartialEq, Hash)]
@@ -595,7 +596,7 @@ impl DFSAble for Cube<2> {
 #[cfg(test)]
 mod tests {
     use super::Cube;
-    use crate::{r#move::Move, Puzzle};
+    use crate::{puzzles::r#move::Move, Puzzle};
 
     #[test]
     fn test_is_solved_generic() {

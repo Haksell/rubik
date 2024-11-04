@@ -1,4 +1,4 @@
-use crate::r#move::Move;
+use crate::puzzles::Move;
 use std::{
     collections::HashMap,
     fs::{self, File},

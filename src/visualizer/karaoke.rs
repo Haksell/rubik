@@ -1,5 +1,5 @@
 use super::{MOVE_INTERVAL_MS, WINDOW_SIZE};
-use crate::r#move::Move;
+use crate::puzzles::Move;
 use kiss3d::{
     nalgebra::{Point2, Point3},
     text::Font,

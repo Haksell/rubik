@@ -1,9 +1,10 @@
 use super::last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step};
 use super::reduce_moves;
 use crate::color::Color;
+use crate::puzzles::Move;
 use crate::sticker::CORNERS;
 use crate::tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT};
-use crate::{r#move::Move, Cube};
+use crate::Cube;
 use crate::{Puzzle, Sticker, EDGES};
 
 const NUM_LINES: usize = 12 * 11;
@@ -267,7 +268,7 @@ mod tests {
     use super::{zz, NUM_EO_LINES, NUM_ZZ_LEFT};
     use crate::{
         cub3,
-        r#move::{Move, MOVES_RUL},
+        puzzles::{Move, MOVES_RUL},
         Cube, Puzzle,
     };
 

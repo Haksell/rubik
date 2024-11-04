@@ -1,6 +1,6 @@
 mod karaoke;
 
-use crate::r#move::Move;
+use crate::puzzles::Move;
 use crate::visualizer::karaoke::{draw_karaoke, karaoke_format};
 use crate::Puzzle;
 use kiss3d::camera::ArcBall;

@@ -3,6 +3,6 @@ fn main() -> std::io::Result<()> {
         rubik::tables::FILE_CROSSES,
         rubik::solvers::NUM_CROSSES,
         rubik::Cube::cross_index,
-        &rubik::r#move::MOVES,
+        &rubik::puzzles::MOVES,
     )
 }

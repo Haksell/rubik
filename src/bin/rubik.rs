@@ -1,5 +1,8 @@
 use clap::{Parser, ValueEnum};
-use rubik::{puzzles::PuzzleArg, r#move::Move, visualizer::visualize};
+use rubik::{
+    puzzles::{Move, PuzzleArg},
+    visualizer::visualize,
+};
 
 // TODO: help messages
 #[derive(ValueEnum, Clone, Debug, PartialEq)]
@@ -12,17 +15,17 @@ pub enum Mode {
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]
 struct Args {
-    #[arg(index(1), help = "Specify a scramble sequence for the puzzle")]
-    scramble: Option<String>,
-
-    #[arg(long, value_enum, default_value_t = Mode::Cli)]
-    mode: Mode,
-
-    #[arg(long, default_value_t = PuzzleArg::Cube3)]
-    puzzle: PuzzleArg,
-
     #[arg(long, help = "Show the different steps")]
     explain: bool,
+
+    #[arg(long, short, default_value_t = PuzzleArg::Cube3)]
+    puzzle: PuzzleArg,
+
+    #[arg(long, short, value_enum, default_value_t = Mode::Cli)]
+    mode: Mode,
+
+    #[arg(long, short, help = "Specify a scramble sequence for the puzzle")]
+    scramble: Option<String>,
 }
 
 fn main() {
