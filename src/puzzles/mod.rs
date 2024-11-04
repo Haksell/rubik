@@ -5,6 +5,7 @@ mod pyraminx;
 pub use cube::Cube;
 pub use pyraminx::Pyraminx;
 pub use r#move::Move;
+use r#move::{CubeMove, PyraMove};
 
 use crate::{color::Color, cub2, cub3, visualizer::Drawable};
 use clap::ValueEnum;
@@ -29,7 +30,7 @@ pub trait Puzzle: Display + Drawable {
     }
 
     fn rand_scramble(&mut self, iterations: usize) -> Vec<Self::MoveType> {
-        // TODO Better scrambler
+        // TODO: better scrambler
         let mut sequence: Vec<Move> = Vec::new();
 
         while sequence.len() < iterations {
@@ -44,6 +45,14 @@ pub trait Puzzle: Display + Drawable {
     }
 }
 
+// TODO: better name
+// TODO: use Cube<2>, Cube<3> and Pyraminx
+pub enum FullPuzzle {
+    Cube2(Box<dyn Puzzle<MoveType = CubeMove>>),
+    Cube3(Box<dyn Puzzle<MoveType = CubeMove>>),
+    Pyraminx(Box<dyn Puzzle<MoveType = PyraMove>>),
+}
+
 #[derive(ValueEnum, Clone, Debug, PartialEq)]
 pub enum PuzzleArg {
     Cube2,
@@ -52,11 +61,11 @@ pub enum PuzzleArg {
 }
 
 impl PuzzleArg {
-    pub fn build(&self) -> Box<dyn Puzzle> {
+    pub fn build(&self) -> FullPuzzle {
         match self {
-            PuzzleArg::Cube2 => Box::new(cub2!()),
-            PuzzleArg::Cube3 => Box::new(cub3!()),
-            PuzzleArg::Pyraminx => Box::new(Pyraminx::new()),
+            PuzzleArg::Cube2 => FullPuzzle::Cube2(Box::new(cub2!())),
+            PuzzleArg::Cube3 => FullPuzzle::Cube3(Box::new(cub3!())),
+            PuzzleArg::Pyraminx => FullPuzzle::Pyraminx(Box::new(Pyraminx::new())),
         }
     }
 }

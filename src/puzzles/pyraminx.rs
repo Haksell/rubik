@@ -10,6 +10,7 @@ use kiss3d::window::Window;
 use std::fmt::{Display, Formatter};
 use std::hash::Hash;
 
+use super::r#move::PyraMove;
 use super::Move;
 
 #[derive(Clone, Eq, PartialEq, Hash)]
@@ -43,7 +44,9 @@ impl Pyraminx {
 }
 
 impl Puzzle for Pyraminx {
-    fn do_move(&mut self, move_: Move) {
+    type MoveType = PyraMove;
+
+    fn do_move(&mut self, move_: Self::MoveType) {
         // TODO: per puzzle moves enum
         // TODO: per puzzle sticker enum
         // TODO: reuse same cycles (R/R2/r/r2)
@@ -117,11 +120,10 @@ impl Puzzle for Pyraminx {
             Move::TL2 => {
                 self.do_cycle(&[35, 13, 8]);
             }
-            _ => panic!("Invalid move for pyraminx {:?}", move_),
         }
     }
 
-    fn solve(&self) -> Option<Vec<Move>> {
+    fn solve(&self) -> Option<Vec<Self::MoveType>> {
         Some(iddfs(self.clone()))
     }
 
@@ -140,7 +142,7 @@ impl Puzzle for Pyraminx {
 }
 
 impl DFSAble for Pyraminx {
-    const ALLOWED_MOVES: &'static [Move] = &[
+    const ALLOWED_MOVES: &'static [Self::MoveType] = &[
         Move::R,
         Move::U,
         Move::B,

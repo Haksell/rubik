@@ -1,6 +1,6 @@
 mod karaoke;
 
-use crate::puzzles::Move;
+use crate::puzzles::{FullPuzzle, Move};
 use crate::visualizer::karaoke::{draw_karaoke, karaoke_format};
 use crate::Puzzle;
 use kiss3d::camera::ArcBall;
@@ -17,21 +17,23 @@ const MOVE_INTERVAL_MS: usize = 200;
 pub trait Drawable {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
     fn default_cam(&self) -> ArcBall;
+
+    fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &Box<dyn Puzzle>) {
+        stickers
+            .iter_mut()
+            .zip(puzzle.get_faces().iter())
+            .for_each(|(node, &color)| {
+                let [r, g, b] = color.as_rgb();
+                node.set_color(r, g, b)
+            });
+    }
+
+    // TODO: disable translation with right-click
+    // TODO: flag for playground mode
+    fn visualize() {}
 }
 
-fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &Box<dyn Puzzle>) {
-    stickers
-        .iter_mut()
-        .zip(puzzle.get_faces().iter())
-        .for_each(|(node, &color)| {
-            let [r, g, b] = color.as_rgb();
-            node.set_color(r, g, b)
-        });
-}
-
-// TODO: disable translation with right-click
-// TODO: flag for playground mode
-pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
+pub fn visualize(puzzle: &FullPuzzle, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 
     window.set_light(Light::StickToCamera);

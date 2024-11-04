@@ -1,15 +1,15 @@
 use crate::{puzzles::Move, Puzzle};
 
 pub trait DFSAble: Puzzle {
-    const ALLOWED_MOVES: &'static [Move];
+    const ALLOWED_MOVES: &'static [dyn Move];
 }
 
-pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
+pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<T::MoveType> {
     fn search<T: DFSAble>(
         cur: &mut T,
-        path: &mut Vec<Move>,
+        path: &mut Vec<T::MoveType>,
         max_depth: usize,
-    ) -> Option<Vec<Move>> {
+    ) -> Option<Vec<T::MoveType>> {
         if cur.is_solved() {
             return Some(path.clone());
         }
