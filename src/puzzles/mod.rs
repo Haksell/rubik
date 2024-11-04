@@ -5,9 +5,9 @@ pub use cube::Cube;
 pub use pyraminx::Pyraminx;
 
 use crate::{color::Color, moves_runtime, r#move::Move, visualizer::Drawable};
-use std::fmt;
+use std::fmt::Display;
 
-pub trait Puzzle: fmt::Display + Drawable {
+pub trait Puzzle: Display + Drawable {
     fn solve(&self) -> Option<Vec<Move>>;
 
     fn is_solved(&self) -> bool;
