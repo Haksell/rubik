@@ -45,12 +45,33 @@ impl Puzzle for Pyraminx {
     fn do_move(&mut self, move_: Move) {
         // TODO: per puzzle moves enum
         // TODO: per puzzle sticker enum
-        // [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW]
+        // TODO: reuse same cycles (R/R2/r/r2)
+        // TODO: test pyraminx scrambles
         match move_ {
-            Move::R => todo!(),
-            Move::U => todo!(),
-            Move::B => todo!(),
-            Move::L => todo!(),
+            Move::R => {
+                self.do_cycle(&[17, 22, 31]);
+                self.do_cycle(&[12, 24, 33]);
+                self.do_cycle(&[16, 19, 28]);
+                self.do_cycle(&[15, 23, 32]);
+            }
+            Move::U => {
+                self.do_cycle(&[9, 0, 18]);
+                self.do_cycle(&[10, 1, 19]);
+                self.do_cycle(&[11, 2, 20]);
+                self.do_cycle(&[12, 3, 21]);
+            }
+            Move::B => {
+                self.do_cycle(&[26, 4, 27]);
+                self.do_cycle(&[21, 6, 28]);
+                self.do_cycle(&[25, 5, 29]);
+                self.do_cycle(&[24, 1, 30]);
+            }
+            Move::L => {
+                self.do_cycle(&[8, 13, 35]);
+                self.do_cycle(&[10, 33, 6]);
+                self.do_cycle(&[14, 34, 7]);
+                self.do_cycle(&[15, 30, 3]);
+            }
             Move::TR => {
                 self.do_cycle(&[17, 22, 31]);
             }
@@ -63,10 +84,26 @@ impl Puzzle for Pyraminx {
             Move::TL => {
                 self.do_cycle(&[8, 13, 35]);
             }
-            Move::R2 => todo!(),
-            Move::U2 => todo!(),
-            Move::B2 => todo!(),
-            Move::L2 => todo!(),
+            Move::R2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::R);
+                }
+            }
+            Move::U2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::U);
+                }
+            }
+            Move::B2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::B);
+                }
+            }
+            Move::L2 => {
+                for _ in 0..2 {
+                    self.do_move(Move::L);
+                }
+            }
             Move::TR2 => {
                 self.do_cycle(&[31, 22, 17]);
             }
