@@ -13,6 +13,7 @@ use crate::Puzzle;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
 
+use super::r#move::CubeMove;
 use super::Move;
 
 // TODO: handle N > 3
@@ -126,7 +127,9 @@ impl Cube<3> {
 }
 
 impl<const N: usize> Puzzle for Cube<N> {
-    fn do_move(&mut self, move_: Move) {
+    type MoveType = CubeMove;
+
+    fn do_move(&mut self, move_: Self::MoveType) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
         // TODO: Implement double and prime moves without loops
         match move_ {
@@ -358,13 +361,12 @@ impl<const N: usize> Puzzle for Cube<N> {
                     self.do_move(Move::D);
                 }
             }
-            _ => panic!("REMOVE THIS CRAP"),
         }
         // println!("{:?}", self.faces);
         //println!("{}", self);
     }
 
-    fn solve(&self) -> Option<Vec<Move>> {
+    fn solve(&self) -> Option<Vec<Self::MoveType>> {
         match N {
             2 => Some(iddfs(self.to_cube2().unwrap())),
             3 => Some(premover(&mut self.to_cube3().unwrap(), zz)),
@@ -578,7 +580,7 @@ impl<const N: usize> Display for Cube<N> {
 }
 
 impl DFSAble for Cube<2> {
-    const ALLOWED_MOVES: &'static [Move] = &[
+    const ALLOWED_MOVES: &'static [Self::MoveType] = &[
         Move::R,
         Move::R2,
         Move::R3,

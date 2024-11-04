@@ -4,20 +4,22 @@ mod pyraminx;
 
 pub use cube::Cube;
 pub use pyraminx::Pyraminx;
-pub use r#move::{Move, MOVES, MOVES_RU, MOVES_RUL};
+pub use r#move::Move;
 
 use crate::{color::Color, cub2, cub3, visualizer::Drawable};
 use clap::ValueEnum;
 use std::fmt::{self, Display};
 
 pub trait Puzzle: Display + Drawable {
-    fn solve(&self) -> Option<Vec<Move>>;
+    type MoveType: Move;
+
+    fn solve(&self) -> Option<Vec<Self::MoveType>>;
 
     fn is_solved(&self) -> bool;
 
     fn get_faces(&self) -> &Vec<Color>;
 
-    fn do_move(&mut self, move_: Move);
+    fn do_move(&mut self, move_: Self::MoveType);
 
     fn scramble(&mut self, sequence: &str) {
         sequence
@@ -26,7 +28,7 @@ pub trait Puzzle: Display + Drawable {
             .for_each(|move_| self.do_move(move_));
     }
 
-    fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
+    fn rand_scramble(&mut self, iterations: usize) -> Vec<Self::MoveType> {
         // TODO Better scrambler
         let mut sequence: Vec<Move> = Vec::new();
 
