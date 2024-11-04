@@ -34,8 +34,9 @@ impl Pyraminx {
     // TODO: in Puzzle
     fn do_cycle(&mut self, stickers: &[usize]) {
         let last = self.faces[stickers[stickers.len() - 1]];
-        self.faces[stickers[1]] = self.faces[stickers[0]];
-        self.faces[stickers[2]] = self.faces[stickers[1]];
+        for i in (1..stickers.len()).rev() {
+            self.faces[stickers[i]] = self.faces[stickers[i - 1]];
+        }
         self.faces[stickers[0]] = last;
     }
 }
@@ -53,17 +54,31 @@ impl Puzzle for Pyraminx {
             Move::TR => {
                 self.do_cycle(&[17, 22, 31]);
             }
-            Move::TU => todo!(),
-            Move::TB => todo!(),
-            Move::TL => todo!(),
+            Move::TU => {
+                self.do_cycle(&[9, 0, 18]);
+            }
+            Move::TB => {
+                self.do_cycle(&[26, 4, 27]);
+            }
+            Move::TL => {
+                self.do_cycle(&[8, 13, 35]);
+            }
             Move::R2 => todo!(),
             Move::U2 => todo!(),
             Move::B2 => todo!(),
             Move::L2 => todo!(),
-            Move::TR2 => todo!(),
-            Move::TU2 => todo!(),
-            Move::TB2 => todo!(),
-            Move::TL2 => todo!(),
+            Move::TR2 => {
+                self.do_cycle(&[31, 22, 17]);
+            }
+            Move::TU2 => {
+                self.do_cycle(&[18, 0, 9]);
+            }
+            Move::TB2 => {
+                self.do_cycle(&[27, 4, 26]);
+            }
+            Move::TL2 => {
+                self.do_cycle(&[35, 13, 8]);
+            }
             _ => panic!("Invalid move for pyraminx {:?}", move_),
         }
     }
