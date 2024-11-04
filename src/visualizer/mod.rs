@@ -9,7 +9,6 @@ use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 use std::time::SystemTime;
 
-const ZOOM: f32 = 3.2;
 const WINDOW_SIZE: u32 = 800;
 const MOVE_INTERVAL_MS: usize = 200;
 
@@ -32,10 +31,9 @@ pub fn visualize(puzzle: &mut dyn Puzzle, moves: &Vec<Move>, karaoke: bool) {
 
     let mut cam = puzzle.default_cam();
 
-    // Lock zoom
+    // lock zoom
     cam.set_dist_step(1.0);
-    const N: usize = 3;
-    cam.set_dist(ZOOM * N as f32); // TODO Real N maybe need for puzzle<N> ?
+    cam.set_dist(9.6); // TODO: depends on puzzle
 
     let start = SystemTime::now();
 

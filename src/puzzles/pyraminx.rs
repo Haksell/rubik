@@ -46,6 +46,7 @@ impl Puzzle for Pyraminx {
         // TODO: per puzzle sticker enum
         // TODO: reuse same cycles (R/R2/r/r2)
         // TODO: test pyraminx scrambles
+        println!("{:?}", move_);
         match move_ {
             Move::R => {
                 self.do_cycle(&[17, 22, 31]);
