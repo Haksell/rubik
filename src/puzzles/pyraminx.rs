@@ -76,14 +76,19 @@ impl DFSAble for Pyraminx {
 
 impl Drawable for Pyraminx {
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
-        const CORE_MARGIN: f32 = 0.04;
-        const STICKER_MARGIN: f32 = 0.1;
-
-        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
+        fn draw_triangle(window: &mut Window, vertices: Vec<Point3<f32>>, [r, g, b]: [f32; 3]) {
             let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
             let indices = vec![Point2::new(0.0, 1.0)];
             let scale = Vector3::new(3.0, 3.0, 3.0);
+            let trimesh =
+                TriMesh::new(vertices, Some(normals.clone()), Some(indices.clone()), None);
+            let mut sticker = window.add_trimesh(trimesh, scale);
+            sticker.set_color(r, g, b);
+            sticker.enable_backface_culling(false);
+        }
 
+        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
+            const CORE_MARGIN: f32 = 0.04;
             let middle = Point3::from(
                 (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
                     / 4.,
@@ -93,12 +98,11 @@ impl Drawable for Pyraminx {
             }
 
             for i in 0..4 {
-                let triplet = vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]];
-                let trimesh =
-                    TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
-                let mut sticker = window.add_trimesh(trimesh, scale);
-                sticker.set_color(0., 0., 0.);
-                sticker.enable_backface_culling(false);
+                draw_triangle(
+                    window,
+                    vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
+                    [0., 0., 0.],
+                );
             }
         }
 
@@ -109,9 +113,7 @@ impl Drawable for Pyraminx {
             v9: Point3<f32>,
             [r, g, b]: [f32; 3],
         ) {
-            let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
-            let indices = vec![Point2::new(0.0, 1.0)];
-            let scale = Vector3::new(3.0, 3.0, 3.0);
+            const STICKER_MARGIN: f32 = 0.1;
 
             let v1 = v0 + (v6 - v0) / 3.0;
             let v2 = v0 + (v9 - v0) / 3.0;
@@ -137,12 +139,7 @@ impl Drawable for Pyraminx {
                 for v in triplet.iter_mut() {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
-
-                let trimesh =
-                    TriMesh::new(triplet, Some(normals.clone()), Some(indices.clone()), None);
-                let mut sticker = window.add_trimesh(trimesh, scale);
-                sticker.set_color(r, g, b);
-                sticker.enable_backface_culling(false);
+                draw_triangle(window, triplet, [r, g, b]);
             }
         }
 
