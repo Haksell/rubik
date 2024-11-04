@@ -111,7 +111,7 @@ impl Drawable for Pyraminx {
             v0: Point3<f32>,
             v6: Point3<f32>,
             v9: Point3<f32>,
-            [r, g, b]: [f32; 3],
+            face: &[Color],
         ) {
             const STICKER_MARGIN: f32 = 0.1;
 
@@ -123,7 +123,7 @@ impl Drawable for Pyraminx {
             let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
             let v8 = v9 + (v6 - v9) / 3.0;
 
-            for mut triplet in [
+            for (i, mut triplet) in [
                 vec![v0, v1, v2],
                 vec![v1, v3, v4],
                 vec![v1, v4, v2],
@@ -133,13 +133,21 @@ impl Drawable for Pyraminx {
                 vec![v7, v8, v4],
                 vec![v8, v5, v4],
                 vec![v8, v9, v5],
-            ] {
+            ]
+            .into_iter()
+            .enumerate()
+            {
                 let middle =
                     Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
                 for v in triplet.iter_mut() {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
-                draw_triangle(window, triplet, [r, g, b]);
+                let [mut r, mut g, mut b] = face[i].as_rgb();
+                draw_triangle(
+                    window,
+                    triplet,
+                    [r * i as f32 / 8., g * i as f32 / 8., b * i as f32 / 8.],
+                );
             }
         }
 
@@ -148,10 +156,10 @@ impl Drawable for Pyraminx {
         let v3 = Point3::new(-0.5, 0.5, 0.5);
         let v4 = Point3::new(0.5, 0.5, -0.5);
         render_core(window, [v1, v2, v3, v4]);
-        render_pyra_face(window, v4, v3, v2, Color::RED.as_rgb());
-        render_pyra_face(window, v4, v2, v1, Color::GREEN.as_rgb());
-        render_pyra_face(window, v4, v1, v3, Color::BLUE.as_rgb());
-        render_pyra_face(window, v1, v2, v3, Color::YELLOW.as_rgb());
+        render_pyra_face(window, v4, v3, v2, self.get_face(0));
+        render_pyra_face(window, v4, v2, v1, self.get_face(1));
+        render_pyra_face(window, v4, v1, v3, self.get_face(2));
+        render_pyra_face(window, v3, v1, v2, self.get_face(3));
 
         vec![]
     }
