@@ -1,13 +1,13 @@
 mod cube;
 mod pyraminx;
 
-use clap::ValueEnum;
 pub use cube::Cube;
-use kiss3d::{camera::ArcBall, scene::SceneNode, window::Window};
 pub use pyraminx::Pyraminx;
 
 use crate::{color::Color, cub2, cub3, moves_runtime, r#move::Move};
-use std::fmt::{self, Display};
+use clap::ValueEnum;
+use kiss3d::{camera::ArcBall, scene::SceneNode, window::Window};
+use std::fmt::Display;
 
 pub trait Puzzle: Display {
     fn solve(&self) -> Option<Vec<Move>>;

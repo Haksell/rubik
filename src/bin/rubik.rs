@@ -15,10 +15,10 @@ struct Args {
     #[arg(long, short, help = "Specify a scramble sequence for the puzzle")]
     scramble: Option<String>,
 
-    #[arg(long,short, value_enum, default_value_t = Mode::Cli)]
+    #[arg(long, short, value_enum, default_value_t = Mode::Cli)]
     mode: Mode,
 
-    #[arg(long,short,value_enum, default_value_t = PuzzleArg::Cube3)]
+    #[arg(long, short, value_enum, default_value_t = PuzzleArg::Cube3)]
     puzzle: PuzzleArg,
 
     #[arg(long, short, help = "Show the different steps")]

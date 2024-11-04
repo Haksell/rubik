@@ -5,7 +5,7 @@ use rubik::{puzzles::PuzzleArg, visualizer::visualize};
 #[derive(Parser, Debug)]
 #[command(name = "playground", about, long_about = None)]
 struct Args {
-    #[arg(long, short, value_enum,default_value_t = PuzzleArg::Cube3)]
+    #[arg(long, short, value_enum, default_value_t = PuzzleArg::Cube3)]
     puzzle: PuzzleArg,
 }
 
