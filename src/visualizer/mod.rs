@@ -35,6 +35,9 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
     cam.set_dist_step(1.0);
     cam.set_dist(9.6); // TODO: depends on puzzle
 
+    // Disable translation
+    cam.rebind_drag_button(None);
+
     let start = SystemTime::now();
 
     let mut i: usize = 0;
