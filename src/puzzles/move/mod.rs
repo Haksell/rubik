@@ -1,23 +1,6 @@
 use kiss3d::event::{Key, Modifiers};
 use std::fmt::{Debug, Formatter};
 
-#[macro_export]
-macro_rules! moves_runtime {
-    ($sequence:expr) => {{
-        let mut moves_vec = Vec::new();
-        let as_moves = $sequence
-            .split_whitespace()
-            .map(crate::puzzles::r#move::Move::try_from);
-        for move_ in as_moves {
-            match move_ {
-                Ok(m) => moves_vec.push(m),
-                Err(_) => panic!("Invalid move in scramble sequence: {}", $sequence),
-            }
-        }
-        moves_vec
-    }};
-}
-
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq)]
 pub enum Move {

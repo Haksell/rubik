@@ -31,6 +31,7 @@
 
 ## before push
 
+- [ ] remove unwrap, panic and expect, replace with proper exits
 - [ ] remove `#[allow(dead_code)]`
 - [ ] remove useless `pub` and use `pub(crate)`/`pub(super)` where appropriate
 

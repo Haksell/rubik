@@ -3,6 +3,8 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, LitStr};
 
+// TODO: make work with pyraminx
+
 #[proc_macro]
 pub fn moves(input: TokenStream) -> TokenStream {
     let input_str = parse_macro_input!(input as LitStr);

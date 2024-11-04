@@ -6,7 +6,7 @@ pub use cube::Cube;
 pub use pyraminx::Pyraminx;
 pub use r#move::{Move, MOVES, MOVES_RU, MOVES_RUL};
 
-use crate::{color::Color, cub2, cub3, moves_runtime, visualizer::Drawable};
+use crate::{color::Color, cub2, cub3, visualizer::Drawable};
 use clap::ValueEnum;
 use std::fmt::{self, Display};
 
@@ -20,9 +20,10 @@ pub trait Puzzle: Display + Drawable {
     fn do_move(&mut self, move_: Move);
 
     fn scramble(&mut self, sequence: &str) {
-        moves_runtime!(sequence)
-            .iter()
-            .for_each(|&move_| self.do_move(move_));
+        sequence
+            .split_whitespace()
+            .map(|s| crate::puzzles::r#move::Move::try_from(s).unwrap())
+            .for_each(|move_| self.do_move(move_));
     }
 
     fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
