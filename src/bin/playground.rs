@@ -3,6 +3,7 @@ use rubik::{puzzles::PuzzleArg, visualizer::visualize};
 
 // TODO: explain and karaoke later
 #[derive(Parser, Debug)]
+#[command(name = "playground", about, long_about = None)]
 struct Args {
     #[arg(long, default_value_t = PuzzleArg::Cube3)]
     puzzle: PuzzleArg,
