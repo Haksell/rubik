@@ -125,7 +125,6 @@ impl Puzzle for Pyraminx {
         Some(iddfs(self.clone()))
     }
 
-    // TODO Better check ?
     fn is_solved(&self) -> bool {
         const ORDER: [Color; 4] = [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW];
         self.faces
