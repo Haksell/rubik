@@ -1,5 +1,3 @@
-#![allow(dead_code)] // TODO: REMOVE
-
 use clap::Parser;
 use rubik::{
     cub2, cub3, r#move::Move, tables::clear_cache, visualizer::visualize, Cube, Puzzle, Pyraminx,
