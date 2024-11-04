@@ -13,5 +13,5 @@ fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();
     puzzle.do_move(Move::R);
-    visualize(&mut *puzzle, &vec![], false);
+    visualize(&mut puzzle, &vec![], false);
 }

@@ -12,7 +12,7 @@ use std::time::SystemTime;
 const WINDOW_SIZE: u32 = 800;
 const MOVE_INTERVAL_MS: usize = 200;
 
-fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &dyn Puzzle) {
+fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>) {
     stickers
         .iter_mut()
         .zip(puzzle.get_faces().iter())
@@ -24,7 +24,7 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &dyn Puzzle) {
 
 // TODO: disable translation with right-click
 // TODO: flag for playground mode
-pub fn visualize(puzzle: &mut dyn Puzzle, moves: &Vec<Move>, karaoke: bool) {
+pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 
     window.set_light(Light::StickToCamera);
@@ -68,7 +68,8 @@ pub fn visualize(puzzle: &mut dyn Puzzle, moves: &Vec<Move>, karaoke: bool) {
                     if let Ok(move_) = Move::try_from((button, mods)) {
                         puzzle.do_move(move_);
                         refresh_stickers(&mut stickers, puzzle);
-                        event.inhibited = true
+                        event.inhibited = true;
+                        println!("{:?}", puzzle.get_faces());
                     }
                 }
             }

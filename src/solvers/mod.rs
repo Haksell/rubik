@@ -13,6 +13,7 @@ pub use iddfs::{iddfs, DFSAble};
 pub use kociemba::kociemba;
 pub use zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT};
 
+// TODO: depends on PyraMove or CubeMove
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     // TODO: handle L R L'
     let mut simplified: Vec<Move> = vec![];

@@ -118,6 +118,7 @@ impl Puzzle for Pyraminx {
             }
             _ => panic!("Invalid move for pyraminx {:?}", move_),
         }
+        println!("{:?}", self.faces);
     }
 
     fn solve(&self) -> Option<Vec<Move>> {
@@ -138,18 +139,24 @@ impl Puzzle for Pyraminx {
     }
 
     fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
-        fn draw_triangle(window: &mut Window, vertices: Vec<Point3<f32>>, [r, g, b]: [f32; 3]) {
-            let normals = vec![Vector3::z(), Vector3::z(), Vector3::z()];
-            let indices = vec![Point2::new(0.0, 1.0)];
-            let scale = Vector3::new(3.0, 3.0, 3.0);
-            let trimesh =
-                TriMesh::new(vertices, Some(normals.clone()), Some(indices.clone()), None);
-            let mut sticker = window.add_trimesh(trimesh, scale);
+        fn draw_triangle(
+            window: &mut Window,
+            vertices: Vec<Point3<f32>>,
+            [r, g, b]: [f32; 3],
+        ) -> SceneNode {
+            let trimesh = TriMesh::new(
+                vertices,
+                Some(vec![Vector3::z(), Vector3::z(), Vector3::z()]),
+                Some(vec![Point2::new(0.0, 1.0)]),
+                None,
+            );
+            let mut sticker = window.add_trimesh(trimesh, Vector3::new(3.0, 3.0, 3.0));
             sticker.set_color(r, g, b);
             sticker.enable_backface_culling(false);
+            sticker
         }
 
-        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
+        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) -> Vec<SceneNode> {
             const CORE_MARGIN: f32 = 0.04;
             let middle = Point3::from(
                 (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
@@ -159,13 +166,15 @@ impl Puzzle for Pyraminx {
                 *v += (middle - *v) * CORE_MARGIN;
             }
 
-            for i in 0..4 {
-                draw_triangle(
-                    window,
-                    vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
-                    [0., 0., 0.],
-                );
-            }
+            (0..4)
+                .map(|i| {
+                    draw_triangle(
+                        window,
+                        vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
+                        [0., 0., 0.],
+                    )
+                })
+                .collect()
         }
 
         fn render_pyra_face(
@@ -174,9 +183,7 @@ impl Puzzle for Pyraminx {
             v6: Point3<f32>,
             v9: Point3<f32>,
             face: &[Color],
-        ) {
-            const STICKER_MARGIN: f32 = 0.1;
-
+        ) -> Vec<SceneNode> {
             let v1 = v0 + (v6 - v0) / 3.0;
             let v2 = v0 + (v9 - v0) / 3.0;
             let v3 = v0 + (v6 - v0) * 2.0 / 3.0;
@@ -185,7 +192,7 @@ impl Puzzle for Pyraminx {
             let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
             let v8 = v9 + (v6 - v9) / 3.0;
 
-            for (mut triplet, sticker) in [
+            [
                 vec![v0, v1, v2],
                 vec![v1, v3, v4],
                 vec![v1, v4, v2],
@@ -198,27 +205,30 @@ impl Puzzle for Pyraminx {
             ]
             .into_iter()
             .zip(face)
-            {
+            .map(|(mut triplet, sticker)| {
+                const STICKER_MARGIN: f32 = 0.1;
                 let middle =
                     Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
                 for v in triplet.iter_mut() {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
-                draw_triangle(window, triplet, sticker.as_rgb());
-            }
+                draw_triangle(window, triplet, sticker.as_rgb())
+            })
+            .collect()
         }
 
         let v1 = Point3::new(-0.5, -0.5, -0.5);
         let v2 = Point3::new(0.5, -0.5, 0.5);
         let v3 = Point3::new(-0.5, 0.5, 0.5);
         let v4 = Point3::new(0.5, 0.5, -0.5);
-        render_core(window, [v1, v2, v3, v4]);
-        render_pyra_face(window, v4, v3, v2, self.get_face(0));
-        render_pyra_face(window, v4, v2, v1, self.get_face(1));
-        render_pyra_face(window, v4, v1, v3, self.get_face(2));
-        render_pyra_face(window, v3, v1, v2, self.get_face(3));
 
-        vec![]
+        let mut scene_nodes = vec![];
+        scene_nodes.extend_from_slice(&render_pyra_face(window, v4, v3, v2, self.get_face(0)));
+        scene_nodes.extend_from_slice(&render_pyra_face(window, v4, v2, v1, self.get_face(1)));
+        scene_nodes.extend_from_slice(&render_pyra_face(window, v4, v1, v3, self.get_face(2)));
+        scene_nodes.extend_from_slice(&render_pyra_face(window, v3, v1, v2, self.get_face(3)));
+        scene_nodes.extend_from_slice(&render_core(window, [v1, v2, v3, v4]));
+        scene_nodes
     }
 
     fn default_cam(&self) -> ArcBall {

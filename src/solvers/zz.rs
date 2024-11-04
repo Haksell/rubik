@@ -75,8 +75,6 @@ impl Cube<3> {
     }
 
     pub fn is_eo_line_solved(&self) -> bool {
-        use crate::color::Color;
-        use crate::EDGES;
         use Sticker::*;
 
         // TODO: remove 2 redundant edge checks
