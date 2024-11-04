@@ -30,22 +30,28 @@ impl Pyraminx {
         let end = (face + 1) * 9;
         &self.faces[start..end]
     }
+
+    // TODO: in Puzzle
+    fn do_cycle(&mut self, stickers: &[usize]) {
+        let last = self.faces[stickers[stickers.len() - 1]];
+        self.faces[stickers[1]] = self.faces[stickers[0]];
+        self.faces[stickers[2]] = self.faces[stickers[1]];
+        self.faces[stickers[0]] = last;
+    }
 }
 
 impl Puzzle for Pyraminx {
     fn do_move(&mut self, move_: Move) {
         // TODO: per puzzle moves enum
         // TODO: per puzzle sticker enum
+        // [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW]
         match move_ {
             Move::R => todo!(),
             Move::U => todo!(),
             Move::B => todo!(),
             Move::L => todo!(),
             Move::TR => {
-                let tmp = self.faces[17];
-                self.faces[17] = self.faces[31];
-                self.faces[31] = self.faces[22];
-                self.faces[22] = tmp;
+                self.do_cycle(&[17, 22, 31]);
             }
             Move::TU => todo!(),
             Move::TB => todo!(),
