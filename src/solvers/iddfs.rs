@@ -2,6 +2,8 @@ use crate::{r#move::Move, Puzzle};
 
 pub trait DFSAble: Puzzle {
     const ALLOWED_MOVES: &'static [Move];
+
+    fn presolve(&mut self) -> Vec<Move>;
 }
 
 pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
@@ -37,12 +39,12 @@ pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
     }
 
     let mut max_depth = 1;
-    let mut path = Vec::new();
+    let premoves = start.presolve();
+    let mut path = vec![];
     loop {
         if let Some(moves) = search(&mut start, &mut path, max_depth) {
-            return moves;
+            return [premoves, moves].concat();
         }
-        path.clear();
         max_depth += 1;
     }
 }

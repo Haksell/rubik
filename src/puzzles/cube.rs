@@ -647,6 +647,10 @@ impl DFSAble for Cube<2> {
         Move::U2,
         Move::U3,
     ];
+
+    fn presolve(&mut self) -> Vec<Move> {
+        vec![]
+    }
 }
 
 // TODO: impl Cube[Sticker]

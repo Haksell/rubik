@@ -32,7 +32,7 @@ fn main() {
     if let Some(sequence) = args.scramble {
         puzzle.scramble(&sequence);
     } else {
-        let sequence = puzzle.rand_scramble(50);
+        let sequence = puzzle.rand_scramble(15);
         println!(
             "No scramble sequence provided, using the following one:\n{}",
             Move::format_sequence(&sequence)

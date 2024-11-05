@@ -9,6 +9,7 @@ use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 use std::fmt::{Display, Formatter};
 use std::hash::Hash;
+use std::vec;
 
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct Pyraminx {
@@ -242,14 +243,14 @@ impl Puzzle for Pyraminx {
             Move::U2,
             Move::B2,
             Move::L2,
-            // Move::TR,
-            // Move::TU,
-            // Move::TB,
-            // Move::TL,
-            // Move::TR2,
-            // Move::TU2,
-            // Move::TB2,
-            // Move::TL2,
+            Move::TR,
+            Move::TU,
+            Move::TB,
+            Move::TL,
+            Move::TR2,
+            Move::TU2,
+            Move::TB2,
+            Move::TL2,
         ]
     }
 
@@ -298,6 +299,8 @@ impl Puzzle for Pyraminx {
     }
 }
 
+// TODO: better scramble for pyra
+
 impl DFSAble for Pyraminx {
     const ALLOWED_MOVES: &'static [Move] = &[
         Move::R,
@@ -308,15 +311,27 @@ impl DFSAble for Pyraminx {
         Move::U2,
         Move::B2,
         Move::L2,
-        // Move::TR,
-        // Move::TU,
-        // Move::TB,
-        // Move::TL,
-        // Move::TR2,
-        // Move::TU2,
-        // Move::TB2,
-        // Move::TL2,
     ];
+
+    fn presolve(&mut self) -> Vec<Move> {
+        let mut moves = vec![];
+        for (tip, single_move, single_color, double_move, double_color) in [
+            (9, Move::TU, 2, Move::TU2, 20),
+            (17, Move::TR, 23, Move::TR2, 32),
+            (13, Move::TL, 34, Move::TL2, 7),
+            (27, Move::TB, 25, Move::TB2, 5),
+        ] {
+            if self.faces[tip] == self.faces[single_color] {
+                moves.push(single_move);
+            } else if self.faces[tip] == self.faces[double_color] {
+                moves.push(double_move);
+            }
+        }
+        for &move_ in &moves {
+            self.do_move(move_);
+        }
+        moves
+    }
 }
 
 impl Display for Pyraminx {
