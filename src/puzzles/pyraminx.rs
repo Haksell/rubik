@@ -50,8 +50,8 @@ impl Puzzle for Pyraminx {
             Move::R => {
                 self.do_cycle(&[17, 22, 31]);
                 self.do_cycle(&[12, 24, 33]);
-                self.do_cycle(&[16, 19, 28]);
-                self.do_cycle(&[15, 23, 32]);
+                self.do_cycle(&[15, 19, 28]);
+                self.do_cycle(&[16, 23, 32]);
             }
             Move::U => {
                 self.do_cycle(&[9, 0, 18]);
@@ -117,7 +117,6 @@ impl Puzzle for Pyraminx {
             }
             _ => panic!("Invalid move for pyraminx {:?}", move_),
         }
-        // println!("{:?}", self.faces);
     }
 
     fn solve(&self) -> Option<Vec<Move>> {
@@ -322,13 +321,23 @@ impl DFSAble for Pyraminx {
 
 impl Display for Pyraminx {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        fn format(face: &[Color], line: usize) -> String {
+        // TODO: make less ugly
+        fn draw_triangle_line(face: &[Color], line: usize, flip: bool) -> String {
             let start: usize = line * line;
-            face[start..start + (line * 2 + 1)]
-                .iter()
-                .map(ToString::to_string)
-                .collect::<Vec<String>>()
-                .join(" ")
+            if flip {
+                face[start..start + (line * 2 + 1)]
+                    .iter()
+                    .rev()
+                    .map(ToString::to_string)
+                    .collect::<Vec<String>>()
+                    .join(" ")
+            } else {
+                face[start..start + (line * 2 + 1)]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect::<Vec<String>>()
+                    .join(" ")
+            }
         }
 
         let faces: Vec<&[Color]> = vec![0, 1, 2]
@@ -343,7 +352,7 @@ impl Display for Pyraminx {
                 " ".repeat((2 - line) * 2).as_str(),
                 faces
                     .iter()
-                    .map(|face| format(face, line))
+                    .map(|face| draw_triangle_line(face, line, false))
                     .collect::<Vec<String>>()
                     .join(" ".repeat((2 - line) * 4 + 1).as_str())
             )?;
@@ -353,10 +362,9 @@ impl Display for Pyraminx {
         for line in 0..3 {
             writeln!(
                 f,
-                "{}{}{}",
-                " ".repeat((3 + 3 - 1) * 2).as_str(),
-                " ".repeat((line) * 2).as_str(),
-                format(&face, 3 - line - 1)
+                "{}{}",
+                " ".repeat((3 + 3 - 1 + line) * 2).as_str(),
+                draw_triangle_line(&face, 3 - line - 1, true),
             )?;
         }
 
