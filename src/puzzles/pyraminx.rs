@@ -230,7 +230,7 @@ impl Puzzle for Pyraminx {
     }
 
     fn default_cam(&self) -> ArcBall {
-        ArcBall::new(Point3::new(0.5, -0.5, -0.5), Point3::new(0., 0., 0.))
+        ArcBall::new(Point3::new(0.5, 0.5, -0.5), Point3::new(0., 0., 0.))
     }
 
     fn available_moves(&self) -> Vec<Move> {

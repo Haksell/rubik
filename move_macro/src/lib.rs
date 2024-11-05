@@ -26,9 +26,3 @@ pub fn moves(input: TokenStream) -> TokenStream {
 
     TokenStream::from(expanded)
 }
-
-/*
-81
-6! * 2^5
-3^3
-*/

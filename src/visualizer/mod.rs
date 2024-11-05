@@ -72,7 +72,6 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
                         puzzle.do_move(move_);
                         refresh_stickers(&mut stickers, puzzle);
                         event.inhibited = true;
-                        println!("{:?}", puzzle.get_faces());
                     }
                 }
             }
