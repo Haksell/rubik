@@ -46,7 +46,6 @@ impl Puzzle for Pyraminx {
         // TODO: per puzzle sticker enum
         // TODO: reuse same cycles (R/R2/r/r2)
         // TODO: test pyraminx scrambles
-        println!("{:?}", move_);
         match move_ {
             Move::R => {
                 self.do_cycle(&[17, 22, 31]);
@@ -118,7 +117,7 @@ impl Puzzle for Pyraminx {
             }
             _ => panic!("Invalid move for pyraminx {:?}", move_),
         }
-        println!("{:?}", self.faces);
+        // println!("{:?}", self.faces);
     }
 
     fn solve(&self) -> Option<Vec<Move>> {
@@ -233,6 +232,71 @@ impl Puzzle for Pyraminx {
     fn default_cam(&self) -> ArcBall {
         ArcBall::new(Point3::new(0.5, -0.5, -0.5), Point3::new(0., 0., 0.))
     }
+
+    fn available_moves(&self) -> Vec<Move> {
+        vec![
+            Move::R,
+            Move::U,
+            Move::B,
+            Move::L,
+            Move::R2,
+            Move::U2,
+            Move::B2,
+            Move::L2,
+            // Move::TR,
+            // Move::TU,
+            // Move::TB,
+            // Move::TL,
+            // Move::TR2,
+            // Move::TU2,
+            // Move::TB2,
+            // Move::TL2,
+        ]
+    }
+
+    fn opposite_move(&self, move_: Move) -> Move {
+        match move_ {
+            Move::R => Move::R2,
+            Move::U => Move::U2,
+            Move::B => Move::B2,
+            Move::L => Move::L2,
+            Move::R2 => Move::R,
+            Move::U2 => Move::U,
+            Move::B2 => Move::B,
+            Move::L2 => Move::L,
+            Move::TR => Move::TR2,
+            Move::TU => Move::TU2,
+            Move::TB => Move::TB2,
+            Move::TL => Move::TL2,
+            Move::TR2 => Move::TR,
+            Move::TU2 => Move::TU,
+            Move::TB2 => Move::TB,
+            Move::TL2 => Move::TL,
+            _ => unreachable!(),
+        }
+    }
+
+    fn parse_move(&self, value: &str) -> Result<Move, String> {
+        match value {
+            "R" => Ok(Move::R),
+            "R'" | "R’" => Ok(Move::R2),
+            "U" => Ok(Move::U),
+            "U'" | "U’" => Ok(Move::U2),
+            "B" => Ok(Move::B),
+            "B'" | "B’" => Ok(Move::B2),
+            "L" => Ok(Move::L),
+            "L'" | "L’" => Ok(Move::L2),
+            "r" => Ok(Move::TR),
+            "u" => Ok(Move::TU),
+            "b" => Ok(Move::TB),
+            "l" => Ok(Move::TL),
+            "r'" | "r’" => Ok(Move::TR2),
+            "u'" | "u’" => Ok(Move::TU2),
+            "b'" | "b’" => Ok(Move::TB2),
+            "l'" | "l’" => Ok(Move::TL2),
+            _ => Err(format!("Invalid move '{value}'")),
+        }
+    }
 }
 
 impl DFSAble for Pyraminx {
@@ -245,6 +309,14 @@ impl DFSAble for Pyraminx {
         Move::U2,
         Move::B2,
         Move::L2,
+        // Move::TR,
+        // Move::TU,
+        // Move::TB,
+        // Move::TL,
+        // Move::TR2,
+        // Move::TU2,
+        // Move::TB2,
+        // Move::TL2,
     ];
 }
 

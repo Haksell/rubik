@@ -3,6 +3,8 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, LitStr};
 
+// TODO: NO
+
 #[proc_macro]
 pub fn moves(input: TokenStream) -> TokenStream {
     let input_str = parse_macro_input!(input as LitStr);
@@ -12,9 +14,11 @@ pub fn moves(input: TokenStream) -> TokenStream {
 
     let expanded = quote! {
         {
+            use crate::puzzles::Puzzle;
+            let puzzle = crate::Cube::<3>::new(); // :( :( :( :(
             let mut moves_vec = Vec::new();
             #(
-                moves_vec.push(Move::try_from(#moves).expect("moves! failed"));
+                moves_vec.push(puzzle.parse_move(#moves).expect("moves! failed"));
             )*
             moves_vec
         }
@@ -22,3 +26,9 @@ pub fn moves(input: TokenStream) -> TokenStream {
 
     TokenStream::from(expanded)
 }
+
+/*
+81
+6! * 2^5
+3^3
+*/

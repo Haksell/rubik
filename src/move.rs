@@ -3,21 +3,6 @@ use std::fmt::{Debug, Formatter};
 
 // move.cycles
 
-#[macro_export]
-macro_rules! moves_runtime {
-    ($sequence:expr) => {{
-        let mut moves_vec = Vec::new();
-        let as_moves = $sequence.split_whitespace().map(Move::try_from);
-        for move_ in as_moves {
-            match move_ {
-                Ok(m) => moves_vec.push(m),
-                Err(_) => panic!("Invalid move in scramble sequence: {}", $sequence),
-            }
-        }
-        moves_vec
-    }};
-}
-
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq)]
 pub enum Move {
@@ -155,42 +140,6 @@ impl TryFrom<(Key, Modifiers)> for Move {
             Ok(move_.unwrap().opposite())
         } else {
             move_
-        }
-    }
-}
-
-impl TryFrom<&str> for Move {
-    type Error = String;
-
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
-        match value {
-            "F" => Ok(Move::F),
-            "F2" => Ok(Move::F2),
-            "F'" | "F’" => Ok(Move::F3),
-            "R" => Ok(Move::R),
-            "R2" => Ok(Move::R2),
-            "R'" | "R’" => Ok(Move::R3),
-            "U" => Ok(Move::U),
-            "U2" => Ok(Move::U2),
-            "U'" | "U’" => Ok(Move::U3),
-            "B" => Ok(Move::B),
-            "B2" => Ok(Move::B2),
-            "B'" | "B’" => Ok(Move::B3),
-            "L" => Ok(Move::L),
-            "L2" => Ok(Move::L2),
-            "L'" | "L’" => Ok(Move::L3),
-            "D" => Ok(Move::D),
-            "D2" => Ok(Move::D2),
-            "D'" | "D’" => Ok(Move::D3),
-            "r" => Ok(Move::TR),
-            "u" => Ok(Move::TU),
-            "b" => Ok(Move::TB),
-            "l" => Ok(Move::TL),
-            "r'" | "r’" => Ok(Move::TR2),
-            "u'" | "u’" => Ok(Move::TU2),
-            "b'" | "b’" => Ok(Move::TB2),
-            "l'" | "l’" => Ok(Move::TL2),
-            _ => Err(format!("Invalid move '{value}'")),
         }
     }
 }

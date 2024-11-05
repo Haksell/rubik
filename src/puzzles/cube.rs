@@ -530,6 +530,68 @@ impl<const N: usize> Puzzle for Cube<N> {
     fn default_cam(&self) -> ArcBall {
         ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.75, 1.5, 1.5))
     }
+
+    fn available_moves(&self) -> Vec<Move> {
+        vec![
+            Move::R,
+            Move::R2,
+            Move::R3,
+            Move::F,
+            Move::F2,
+            Move::F3,
+            Move::U,
+            Move::U2,
+            Move::U3,
+        ]
+    }
+
+    fn opposite_move(&self, move_: Move) -> Move {
+        match move_ {
+            Move::F => Move::F3,
+            Move::R => Move::R3,
+            Move::U => Move::U3,
+            Move::B => Move::B3,
+            Move::L => Move::L3,
+            Move::D => Move::D3,
+            Move::F2 => Move::F2,
+            Move::R2 => Move::R2,
+            Move::U2 => Move::U2,
+            Move::B2 => Move::B2,
+            Move::L2 => Move::L2,
+            Move::D2 => Move::D2,
+            Move::F3 => Move::F,
+            Move::R3 => Move::R,
+            Move::U3 => Move::U,
+            Move::B3 => Move::B,
+            Move::L3 => Move::L,
+            Move::D3 => Move::D,
+            _ => unreachable!(),
+        }
+    }
+
+    fn parse_move(&self, value: &str) -> Result<Move, String> {
+        match value {
+            "F" => Ok(Move::F),
+            "F2" => Ok(Move::F2),
+            "F'" | "F’" => Ok(Move::F3),
+            "R" => Ok(Move::R),
+            "R2" => Ok(Move::R2),
+            "R'" | "R’" => Ok(Move::R3),
+            "U" => Ok(Move::U),
+            "U2" => Ok(Move::U2),
+            "U'" | "U’" => Ok(Move::U3),
+            "B" => Ok(Move::B),
+            "B2" => Ok(Move::B2),
+            "B'" | "B’" => Ok(Move::B3),
+            "L" => Ok(Move::L),
+            "L2" => Ok(Move::L2),
+            "L'" | "L’" => Ok(Move::L3),
+            "D" => Ok(Move::D),
+            "D2" => Ok(Move::D2),
+            "D'" | "D’" => Ok(Move::D3),
+            _ => Err(format!("Invalid move '{value}'")),
+        }
+    }
 }
 
 impl<const N: usize> Display for Cube<N> {

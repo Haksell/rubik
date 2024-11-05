@@ -4,7 +4,7 @@ mod pyraminx;
 pub use cube::Cube;
 pub use pyraminx::Pyraminx;
 
-use crate::{color::Color, cub2, cub3, moves_runtime, r#move::Move};
+use crate::{color::Color, cub2, cub3, r#move::Move};
 use clap::ValueEnum;
 use kiss3d::{camera::ArcBall, scene::SceneNode, window::Window};
 use std::fmt::Display;
@@ -18,10 +18,13 @@ pub trait Puzzle: Display {
 
     fn do_move(&mut self, move_: Move);
 
+    fn available_moves(&self) -> Vec<Move>; // TODO New vec every time :(
+
     fn scramble(&mut self, sequence: &str) {
-        moves_runtime!(sequence)
-            .iter()
-            .for_each(|&move_| self.do_move(move_));
+        for s in sequence.split_whitespace() {
+            let move_ = self.parse_move(s).unwrap();
+            self.do_move(move_);
+        }
     }
 
     fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
@@ -29,7 +32,7 @@ pub trait Puzzle: Display {
         let mut sequence: Vec<Move> = Vec::new();
 
         while sequence.len() < iterations {
-            let move_ = Move::random();
+            let move_ = Move::choice(&self.available_moves());
             if !sequence.is_empty() && move_.same_face(sequence.last().unwrap()) {
                 continue;
             }
@@ -40,7 +43,12 @@ pub trait Puzzle: Display {
     }
 
     fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
+
     fn default_cam(&self) -> ArcBall;
+
+    fn opposite_move(&self, move_: Move) -> Move;
+
+    fn parse_move(&self, str: &str) -> Result<Move, String>;
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq)]

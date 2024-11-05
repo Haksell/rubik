@@ -31,7 +31,7 @@ pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
             }
 
             path.pop();
-            cur.do_move(move_.opposite());
+            cur.do_move(cur.opposite_move(move_));
         }
         None
     }
