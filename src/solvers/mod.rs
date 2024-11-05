@@ -57,7 +57,7 @@ pub fn premover(cube: &mut Cube<3>, solver: fn(&mut Cube<3>) -> Vec<Move>) -> Ve
 
 #[cfg(test)]
 mod tests {
-    use super::{reduce_moves, Move};
+    use super::reduce_moves;
     use move_macro::moves;
 
     #[test]
