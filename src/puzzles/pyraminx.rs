@@ -154,7 +154,7 @@ impl Puzzle for Pyraminx {
             sticker
         }
 
-        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) -> Vec<SceneNode> {
+        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
             const CORE_MARGIN: f32 = 0.04;
             let middle = Point3::from(
                 (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
@@ -164,15 +164,13 @@ impl Puzzle for Pyraminx {
                 *v += (middle - *v) * CORE_MARGIN;
             }
 
-            (0..4)
-                .map(|i| {
-                    draw_triangle(
-                        window,
-                        vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
-                        [0., 0., 0.],
-                    )
-                })
-                .collect()
+            for i in 0..4 {
+                draw_triangle(
+                    window,
+                    vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
+                    [0., 0., 0.],
+                );
+            }
         }
 
         fn render_pyra_face(
@@ -220,13 +218,14 @@ impl Puzzle for Pyraminx {
         let v3 = Point3::new(-0.5, 0.5, 0.5);
         let v4 = Point3::new(0.5, 0.5, -0.5);
 
-        let mut scene_nodes = vec![];
-        scene_nodes.extend_from_slice(&render_pyra_face(window, v4, v3, v2, self.get_face(0)));
-        scene_nodes.extend_from_slice(&render_pyra_face(window, v4, v2, v1, self.get_face(1)));
-        scene_nodes.extend_from_slice(&render_pyra_face(window, v4, v1, v3, self.get_face(2)));
-        scene_nodes.extend_from_slice(&render_pyra_face(window, v3, v1, v2, self.get_face(3)));
-        scene_nodes.extend_from_slice(&render_core(window, [v1, v2, v3, v4]));
-        scene_nodes
+        render_core(window, [v1, v2, v3, v4]);
+        [
+            render_pyra_face(window, v4, v3, v2, self.get_face(0)),
+            render_pyra_face(window, v4, v2, v1, self.get_face(1)),
+            render_pyra_face(window, v4, v1, v3, self.get_face(2)),
+            render_pyra_face(window, v3, v1, v2, self.get_face(3)),
+        ]
+        .concat()
     }
 
     fn default_cam(&self) -> ArcBall {
