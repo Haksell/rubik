@@ -54,12 +54,7 @@ fn main() {
     }
 
     if args.mode != Mode::Cli {
-        visualize(
-            &mut puzzle,
-            &solution,
-            args.mode == Mode::Karaoke,
-            // TODO: no playground bool
-        );
+        visualize(&mut puzzle, &solution, args.mode == Mode::Karaoke, false);
     }
 }
 

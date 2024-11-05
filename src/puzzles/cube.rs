@@ -127,6 +127,7 @@ impl<const N: usize> Puzzle for Cube<N> {
     fn do_move(&mut self, move_: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
         // TODO: Implement double and prime moves without loops
+        // TODO: use do_cycle
         match move_ {
             Move::F => {
                 // Swap White & Red
@@ -528,7 +529,7 @@ impl<const N: usize> Puzzle for Cube<N> {
     }
 
     fn default_cam(&self) -> ArcBall {
-        ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.75, 1.5, 1.5))
+        ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::origin())
     }
 
     fn available_moves(&self) -> Vec<Move> {

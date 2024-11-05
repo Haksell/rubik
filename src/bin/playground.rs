@@ -12,5 +12,5 @@ struct Args {
 fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();
-    visualize(&mut puzzle, &vec![], false);
+    visualize(&mut puzzle, &vec![], false, true);
 }

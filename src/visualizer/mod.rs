@@ -22,9 +22,8 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>)
         });
 }
 
-// TODO: disable translation with right-click
 // TODO: flag for playground mode
-pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
+pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool, playground: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 
     window.set_light(Light::StickToCamera);
@@ -35,7 +34,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
     cam.set_dist_step(1.0);
     cam.set_dist(9.6); // TODO: depends on puzzle
 
-    // Disable translation
+    // disable translation
     cam.rebind_drag_button(None);
 
     let start = SystemTime::now();
@@ -55,15 +54,15 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
             draw_karaoke(&text, &start, moves.len(), &mut window);
         }
 
-        if i < moves.len() {
-            let elapsed = start.elapsed().unwrap().as_millis();
-            let idx = elapsed as usize / MOVE_INTERVAL_MS;
-
-            if idx > i {
-                puzzle.do_move(moves[i]);
-                i = idx;
-
-                refresh_stickers(&mut stickers, puzzle);
+        if playground {
+            for mut event in window.events().iter() {
+                if let WindowEvent::Key(button, Action::Release, mods) = event.value {
+                    if let Ok(move_) = Move::try_from((button, mods)) {
+                        puzzle.do_move(move_);
+                        refresh_stickers(&mut stickers, puzzle);
+                        event.inhibited = true;
+                    }
+                }
             }
         } else {
             for mut event in window.events().iter() {
@@ -78,3 +77,18 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
         }
     }
 }
+
+/*
+TODO: bring back automove on spacebar
+if i < moves.len() {
+    let elapsed = start.elapsed().unwrap().as_millis();
+    let idx = elapsed as usize / MOVE_INTERVAL_MS;
+
+    if idx > i {
+        puzzle.do_move(moves[i]);
+        i = idx;
+
+        refresh_stickers(&mut stickers, puzzle);
+    }
+}
+*/
