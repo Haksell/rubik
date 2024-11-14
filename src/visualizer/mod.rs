@@ -7,10 +7,10 @@ use kiss3d::event::{Action, WindowEvent};
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
-use std::time::SystemTime;
+use std::time::{Instant, SystemTime};
 
 const WINDOW_SIZE: u32 = 800;
-const MOVE_INTERVAL_MS: usize = 200;
+const MOVE_INTERVAL_MS: u128 = 200;
 
 fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>) {
     stickers
@@ -22,7 +22,6 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>)
         });
 }
 
-// TODO: disable translation with right-click
 // TODO: flag for playground mode
 pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
@@ -38,7 +37,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
     // Disable translation
     cam.rebind_drag_button(None);
 
-    let start = SystemTime::now();
+    let start = Instant::now();
 
     let mut i: usize = 0;
 
@@ -56,8 +55,8 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
         }
 
         if i < moves.len() {
-            let elapsed = start.elapsed().unwrap().as_millis();
-            let idx = elapsed as usize / MOVE_INTERVAL_MS;
+            let elapsed = start.elapsed().as_millis();
+            let idx = (elapsed / MOVE_INTERVAL_MS) as usize;
 
             if idx > i {
                 puzzle.do_move(moves[i]);

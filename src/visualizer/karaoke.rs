@@ -5,7 +5,7 @@ use kiss3d::{
     text::Font,
     window::Window,
 };
-use std::time::SystemTime;
+use std::time::Instant;
 
 const TEXT_SCALE: f32 = 100.0;
 
@@ -22,9 +22,9 @@ fn display_size(text: &str) -> f32 {
         .sum()
 }
 
-pub fn draw_karaoke(text: &str, start: &SystemTime, total: usize, window: &mut Window) {
+pub fn draw_karaoke(text: &str, start: &Instant, total: usize, window: &mut Window) {
     let font = Font::default();
-    let elapsed = start.elapsed().unwrap().as_millis() as f64;
+    let elapsed = start.elapsed().as_millis() as f64;
     let end = total as f64 * MOVE_INTERVAL_MS as f64;
 
     let mut idx = ((elapsed * text.chars().count() as f64) / end).floor() as usize;
