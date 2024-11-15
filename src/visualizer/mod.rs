@@ -45,7 +45,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, _karaoke: bool
                     Key::Left => {
                         if i > 0 {
                             i -= 1;
-                            let inverse_move = moves[i].opposite();
+                            let inverse_move = puzzle.opposite_move(moves[i]);
                             puzzle.do_move(inverse_move);
                             refresh_stickers(&mut stickers, puzzle);
                         }
