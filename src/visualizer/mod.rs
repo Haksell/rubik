@@ -9,8 +9,8 @@ use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 use std::time::Instant;
 
-const WINDOW_SIZE: u32 = 800;
-const MOVE_INTERVAL_MS: u128 = 200;
+const WINDOW_SIZE: u32 = 1000;
+const MOVE_INTERVAL_MS: u128 = 300;
 
 fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>) {
     stickers
