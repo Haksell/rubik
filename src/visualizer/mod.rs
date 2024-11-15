@@ -7,7 +7,7 @@ use kiss3d::event::{Action, WindowEvent};
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
-use std::time::{Instant, SystemTime};
+use std::time::Instant;
 
 const WINDOW_SIZE: u32 = 800;
 const MOVE_INTERVAL_MS: u128 = 200;
