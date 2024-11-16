@@ -27,7 +27,7 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
     let mut space_count: usize = 0;
     let mut idx = 0;
     for (i, c) in text.char_indices() {
-        if c == ' ' {
+        if c.is_whitespace() {
             space_count += 1;
         }
         if space_count == moves_done {
