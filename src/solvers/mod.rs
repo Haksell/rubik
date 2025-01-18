@@ -62,18 +62,18 @@ mod tests {
 
     #[test]
     fn test_moves_reduction() {
-        assert_eq!(reduce_moves(&moves!("R L")), moves!("R L"));
-        assert_eq!(reduce_moves(&moves!("L D")), moves!("L D"));
-        assert_eq!(reduce_moves(&moves!("U U")), moves!("U2"));
-        assert_eq!(reduce_moves(&moves!("L L2")), moves!("L'"));
-        assert_eq!(reduce_moves(&moves!("U U'")), vec![]);
-        assert_eq!(reduce_moves(&moves!("L2 L")), moves!("L'"));
-        assert_eq!(reduce_moves(&moves!("R2 R2")), vec![]);
-        assert_eq!(reduce_moves(&moves!("B2 B'")), moves!("B"));
-        assert_eq!(reduce_moves(&moves!("D' D")), vec![]);
-        assert_eq!(reduce_moves(&moves!("B' B2")), moves!("B"));
-        assert_eq!(reduce_moves(&moves!("F' F'")), moves!("F2"));
-        assert_eq!(reduce_moves(&moves!("R R R R")), vec![]);
-        assert_eq!(reduce_moves(&moves!("U2 R R R R U U")), vec![]);
+        assert_eq!(reduce_moves(&moves!["R L"]), moves!["R L"]);
+        assert_eq!(reduce_moves(&moves!["L D"]), moves!["L D"]);
+        assert_eq!(reduce_moves(&moves!["U U"]), moves!["U2"]);
+        assert_eq!(reduce_moves(&moves!["L L2"]), moves!["L'"]);
+        assert_eq!(reduce_moves(&moves!["U U'"]), vec![]);
+        assert_eq!(reduce_moves(&moves!["L2 L"]), moves!["L'"]);
+        assert_eq!(reduce_moves(&moves!["R2 R2"]), vec![]);
+        assert_eq!(reduce_moves(&moves!["B2 B'"]), moves!["B"]);
+        assert_eq!(reduce_moves(&moves!["D' D"]), vec![]);
+        assert_eq!(reduce_moves(&moves!["B' B2"]), moves!["B"]);
+        assert_eq!(reduce_moves(&moves!["F' F'"]), moves!["F2"]);
+        assert_eq!(reduce_moves(&moves!["R R R R"]), vec![]);
+        assert_eq!(reduce_moves(&moves!["U2 R R R R U U"]), vec![]);
     }
 }
