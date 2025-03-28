@@ -43,6 +43,7 @@ impl Move {
         self.as_int() / 6 + 1
     }
 
+    #[deprecated] // Use per puzzle moves later
     pub fn opposite(&self) -> Move {
         let mut i = self.as_int();
         if i < 6 {

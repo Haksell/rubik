@@ -1,14 +1,14 @@
-// mod karaoke;
+mod karaoke;
 
 use crate::r#move::Move;
 use crate::Puzzle;
+use karaoke::{draw_karaoke, karaoke_format};
 use kiss3d::event::{Action, Key, WindowEvent};
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
 use kiss3d::window::Window;
 
 const WINDOW_SIZE: u32 = 1000;
-// const MOVE_INTERVAL_MS: u128 = 300;
 
 fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>) {
     stickers
@@ -21,7 +21,7 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>)
 }
 
 // TODO: flag for playground mode
-pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, _karaoke: bool) {
+pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
 
     window.set_light(Light::StickToCamera);
@@ -38,14 +38,24 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, _karaoke: bool
 
     let mut stickers = puzzle.draw(&mut window);
 
+    let mut text = String::new();
+
+    if karaoke {
+        text = karaoke_format(moves);
+    }
+
     while window.render_with_camera(&mut cam) {
+        if karaoke {
+            draw_karaoke(&text, i, &mut window);
+        }
+
         for mut event in window.events().iter() {
             if let WindowEvent::Key(button, Action::Press, _) = event.value {
                 match button {
                     Key::Left => {
                         if i > 0 {
                             i -= 1;
-                            let inverse_move = moves[i].opposite();
+                            let inverse_move = puzzle.opposite_move(moves[i]);
                             puzzle.do_move(inverse_move);
                             refresh_stickers(&mut stickers, puzzle);
                         }

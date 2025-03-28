@@ -1,11 +1,10 @@
-use super::{MOVE_INTERVAL_MS, WINDOW_SIZE};
+use super::WINDOW_SIZE;
 use crate::r#move::Move;
 use kiss3d::{
     nalgebra::{Point2, Point3},
     text::Font,
     window::Window,
 };
-use std::time::Instant;
 
 const TEXT_SCALE: f32 = 100.0;
 
@@ -22,15 +21,24 @@ fn display_size(text: &str) -> f32 {
         .sum()
 }
 
-pub fn draw_karaoke(text: &str, start: &Instant, total: usize, window: &mut Window) {
+pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
     let font = Font::default();
-    let elapsed = start.elapsed().as_millis() as f64;
-    let end = total as f64 * MOVE_INTERVAL_MS as f64;
 
-    let mut idx = ((elapsed * text.chars().count() as f64) / end).floor() as usize;
-    if idx > text.chars().count() {
-        idx = text.chars().count();
+    let mut space_count: usize = 0;
+    let mut idx = 0;
+    for (i, c) in text.char_indices() {
+        if c == ' ' {
+            space_count += 1;
+        }
+        if space_count == moves_done {
+            idx = i;
+            break;
+        }
     }
+    if space_count < moves_done {
+        idx = text.len();
+    }
+
     let cur_line = text[..idx].chars().filter(|&c| c == '\n').count();
     let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(TEXT_SCALE));
     let line_height = vmetrics.ascent - vmetrics.descent;
