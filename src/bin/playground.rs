@@ -1,6 +1,8 @@
 use clap::Parser;
 use rubik::{puzzles::PuzzleArg, visualizer::visualize};
 
+// Completely useless for now (keyboard turns not implemented)
+
 // TODO: explain and karaoke later
 #[derive(Parser, Debug)]
 #[command(name = "playground", about, long_about = None)]
