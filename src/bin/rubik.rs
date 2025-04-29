@@ -20,9 +20,8 @@ struct Args {
 
     #[arg(long, short, value_enum, default_value_t = PuzzleArg::Cube3)]
     puzzle: PuzzleArg,
-
-    #[arg(long, short, help = "Show the different steps")]
-    explain: bool,
+    // #[arg(long, short, help = "Show the different steps")]
+    // explain: bool,
 }
 
 fn main() {
