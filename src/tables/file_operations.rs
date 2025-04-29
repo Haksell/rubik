@@ -5,37 +5,34 @@ use {
         fs::{self, File},
         io::{self, Read as _, Write as _},
         path::Path,
-        rc::Rc,
+        sync::{Arc, LazyLock, Mutex},
     },
 };
 
-// TODO: add Mutex and Arc if multithreading
-static mut MOVE_CACHE: Option<HashMap<String, Rc<Vec<Move>>>> = None;
+static MOVE_CACHE: LazyLock<Mutex<HashMap<String, Arc<Vec<Move>>>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
 
-pub fn read_moves(filename: &str) -> io::Result<Rc<Vec<Move>>> {
-    unsafe {
-        if MOVE_CACHE.is_none() {
-            MOVE_CACHE = Some(HashMap::new());
-        }
+pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
+    let mut cache = MOVE_CACHE.lock().unwrap();
 
-        let cache = MOVE_CACHE.as_mut().unwrap();
-
-        if let Some(moves) = cache.get(filename) {
-            return Ok(Rc::clone(moves));
-        }
-
-        let mut file = File::open(filename)?;
-        let file_size = file.metadata()?.len() as usize;
-        let mut moves = Vec::with_capacity(file_size);
-        moves.set_len(file_size);
-        let buffer = std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, file_size);
-        file.read_exact(buffer)?;
-
-        let moves_rc = Rc::new(moves);
-        cache.insert(filename.to_string(), Rc::clone(&moves_rc));
-
-        Ok(moves_rc)
+    if let Some(moves) = cache.get(filename) {
+        return Ok(Arc::clone(moves));
     }
+
+    let mut file = File::open(filename)?;
+    let file_size = file.metadata()?.len() as usize;
+    let mut moves = Vec::with_capacity(file_size);
+    unsafe {
+        moves.set_len(file_size);
+    }
+    let buffer =
+        unsafe { std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, file_size) };
+    file.read_exact(buffer)?;
+
+    let moves_arc = Arc::new(moves);
+    cache.insert(filename.to_string(), Arc::clone(&moves_arc));
+
+    Ok(moves_arc)
 }
 
 pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
@@ -48,13 +45,3 @@ pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
     file.write_all(&buffer)?;
     Ok(())
 }
-
-// TODO: use at each std::process::exit (useless)
-// fn clear_cache() {
-//     unsafe {
-//         if let Some(cache) = MOVE_CACHE.as_mut() {
-//             cache.clear();
-//             MOVE_CACHE = None;
-//         }
-//     }
-// }
