@@ -50,7 +50,7 @@ pub fn premover(cube: &mut Cube<3>, solver: fn(&mut Cube<3>) -> Vec<Move>) -> Ve
             solution.extend(solver(&mut clone));
             reduce_moves(&solution)
         })
-        .min_by_key(|solution| solution.len())
+        .min_by_key(Vec::len)
         .unwrap();
     for &move_ in &solution {
         cube.do_move(move_);
