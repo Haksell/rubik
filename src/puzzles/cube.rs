@@ -1,17 +1,24 @@
 // TODO: center the Cube<N> at the origin and make the camera look at it
 
-use kiss3d::camera::ArcBall;
-use kiss3d::nalgebra::{Point3, Translation3, UnitQuaternion, Vector3};
-use kiss3d::scene::SceneNode;
-use kiss3d::window::Window;
-
-use crate::color::Color;
-use crate::r#move::Move;
-use crate::solvers::{iddfs, premover, zz, DFSAble};
-use crate::trigger::Trigger;
-use crate::Puzzle;
-use std::fmt::{Display, Error, Formatter};
-use std::hash::Hash;
+use {
+    crate::{
+        color::Color,
+        r#move::Move,
+        solvers::{iddfs, premover, zz, DFSAble},
+        trigger::Trigger,
+        Puzzle,
+    },
+    kiss3d::{
+        camera::ArcBall,
+        nalgebra::{Point3, Translation3, UnitQuaternion, Vector3},
+        scene::SceneNode,
+        window::Window,
+    },
+    std::{
+        fmt::{Display, Error, Formatter},
+        hash::Hash,
+    },
+};
 
 // TODO: handle N > 3
 #[derive(Clone, Eq, PartialEq, Hash)]

@@ -1,5 +1,7 @@
-use clap::{Parser, ValueEnum};
-use rubik::{puzzles::PuzzleArg, r#move::Move, visualizer::visualize};
+use {
+    clap::{Parser, ValueEnum},
+    rubik::{puzzles::PuzzleArg, r#move::Move, visualizer::visualize},
+};
 
 // TODO: help messages
 #[derive(ValueEnum, Clone, Debug, PartialEq)]

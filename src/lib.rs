@@ -9,5 +9,7 @@ pub mod tables;
 pub mod trigger;
 pub mod visualizer;
 
-pub use puzzles::{Cube, Puzzle, Pyraminx};
-pub use sticker::{Sticker, EDGES};
+pub use {
+    puzzles::{Cube, Puzzle, Pyraminx},
+    sticker::{Sticker, EDGES},
+};

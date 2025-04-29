@@ -1,15 +1,23 @@
-use crate::color::Color;
-use crate::r#move::Move;
-use crate::solvers::{iddfs, DFSAble};
-use crate::Puzzle;
-use kiss3d::camera::ArcBall;
-use kiss3d::nalgebra::{Point2, Point3, Vector3};
-use kiss3d::ncollide3d::procedural::TriMesh;
-use kiss3d::scene::SceneNode;
-use kiss3d::window::Window;
-use std::fmt::{Display, Formatter};
-use std::hash::Hash;
-use std::vec;
+use {
+    crate::{
+        color::Color,
+        r#move::Move,
+        solvers::{iddfs, DFSAble},
+        Puzzle,
+    },
+    kiss3d::{
+        camera::ArcBall,
+        nalgebra::{Point2, Point3, Vector3},
+        ncollide3d::procedural::TriMesh,
+        scene::SceneNode,
+        window::Window,
+    },
+    std::{
+        fmt::{Display, Formatter},
+        hash::Hash,
+        vec,
+    },
+};
 
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct Pyraminx {

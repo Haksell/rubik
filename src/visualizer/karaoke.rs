@@ -1,9 +1,11 @@
-use super::WINDOW_SIZE;
-use crate::r#move::Move;
-use kiss3d::{
-    nalgebra::{Point2, Point3},
-    text::Font,
-    window::Window,
+use {
+    super::WINDOW_SIZE,
+    crate::r#move::Move,
+    kiss3d::{
+        nalgebra::{Point2, Point3},
+        text::Font,
+        window::Window,
+    },
 };
 
 const TEXT_SCALE: f32 = 100.0;

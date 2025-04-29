@@ -1,6 +1,8 @@
-use super::file_operations::write_moves;
-use crate::{cub3, r#move::Move, Cube, Puzzle};
-use std::{collections::VecDeque, io};
+use {
+    super::file_operations::write_moves,
+    crate::{cub3, r#move::Move, Cube, Puzzle},
+    std::{collections::VecDeque, io},
+};
 
 pub const DUMMY_MOVE: Move = Move::U; // could be anything
 

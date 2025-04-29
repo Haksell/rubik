@@ -1,8 +1,6 @@
 // TODO: in a mod with Move
 
-use move_macro::moves;
-
-use crate::r#move::Move;
+use {crate::r#move::Move, move_macro::moves};
 
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)] // TODO: remove PartialOrd, Ord

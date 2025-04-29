@@ -4,14 +4,17 @@ mod kociemba;
 mod last_layer;
 mod zz;
 
+pub use {
+    cfop::{cfop, NUM_CROSSES},
+    iddfs::{iddfs, DFSAble},
+    kociemba::kociemba,
+    zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT},
+};
+
 use crate::{
     r#move::{Move, MOVES},
     Cube, Puzzle,
 };
-pub use cfop::{cfop, NUM_CROSSES};
-pub use iddfs::{iddfs, DFSAble};
-pub use kociemba::kociemba;
-pub use zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT};
 
 // TODO: depends on PyraMove or CubeMove
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {

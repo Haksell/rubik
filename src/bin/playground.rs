@@ -1,5 +1,7 @@
-use clap::Parser;
-use rubik::{puzzles::PuzzleArg, visualizer::visualize};
+use {
+    clap::Parser,
+    rubik::{puzzles::PuzzleArg, visualizer::visualize},
+};
 
 // Completely useless for now (keyboard turns not implemented)
 

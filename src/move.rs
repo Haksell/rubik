@@ -1,5 +1,7 @@
-use kiss3d::event::{Key, Modifiers};
-use std::fmt::{Debug, Formatter};
+use {
+    kiss3d::event::{Key, Modifiers},
+    std::fmt::{Debug, Formatter},
+};
 
 // move.cycles
 

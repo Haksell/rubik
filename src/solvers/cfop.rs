@@ -1,11 +1,20 @@
-use super::last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step};
-use super::reduce_moves;
-use crate::tables::{read_moves, FILE_CROSSES};
-use crate::trigger::{Trigger, TRIGGERS_BY_SLOT};
-use crate::Puzzle;
-use crate::{color::Color, r#move::Move, Cube, EDGES};
-use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap};
+use {
+    super::{
+        last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step},
+        reduce_moves,
+    },
+    crate::{
+        color::Color,
+        r#move::Move,
+        tables::{read_moves, FILE_CROSSES},
+        trigger::{Trigger, TRIGGERS_BY_SLOT},
+        Cube, Puzzle, EDGES,
+    },
+    std::{
+        cmp::Reverse,
+        collections::{BinaryHeap, HashMap},
+    },
+};
 
 pub const NUM_CROSSES: usize = 24 * 22 * 20 * 18;
 

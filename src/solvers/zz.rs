@@ -1,10 +1,16 @@
-use super::last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step};
-use super::reduce_moves;
-use crate::color::Color;
-use crate::sticker::CORNERS;
-use crate::tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT};
-use crate::{r#move::Move, Cube};
-use crate::{Puzzle, Sticker, EDGES};
+use {
+    super::{
+        last_layer::{oll_matcher, pll_matcher, solve_auf, solve_last_layer_step},
+        reduce_moves,
+    },
+    crate::{
+        color::Color,
+        r#move::Move,
+        sticker::CORNERS,
+        tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT},
+        Cube, Puzzle, Sticker, EDGES,
+    },
+};
 
 const NUM_LINES: usize = 12 * 11;
 pub const NUM_EO_LINES: usize = (1 << 11) * NUM_LINES;

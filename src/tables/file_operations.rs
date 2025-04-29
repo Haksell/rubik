@@ -1,10 +1,12 @@
-use crate::r#move::Move;
-use std::{
-    collections::HashMap,
-    fs::{self, File},
-    io::{self, Read as _, Write as _},
-    path::Path,
-    rc::Rc,
+use {
+    crate::r#move::Move,
+    std::{
+        collections::HashMap,
+        fs::{self, File},
+        io::{self, Read as _, Write as _},
+        path::Path,
+        rc::Rc,
+    },
 };
 
 // TODO: add Mutex and Arc if multithreading

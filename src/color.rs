@@ -1,7 +1,7 @@
-use colored::Colorize;
-use std::convert::TryFrom;
-use std::fmt::Display;
-use std::hash::Hash;
+use {
+    colored::Colorize,
+    std::{convert::TryFrom, fmt::Display, hash::Hash},
+};
 
 #[repr(u8)]
 #[derive(Clone, Debug, Copy, PartialEq, Eq, Hash)]
