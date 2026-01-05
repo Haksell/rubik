@@ -7,8 +7,8 @@ default-run = "rubik"
 [dependencies]
 clap = { version = "4.5.11", features = ["derive"] }
 colored = "2.1.0"
-kiss3d = "0.35.0"
+kiss3d = "0.39.0"
 move_macro = { path = "move_macro" }
 rand = "0.8.5"
-rusttype = "0.8.3"
+rusttype = "0.9.3"
 serial_test = "3.1.1"

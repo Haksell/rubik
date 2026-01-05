@@ -13,8 +13,9 @@ struct Args {
     puzzle: PuzzleArg,
 }
 
-fn main() {
+#[kiss3d::main] // TODO Ici ?
+async fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();
-    visualize(&mut puzzle, &vec![], false);
+    visualize(&mut puzzle, &vec![], false).await;
 }

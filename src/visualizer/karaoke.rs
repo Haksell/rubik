@@ -1,14 +1,12 @@
 use {
     super::WINDOW_SIZE,
     crate::r#move::Move,
-    kiss3d::{
-        nalgebra::{Point2, Point3},
-        text::Font,
-        window::Window,
-    },
+    kiss3d::{glamx::Vec2, text::Font, window::Window},
 };
 
-const TEXT_SCALE: f32 = 100.0;
+const TEXT_SCALE: f32 = 50.0;
+const RED: kiss3d::color::Color = kiss3d::color::Color::new(1.0, 0.0, 0.0, 1.0);
+const GREEN: kiss3d::color::Color = kiss3d::color::Color::new(0.0, 1.0, 0.0, 1.0);
 
 fn display_size(text: &str) -> f32 {
     text.chars()
@@ -52,34 +50,24 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
         if i == cur_line {
             window.draw_text(
                 &line[..idx - char_sum],
-                &Point2::new(centerx, starty),
+                Vec2::new(centerx, starty),
                 TEXT_SCALE,
                 &font,
-                &Point3::new(0.0, 1.0, 0.0),
+                GREEN,
             );
 
             let startx = display_size(&line[..idx - char_sum]);
 
             window.draw_text(
                 &line[idx - char_sum..],
-                &Point2::new(centerx + startx, starty),
+                Vec2::new(centerx + startx, starty),
                 TEXT_SCALE,
                 &font,
-                &Point3::new(1.0, 0.0, 0.0),
+                RED,
             );
         } else {
-            let color = if i < cur_line {
-                Point3::new(0.0, 1.0, 0.0)
-            } else {
-                Point3::new(1.0, 0.0, 0.0)
-            };
-            window.draw_text(
-                &line,
-                &Point2::new(centerx, starty),
-                TEXT_SCALE,
-                &font,
-                &color,
-            );
+            let color = if i < cur_line { GREEN } else { RED };
+            window.draw_text(&line, Vec2::new(centerx, starty), TEXT_SCALE, &font, color);
             char_sum += line.chars().count() + 1;
         }
     });

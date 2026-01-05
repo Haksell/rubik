@@ -6,7 +6,7 @@ pub use {cube::Cube, pyraminx::Pyraminx};
 use {
     crate::{color::Color, cub2, cub3, r#move::Move},
     clap::ValueEnum,
-    kiss3d::{camera::ArcBall, scene::SceneNode, window::Window},
+    kiss3d::{camera::OrbitCamera3d, scene::SceneNode3d},
     std::fmt::Display,
 };
 
@@ -43,9 +43,9 @@ pub trait Puzzle: Display {
         sequence
     }
 
-    fn draw(&self, window: &mut Window) -> Vec<SceneNode>;
+    fn draw(&self, scene: &mut SceneNode3d) -> Vec<SceneNode3d>;
 
-    fn default_cam(&self) -> ArcBall;
+    fn default_cam(&self) -> OrbitCamera3d;
 
     fn opposite_move(&self, move_: Move) -> Move;
 

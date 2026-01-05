@@ -1,33 +1,34 @@
 mod karaoke;
 
 use {
-    crate::{r#move::Move, Puzzle},
-    karaoke::{draw_karaoke, karaoke_format},
+    crate::{r#move::Move, visualizer::karaoke::draw_karaoke, Puzzle},
+    karaoke::karaoke_format,
     kiss3d::{
         event::{Action, Key, WindowEvent},
         light::Light,
-        scene::SceneNode,
+        scene::SceneNode3d,
         window::Window,
     },
 };
 
 const WINDOW_SIZE: u32 = 1000;
 
-fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>) {
+fn refresh_stickers(stickers: &mut Vec<SceneNode3d>, puzzle: &mut Box<dyn Puzzle>) {
     stickers
         .iter_mut()
         .zip(puzzle.get_faces().iter())
         .for_each(|(node, &color)| {
             let [r, g, b] = color.as_rgb();
-            node.set_color(r, g, b)
+            node.set_color(kiss3d::color::Color::new(r, g, b, 1.0));
         });
 }
 
 // TODO: flag for playground mode
-pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
-    let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE);
+pub async fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
+    let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE).await;
+    let mut scene = SceneNode3d::default();
 
-    window.set_light(Light::StickToCamera);
+    scene.set_light(Some(Light::default())); // TODO Better light
 
     let mut cam = puzzle.default_cam();
 
@@ -39,21 +40,22 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
 
     let mut i: usize = 0;
 
-    let mut stickers = puzzle.draw(&mut window);
+    let mut stickers = puzzle.draw(&mut scene);
 
-    let mut text = String::new();
+    let text = if karaoke {
+        karaoke_format(moves)
+    } else {
+        String::new()
+    };
 
-    if karaoke {
-        text = karaoke_format(moves);
-    }
-
-    while window.render_with_camera(&mut cam) {
+    while window.render_3d(&mut scene, &mut cam).await {
         if karaoke {
-            draw_karaoke(&text, i, &mut window);
+            draw_karaoke(&text, i, &mut window); // TODO Fix karaoke
         }
 
         for mut event in window.events().iter() {
             if let WindowEvent::Key(button, Action::Press, _) = event.value {
+                event.inhibited = true;
                 match button {
                     Key::Left => {
                         if i > 0 {
@@ -62,7 +64,6 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
                             puzzle.do_move(inverse_move);
                             refresh_stickers(&mut stickers, puzzle);
                         }
-                        event.inhibited = true;
                     }
                     Key::Right => {
                         if i < moves.len() {
@@ -70,7 +71,6 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool)
                             i += 1;
                             refresh_stickers(&mut stickers, puzzle);
                         }
-                        event.inhibited = true;
                     }
                     _ => {}
                 }
