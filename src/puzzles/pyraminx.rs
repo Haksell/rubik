@@ -154,7 +154,7 @@ impl Puzzle for Pyraminx {
         ) -> SceneNode3d {
             let mesh = Rc::new(RefCell::new(GpuMesh3d::new(
                 vertices,
-                vec![], // TODO wtf
+                vec![[0, 1, 2]], // TODO wtf
                 Some(vec![Vec3::Z, Vec3::Z, Vec3::Z]),
                 Some(vec![Vec2::new(0.0, 1.0)]),
                 true, // TODO Test
