@@ -26,7 +26,7 @@ struct Args {
     // explain: bool,
 }
 
-#[kiss3d::main] // TODO Ici ?
+#[kiss3d::main]
 async fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();

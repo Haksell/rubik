@@ -13,7 +13,7 @@ struct Args {
     puzzle: PuzzleArg,
 }
 
-#[kiss3d::main] // TODO Ici ?
+#[kiss3d::main]
 async fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();
