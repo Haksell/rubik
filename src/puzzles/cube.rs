@@ -416,14 +416,14 @@ impl<const N: usize> Puzzle for Cube<N> {
 
         fn create_cubie_face(
             scene: &mut SceneNode3d,
-            color: &[f32; 3],
+            color: [f32; 4],
             translation: Vec3,
             rotation: Quat,
         ) -> SceneNode3d {
             let mut face = scene.add_quad(STICKER_SIZE, STICKER_SIZE, 1, 1);
             face.translate(translation);
             face.rotate(rotation);
-            face.set_color(kiss3d::color::Color::new(color[0], color[1], color[2], 1.0));
+            face.set_color(color.into());
             face
         }
 
@@ -465,7 +465,7 @@ impl<const N: usize> Puzzle for Cube<N> {
 
                 squares.push(create_cubie_face(
                     scene,
-                    &color.as_rgb(),
+                    color.as_rgba(),
                     translation + translation_addition,
                     rotation,
                 ));

@@ -150,7 +150,7 @@ impl Puzzle for Pyraminx {
         fn draw_triangle(
             scene: &mut SceneNode3d,
             vertices: Vec<Vec3>,
-            [r, g, b]: [f32; 3],
+            color: [f32; 4],
         ) -> SceneNode3d {
             let mesh = Rc::new(RefCell::new(GpuMesh3d::new(
                 vertices,
@@ -160,7 +160,7 @@ impl Puzzle for Pyraminx {
                 true,
             )));
             let mut sticker = scene.add_mesh(mesh, Vec3::new(3.0, 3.0, 3.0));
-            sticker.set_color(kiss3d::color::Color::new(r, g, b, 1.0));
+            sticker.set_color(color.into());
             sticker.enable_backface_culling(false);
             sticker
         }
@@ -176,7 +176,7 @@ impl Puzzle for Pyraminx {
                 draw_triangle(
                     scene,
                     vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
-                    [0., 0., 0.],
+                    [0., 0., 0., 1.0],
                 );
             }
         }
@@ -215,7 +215,7 @@ impl Puzzle for Pyraminx {
                 for v in triplet.iter_mut() {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
-                draw_triangle(scene, triplet, sticker.as_rgb())
+                draw_triangle(scene, triplet, sticker.as_rgba())
             })
             .collect()
         }

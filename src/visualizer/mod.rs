@@ -18,8 +18,7 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode3d>, puzzle: &mut Box<dyn Puzzle
         .iter_mut()
         .zip(puzzle.get_faces().iter())
         .for_each(|(node, &color)| {
-            let [r, g, b] = color.as_rgb();
-            node.set_color(kiss3d::color::Color::new(r, g, b, 1.0));
+            node.set_color(color.as_rgba().into());
         });
 }
 
