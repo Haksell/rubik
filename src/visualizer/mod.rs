@@ -50,7 +50,7 @@ pub async fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke:
 
     while window.render_3d(&mut scene, &mut cam).await {
         if karaoke {
-            draw_karaoke(&text, i, &mut window); // TODO Fix karaoke
+            draw_karaoke(&text, i, &mut window);
         }
 
         for mut event in window.events().iter() {
