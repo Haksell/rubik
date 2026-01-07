@@ -26,7 +26,7 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode3d>, puzzle: &mut Box<dyn Puzzle
 // TODO: flag for playground mode
 pub async fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &Vec<Move>, karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE).await;
-    let mut scene = SceneNode3d::default();
+    let mut scene = SceneNode3d::empty();
 
     scene.set_light(Some(Light::default())); // TODO Better light
 
