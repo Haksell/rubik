@@ -5,10 +5,10 @@ edition = "2021"
 default-run = "rubik"
 
 [dependencies]
-clap = { version = "4.5.11", features = ["derive"] }
-colored = "2.1.0"
+clap = { version = "4.5.54", features = ["derive"] }
+colored = "2.2.0"
 kiss3d = "0.39.0"
 move_macro = { path = "move_macro" }
 rand = "0.8.5"
 rusttype = "0.9.3"
-serial_test = "3.1.1"
+serial_test = "3.3.1"
