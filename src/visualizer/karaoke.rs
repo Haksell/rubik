@@ -1,12 +1,12 @@
 use {
     super::WINDOW_SIZE,
     crate::r#move::Move,
-    kiss3d::{glamx::Vec2, text::Font, window::Window},
+    kiss3d::{color::Color, glamx::Vec2, text::Font, window::Window},
 };
 
-const TEXT_SCALE: f32 = 50.0;
-const RED: kiss3d::color::Color = kiss3d::color::Color::new(1.0, 0.0, 0.0, 1.0);
-const GREEN: kiss3d::color::Color = kiss3d::color::Color::new(0.0, 1.0, 0.0, 1.0);
+const TEXT_SCALE: f32 = 40.0;
+const RED: Color = Color::new(1.0, 0.0, 0.0, 1.0);
+const GREEN: Color = Color::new(0.0, 1.0, 0.0, 1.0);
 
 fn display_size(text: &str) -> f32 {
     text.chars()
@@ -46,7 +46,7 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
 
     text.lines().enumerate().for_each(|(i, line)| {
         let starty = i as f32 * line_height;
-        let centerx = ((WINDOW_SIZE * 2) as f32 - display_size(line)) / 2.0;
+        let centerx = (WINDOW_SIZE as f32 - display_size(line)) / 2.0;
         if i == cur_line {
             window.draw_text(
                 &line[..idx - char_sum],
@@ -85,7 +85,7 @@ pub fn karaoke_format(moves: &[Move]) -> String {
                 move_str.insert(0, ' ');
             }
             let mut move_display_size = display_size(&move_str);
-            if chars_width + move_display_size > (WINDOW_SIZE * 2 - 5) as f32 {
+            if chars_width + move_display_size > (WINDOW_SIZE - 5) as f32 {
                 move_str.insert(0, '\n');
                 if move_str[1..].starts_with(" ") {
                     move_str.remove(1);
