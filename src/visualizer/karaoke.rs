@@ -4,7 +4,7 @@ use {
     kiss3d::{color::Color, glamx::Vec2, text::Font, window::Window},
 };
 
-const TEXT_SCALE: f32 = 40.0;
+const TEXT_SCALE: f32 = 50.0;
 const RED: Color = Color::new(1.0, 0.0, 0.0, 1.0);
 const GREEN: Color = Color::new(0.0, 1.0, 0.0, 1.0);
 
