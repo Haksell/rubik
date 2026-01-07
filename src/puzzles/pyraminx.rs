@@ -154,12 +154,11 @@ impl Puzzle for Pyraminx {
         ) -> SceneNode3d {
             let mesh = Rc::new(RefCell::new(GpuMesh3d::new(
                 vertices,
-                vec![[0, 1, 2]], // TODO wtf
+                vec![[0, 1, 2]],
                 Some(vec![Vec3::Z, Vec3::Z, Vec3::Z]),
                 Some(vec![Vec2::new(0.0, 1.0)]),
-                true, // TODO Test
+                true,
             )));
-            // let mut sticker = scene.add_trimesh(trimesh, Vector3::new(3.0, 3.0, 3.0));
             let mut sticker = scene.add_mesh(mesh, Vec3::new(3.0, 3.0, 3.0));
             sticker.set_color(kiss3d::color::Color::new(r, g, b, 1.0));
             sticker.enable_backface_culling(false);
