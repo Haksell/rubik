@@ -41,15 +41,11 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &[Move], karaoke: bool) {
 
     let mut stickers = puzzle.draw(&mut window);
 
-    let mut text = String::new();
-
-    if karaoke {
-        text = karaoke_format(moves);
-    }
+    let karaoke_text = karaoke.then(|| karaoke_format(moves));
 
     while window.render_with_camera(&mut cam) {
-        if karaoke {
-            draw_karaoke(&text, i, &mut window);
+        if let Some(text) = &karaoke_text {
+            draw_karaoke(text, i, &mut window);
         }
 
         for mut event in window.events().iter() {

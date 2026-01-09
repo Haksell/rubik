@@ -29,8 +29,11 @@ suspicious = { level = "deny", priority = -1 }
 
 # restriction
 arithmetic_side_effects = "allow"
+implicit_return = "allow"
 indexing_slicing = "allow"
+min_ident_chars = "allow"
 missing_docs_in_private_items = "allow"
 missing_inline_in_public_items = "allow"
+pattern_type_mismatch = "allow"
 single_call_fn = "allow"
 wildcard_enum_match_arm = "allow"
