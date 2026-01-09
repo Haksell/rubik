@@ -40,6 +40,7 @@ must_use_candidate = "allow"
 # restriction
 arbitrary_source_item_ordering = "allow"
 arithmetic_side_effects = "allow"
+as_conversions = "allow"
 else_if_without_else = "allow"
 exhaustive_enums = "allow"
 exhaustive_structs = "allow"
