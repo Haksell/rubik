@@ -25,10 +25,10 @@ pub struct Pyraminx {
 }
 
 impl Pyraminx {
-    pub fn new() -> Pyraminx {
+    pub fn new() -> Self {
         const ORDER: [Color; 4] = [Color::RED, Color::GREEN, Color::BLUE, Color::YELLOW];
 
-        Pyraminx {
+        Self {
             faces: (0..ORDER.len() * 9).map(|i| ORDER[i / 9]).collect(),
         }
     }
@@ -46,6 +46,12 @@ impl Pyraminx {
             self.faces[stickers[i]] = self.faces[stickers[i - 1]];
         }
         self.faces[stickers[0]] = last;
+    }
+}
+
+impl Default for Pyraminx {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

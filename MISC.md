@@ -61,10 +61,6 @@ Commands:
 
 Lints to fix:
 - clippy::cognitive_complexity
-- clippy::new_without_default
-- clippy::non_ascii_literal
-- clippy::option_if_let_else
-- clippy::panic
 - clippy::ptr_as_ptr
 - clippy::pub_use
 - clippy::rc_buffer

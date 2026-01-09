@@ -31,6 +31,9 @@ suspicious = { level = "deny", priority = -1 }
 cargo_common_metadata = "allow"
 multiple_crate_versions = "allow"
 
+# nuresery
+option_if_let_else = "allow"
+
 # pedantic
 cast_lossless = "allow"
 cast_possible_truncation = "allow"
@@ -64,6 +67,8 @@ missing_inline_in_public_items = "allow"
 missing_trait_methods = "allow"
 mod_module_files = "allow"
 modulo_arithmetic = "allow"
+non_ascii_literal = "allow"
+panic = "allow"
 pattern_type_mismatch = "allow"
 print_stdout = "allow"
 pub_with_shorthand = "allow"

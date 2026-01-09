@@ -60,7 +60,7 @@ macro_rules! cub3 {
 
 // Always fronting Green face
 impl<const N: usize> Cube<N> {
-    pub fn new() -> Cube<N> {
+    pub fn new() -> Self {
         const ORDER: [Color; 6] = [
             Color::WHITE,
             Color::RED,
@@ -70,7 +70,7 @@ impl<const N: usize> Cube<N> {
             Color::BLUE,
         ];
 
-        Cube {
+        Self {
             faces: (0..ORDER.len() * N * N)
                 .map(|i| ORDER[i / (N * N)])
                 .collect(),
@@ -120,6 +120,12 @@ impl<const N: usize> Cube<N> {
         let start = face * N * N;
         let end = (face + 1) * N * N;
         &self.faces[start..end]
+    }
+}
+
+impl<const N: usize> Default for Cube<N> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -365,7 +371,7 @@ impl<const N: usize> Puzzle for Cube<N> {
                     self.do_move(Move::D);
                 }
             }
-            _ => panic!("REMOVE THIS CRAP"),
+            _ => panic!("Invalid move for cube"), // TODO: remove
         }
     }
 
