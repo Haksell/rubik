@@ -4,7 +4,7 @@ use {
         reduce_moves,
     },
     crate::{
-        Cube, EDGES, Puzzle,
+        Cube, EDGES, Puzzle as _,
         color::Color,
         r#move::Move,
         tables::{FILE_CROSSES, read_moves},
@@ -52,9 +52,9 @@ fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
     }); // handles accidental x-crosses
     while to_solve != 0 {
         let mut triggers = vec![Trigger::U, Trigger::U2, Trigger::U3];
-        for slot in 0..4 {
+        for (slot, &trigger) in TRIGGERS_BY_SLOT.iter().enumerate() {
             if to_solve & (1 << slot) != 0 {
-                triggers.extend(TRIGGERS_BY_SLOT[slot]);
+                triggers.extend(trigger);
             }
         }
         let pair_solution = solve_pair(cube, &triggers);

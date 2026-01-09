@@ -162,7 +162,7 @@ impl Trigger {
     }
 }
 
-pub const TRIGGERS_BY_SLOT: &[&[Trigger]] = &[
+pub const TRIGGERS_BY_SLOT: [&[Trigger]; 4] = [
     &[
         Trigger::R3UR,
         Trigger::R3U2R,

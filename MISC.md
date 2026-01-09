@@ -56,8 +56,6 @@
 ## clippy lints
 
 - clippy::cognitive_complexity
-- clippy::needless_borrow
-- clippy::needless_range_loop
 - clippy::new_without_default
 - clippy::non_ascii_literal
 - clippy::option_if_let_else
