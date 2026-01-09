@@ -55,6 +55,11 @@
 
 ## clippy lints
 
+Commands:
+- `c ccl --workspace --all-targets`
+- `c ccl --workspace --all-targets -- -A warnings -D clippy::xxx`
+
+Lints to fix:
 - clippy::cognitive_complexity
 - clippy::new_without_default
 - clippy::non_ascii_literal
