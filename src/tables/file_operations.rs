@@ -31,7 +31,8 @@ pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
     file.read_exact(buffer)?;
 
     let moves_arc = Arc::new(moves);
-    cache.insert(filename.to_string(), Arc::clone(&moves_arc));
+    cache.insert(filename.to_owned(), Arc::clone(&moves_arc));
+    drop(cache);
 
     Ok(moves_arc)
 }
@@ -43,6 +44,5 @@ pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
         .ok_or_else(|| io::Error::other("Failed to determine parent directory"))?;
     fs::create_dir_all(parent_dir)?;
     let mut file = File::create(filename)?;
-    file.write_all(&buffer)?;
-    Ok(())
+    file.write_all(&buffer)
 }

@@ -46,7 +46,7 @@ impl Move {
     }
 
     // TODO: #[deprecated]
-    pub fn opposite(&self) -> Move {
+    pub fn opposite(&self) -> Self {
         let mut i = self.as_int();
         if i < 6 {
             i += 12;
@@ -56,8 +56,9 @@ impl Move {
         Self::try_from(i).unwrap()
     }
 
+    // TODO convertir en i16 pour pas overflow ou garder + 30 ?
     pub const fn same_face(&self, move_: &Self) -> bool {
-        (self.as_int() + 18 - move_.as_int()).is_multiple_of(6)
+        (self.as_int() + 30 - move_.as_int()).is_multiple_of(6)
     }
 
     pub fn random() -> Self {

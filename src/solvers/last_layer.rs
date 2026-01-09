@@ -46,6 +46,7 @@ pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
     auf
 }
 
+#[expect(clippy::unreadable_literal)]
 pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
     use crate::Sticker::*;
 

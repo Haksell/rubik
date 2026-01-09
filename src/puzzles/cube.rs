@@ -508,7 +508,7 @@ impl<const N: usize> Puzzle for Cube<N> {
             }
         }
 
-        let core_size: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
+        let core_size: f32 = CUBIE_SIZE * 2f32.mul_add(-MARGIN, N as f32);
 
         let mut core = scene.add_cube(core_size, core_size, core_size);
         core.translate(Vec3::new(

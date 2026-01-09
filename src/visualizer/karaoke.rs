@@ -42,7 +42,7 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
         idx = text.len();
     }
 
-    let cur_line = text[..idx].chars().filter(|&c| c == '\n').count();
+    let cur_line = text.chars().take(idx).filter(|&c| c == '\n').count();
     let vmetrics = font.font().v_metrics(rusttype::Scale::uniform(TEXT_SCALE));
     let line_height = vmetrics.ascent - vmetrics.descent;
     let mut char_sum = 0;
