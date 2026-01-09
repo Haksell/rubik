@@ -47,6 +47,8 @@ pattern_type_mismatch = "allow"
 pub_with_shorthand = "allow"
 semicolon_outside_block = "allow"
 single_call_fn = "allow"
+std_instead_of_alloc = "allow"
+std_instead_of_core = "allow"
 wildcard_enum_match_arm = "allow"
 
 # suspicious
