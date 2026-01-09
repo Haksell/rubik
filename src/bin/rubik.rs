@@ -4,7 +4,7 @@ use {
 };
 
 // TODO: help messages
-#[derive(ValueEnum, Clone, Debug, PartialEq)]
+#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 pub enum Mode {
     Cli,
     Gui,
@@ -66,11 +66,14 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use rubik::{
-        Cube, Puzzle, cub3,
-        solvers::{premover, zz},
+    use {
+        rubik::{
+            Cube, Puzzle as _, cub3,
+            r#move::Move,
+            solvers::{premover, zz},
+        },
+        serial_test::serial,
     };
-    use serial_test::serial;
 
     fn test_performances_n(n: usize) {
         const SCRAMBLE_LENGTH: usize = 200;
@@ -78,7 +81,7 @@ mod tests {
         let mut total_moves = 0;
         for _ in 0..n {
             let mut cube = cub3!();
-            let _ = cube.rand_scramble(SCRAMBLE_LENGTH);
+            let _: Vec<Move> = cube.rand_scramble(SCRAMBLE_LENGTH);
             // println!("{cube}");
             let solution = premover(&mut cube, zz);
             assert!(cube.is_solved());
@@ -100,6 +103,6 @@ mod tests {
     #[test]
     #[serial]
     fn test_performances_100000() {
-        test_performances_n(100000);
+        test_performances_n(100_000);
     }
 }

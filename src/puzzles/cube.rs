@@ -662,7 +662,7 @@ impl DFSAble for Cube<2> {
 #[cfg(test)]
 mod tests {
     use super::Cube;
-    use crate::{Puzzle, r#move::Move};
+    use crate::{Puzzle as _, r#move::Move};
 
     #[test]
     fn test_is_solved_generic() {

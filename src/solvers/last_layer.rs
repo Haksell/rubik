@@ -1,5 +1,5 @@
 use {
-    crate::{Cube, Puzzle, color::Color, r#move::Move},
+    crate::{Cube, Puzzle as _, color::Color, r#move::Move},
     move_macro::moves,
 };
 
@@ -7,8 +7,7 @@ pub(super) fn solve_last_layer_step(
     cube: &mut Cube<3>,
     alg_matcher: fn(&Cube<3>) -> Option<Vec<Move>>,
 ) -> Vec<Move> {
-    let mut u_moves = 0;
-    for _ in 0..4 {
+    for u_moves in 0..4 {
         let moves = alg_matcher(cube);
         if let Some(moves) = moves {
             for _ in 0..u_moves {
@@ -28,7 +27,6 @@ pub(super) fn solve_last_layer_step(
             }
             return rotated_moves;
         }
-        u_moves += 1;
         cube.do_move(Move::U);
     }
     unreachable!();
@@ -50,15 +48,16 @@ pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
 
 pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
     use crate::Sticker::*;
+
     let faces = cube.get_faces();
-    match ((faces[BUL as usize] == Color::WHITE) as u16) << 8
-        | ((faces[LBU as usize] == Color::WHITE) as u16) << 7
-        | ((faces[LU as usize] == Color::WHITE) as u16) << 6
-        | ((faces[LUF as usize] == Color::WHITE) as u16) << 5
-        | ((faces[FLU as usize] == Color::WHITE) as u16) << 4
-        | ((faces[FU as usize] == Color::WHITE) as u16) << 3
-        | ((faces[FUR as usize] == Color::WHITE) as u16) << 2
-        | ((faces[RFU as usize] == Color::WHITE) as u16) << 1
+    match (((faces[BUL as usize] == Color::WHITE) as u16) << 8)
+        | (((faces[LBU as usize] == Color::WHITE) as u16) << 7)
+        | (((faces[LU as usize] == Color::WHITE) as u16) << 6)
+        | (((faces[LUF as usize] == Color::WHITE) as u16) << 5)
+        | (((faces[FLU as usize] == Color::WHITE) as u16) << 4)
+        | (((faces[FU as usize] == Color::WHITE) as u16) << 3)
+        | (((faces[FUR as usize] == Color::WHITE) as u16) << 2)
+        | (((faces[RFU as usize] == Color::WHITE) as u16) << 1)
         | ((faces[RU as usize] == Color::WHITE) as u16)
     {
         0b000000000 => Some(vec![]),

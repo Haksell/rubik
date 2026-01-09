@@ -93,13 +93,13 @@ impl Cube<3> {
 
     pub fn eo_line_index(&self) -> usize {
         let mut orientation_index = 0;
-        for (i, &(s1, s2)) in EDGES[..11].into_iter().enumerate() {
+        for (i, &(s1, s2)) in EDGES[..11].iter().enumerate() {
             if !self.is_edge_oriented(s1, s2) {
                 orientation_index |= 1 << i;
             }
         }
-        let mut yellow_green: usize = usize::MAX;
-        let mut yellow_blue: usize = usize::MAX;
+        let mut yellow_green = usize::MAX;
+        let mut yellow_blue = usize::MAX;
         for (i, &(s1, s2)) in EDGES.iter().enumerate() {
             match (self.faces[s1 as usize], self.faces[s2 as usize]) {
                 (Color::YELLOW, Color::GREEN) | (Color::GREEN, Color::YELLOW) => yellow_green = i,
@@ -271,7 +271,7 @@ mod tests {
     use {
         super::{NUM_EO_LINES, NUM_ZZ_LEFT, zz},
         crate::{
-            Cube, Puzzle, cub3,
+            Cube, Puzzle as _, cub3,
             r#move::{MOVES_RUL, Move},
         },
     };

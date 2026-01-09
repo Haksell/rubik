@@ -48,12 +48,12 @@ fn solve_cross(cube: &mut Cube<3>) -> Vec<Move> {
 fn solve_f2l(cube: &mut Cube<3>) -> Vec<Move> {
     let mut solution = vec![];
     let mut to_solve = (0..4).fold(0, |acc, slot| {
-        acc | (!cube.is_pair_solved(slot) as u8) << slot
+        acc | ((!cube.is_pair_solved(slot) as u8) << slot)
     }); // handles accidental x-crosses
     while to_solve != 0 {
         let mut triggers = vec![Trigger::U, Trigger::U2, Trigger::U3];
         for slot in 0..4 {
-            if to_solve & 1 << slot != 0 {
+            if to_solve & (1 << slot) != 0 {
                 triggers.extend(TRIGGERS_BY_SLOT[slot]);
             }
         }
@@ -130,21 +130,21 @@ impl Cube<3> {
     #[cfg(test)]
     fn is_cross_solved(&self) -> bool {
         use crate::Sticker::*;
-        return self.faces[DF as usize] == Color::YELLOW
+        self.faces[DF as usize] == Color::YELLOW
             && self.faces[DR as usize] == Color::YELLOW
             && self.faces[DB as usize] == Color::YELLOW
             && self.faces[DL as usize] == Color::YELLOW
             && self.faces[FD as usize] == Color::GREEN
             && self.faces[RD as usize] == Color::RED
             && self.faces[BD as usize] == Color::BLUE
-            && self.faces[LD as usize] == Color::ORANGE;
+            && self.faces[LD as usize] == Color::ORANGE
     }
 
     pub fn cross_index(&self) -> usize {
-        let mut yellow_green: usize = usize::MAX;
-        let mut yellow_blue: usize = usize::MAX;
-        let mut yellow_red: usize = usize::MAX;
-        let mut yellow_orange: usize = usize::MAX;
+        let mut yellow_green = usize::MAX;
+        let mut yellow_blue = usize::MAX;
+        let mut yellow_red = usize::MAX;
+        let mut yellow_orange = usize::MAX;
         for (i, &(s1, s2)) in EDGES.iter().enumerate() {
             if self.faces[s1 as usize] == Color::YELLOW {
                 match self.faces[s2 as usize] {
@@ -187,6 +187,7 @@ impl Cube<3> {
 
     fn is_pair_solved(&self, index: usize) -> bool {
         use crate::Sticker::*;
+
         match index {
             0 => {
                 self.faces[BR as usize] == Color::BLUE
@@ -224,7 +225,7 @@ impl Cube<3> {
 #[cfg(test)]
 mod tests {
     use super::{NUM_CROSSES, cfop, solve_cross};
-    use crate::{Cube, Puzzle, cub3, r#move::Move};
+    use crate::{Cube, Puzzle as _, cub3, r#move::Move};
 
     #[test]
     fn test_is_cross_solved() {

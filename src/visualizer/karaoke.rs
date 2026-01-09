@@ -92,14 +92,14 @@ pub fn karaoke_format(moves: &[Move]) -> String {
         .iter()
         .enumerate()
         .map(|(i, &move_)| {
-            let mut move_str = format!("{:?}", move_);
+            let mut move_str = format!("{move_:?}");
             if i > 0 {
                 move_str.insert(0, ' ');
             }
             let mut move_display_size = display_size(&move_str);
             if chars_width + move_display_size > (WINDOW_SIZE * 2 - 5) as f32 {
                 move_str.insert(0, '\n');
-                if move_str[1..].starts_with(" ") {
+                if move_str[1..].starts_with(' ') {
                     move_str.remove(1);
                     move_display_size = display_size(&move_str);
                 }
