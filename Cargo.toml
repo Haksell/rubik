@@ -32,6 +32,7 @@ cargo_common_metadata = "allow"
 multiple_crate_versions = "allow"
 
 # pedantic
+cast_possible_truncation = "allow"
 must_use_candidate = "allow"
 
 # restriction
@@ -45,6 +46,7 @@ missing_docs_in_private_items = "allow"
 missing_inline_in_public_items = "allow"
 pattern_type_mismatch = "allow"
 pub_with_shorthand = "allow"
+question_mark_used = "allow"
 semicolon_outside_block = "allow"
 single_call_fn = "allow"
 std_instead_of_alloc = "allow"
