@@ -6,7 +6,7 @@ use {
 // move.cycles
 
 #[repr(u8)]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Move {
     F,
     R,

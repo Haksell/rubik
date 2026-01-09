@@ -33,6 +33,8 @@ multiple_crate_versions = "allow"
 
 # pedantic
 cast_possible_truncation = "allow"
+cast_precision_loss = "allow"
+many_single_char_names = "allow"
 must_use_candidate = "allow"
 
 # restriction
@@ -48,6 +50,7 @@ indexing_slicing = "allow"
 min_ident_chars = "allow"
 missing_docs_in_private_items = "allow"
 missing_inline_in_public_items = "allow"
+mod_module_files = "allow"
 pattern_type_mismatch = "allow"
 pub_with_shorthand = "allow"
 question_mark_used = "allow"
