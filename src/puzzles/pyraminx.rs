@@ -131,7 +131,7 @@ impl Puzzle for Pyraminx {
             Move::TL2 => {
                 self.do_cycle(&[35, 13, 8]);
             }
-            _ => panic!("Invalid move for pyraminx {:?}", move_),
+            _ => panic!("Invalid move for pyraminx {move_:?}"),
         }
     }
 
@@ -172,7 +172,7 @@ impl Puzzle for Pyraminx {
 
         fn render_core(scene: &mut SceneNode3d, mut vertices: [Vec3; 4]) {
             const CORE_MARGIN: f32 = 0.04;
-            let middle = Vec3::from((vertices[0] + vertices[1] + vertices[2] + vertices[3]) / 4.);
+            let middle = (vertices[0] + vertices[1] + vertices[2] + vertices[3]) / 4.;
             for v in &mut vertices {
                 *v += (middle - *v) * CORE_MARGIN;
             }
@@ -196,7 +196,7 @@ impl Puzzle for Pyraminx {
             let v1 = v0 + (v6 - v0) / 3.0;
             let v2 = v0 + (v9 - v0) / 3.0;
             let v3 = v0 + (v6 - v0) * 2.0 / 3.0;
-            let v4 = Vec3::from((v0 + v9 + v6) / 3.);
+            let v4 = (v0 + v9 + v6) / 3.;
             let v5 = v0 + (v9 - v0) * 2.0 / 3.0;
             let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
             let v8 = v9 + (v6 - v9) / 3.0;
@@ -216,7 +216,7 @@ impl Puzzle for Pyraminx {
             .zip(face)
             .map(|(mut triplet, sticker)| {
                 const STICKER_MARGIN: f32 = 0.1;
-                let middle = Vec3::from((triplet[0] + triplet[1] + triplet[2]) / 3.);
+                let middle = (triplet[0] + triplet[1] + triplet[2]) / 3.;
                 for v in &mut triplet {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
@@ -287,8 +287,8 @@ impl Puzzle for Pyraminx {
         }
     }
 
-    fn parse_move(&self, value: &str) -> Result<Move, String> {
-        match value {
+    fn parse_move(&self, str: &str) -> Result<Move, String> {
+        match str {
             "R" => Ok(Move::R),
             "R'" | "R’" => Ok(Move::R2),
             "U" => Ok(Move::U),
@@ -305,7 +305,7 @@ impl Puzzle for Pyraminx {
             "u'" | "u’" => Ok(Move::TU2),
             "b'" | "b’" => Ok(Move::TB2),
             "l'" | "l’" => Ok(Move::TL2),
-            _ => Err(format!("Invalid move '{value}'")),
+            _ => Err(format!("Invalid move '{str}'")),
         }
     }
 }

@@ -21,7 +21,7 @@ pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
         }
 
         for &move_ in T::ALLOWED_MOVES {
-            if !path.is_empty() && path.last().unwrap().same_face(&move_) {
+            if !path.is_empty() && path.last()?.same_face(&move_) {
                 continue;
             }
 

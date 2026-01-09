@@ -428,7 +428,7 @@ impl<const N: usize> Puzzle for Cube<N> {
         ) -> SceneNode3d {
             scene
                 .add_quad(STICKER_SIZE, STICKER_SIZE, 1, 1)
-                .translate(Vec3::from(translation))
+                .translate(translation)
                 .rotate(rotation)
                 .set_color(color.into())
         }
@@ -566,8 +566,8 @@ impl<const N: usize> Puzzle for Cube<N> {
         }
     }
 
-    fn parse_move(&self, value: &str) -> Result<Move, String> {
-        match value {
+    fn parse_move(&self, str: &str) -> Result<Move, String> {
+        match str {
             "F" => Ok(Move::F),
             "F2" => Ok(Move::F2),
             "F'" | "F’" => Ok(Move::F3),
@@ -586,7 +586,7 @@ impl<const N: usize> Puzzle for Cube<N> {
             "D" => Ok(Move::D),
             "D2" => Ok(Move::D2),
             "D'" | "D’" => Ok(Move::D3),
-            _ => Err(format!("Invalid move '{value}'")),
+            _ => Err(format!("Invalid move '{str}'")),
         }
     }
 }

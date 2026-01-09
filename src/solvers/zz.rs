@@ -4,7 +4,7 @@ use {
         reduce_moves,
     },
     crate::{
-        Cube, EDGES, Puzzle, Sticker,
+        Cube, EDGES, Puzzle as _, Sticker,
         color::Color,
         r#move::Move,
         sticker::CORNERS,
@@ -130,8 +130,8 @@ impl Cube<3> {
 
     pub fn zz_left_index(&self) -> usize {
         fn zz_left_corner_index(cube: &Cube<3>) -> usize {
-            let mut yellow_orange_green: usize = usize::MAX;
-            let mut yellow_blue_orange: usize = usize::MAX;
+            let mut yellow_orange_green = usize::MAX;
+            let mut yellow_blue_orange = usize::MAX;
             for (i, &(s1, s2)) in CORNERS.iter().enumerate() {
                 match (cube.faces[s1 as usize], cube.faces[s2 as usize]) {
                     (Color::YELLOW, Color::ORANGE) => yellow_orange_green = 3 * i,
@@ -150,9 +150,9 @@ impl Cube<3> {
         }
 
         fn zz_left_edge_index(cube: &Cube<3>) -> usize {
-            let mut green_orange: usize = usize::MAX;
-            let mut yellow_orange: usize = usize::MAX;
-            let mut blue_orange: usize = usize::MAX;
+            let mut green_orange = usize::MAX;
+            let mut yellow_orange = usize::MAX;
+            let mut blue_orange = usize::MAX;
             for (i, &(s1, s2)) in [
                 (Sticker::FL, Sticker::LF),
                 (Sticker::DL, Sticker::LD),
@@ -202,8 +202,8 @@ impl Cube<3> {
 
     pub fn zz_right_index(&self) -> usize {
         fn zz_right_corner_index(cube: &Cube<3>) -> usize {
-            let mut yellow_green_red: usize = usize::MAX;
-            let mut yellow_red_blue: usize = usize::MAX;
+            let mut yellow_green_red = usize::MAX;
+            let mut yellow_red_blue = usize::MAX;
             for (i, &(s1, s2)) in [
                 (Sticker::DFR, Sticker::FRD),
                 (Sticker::DRB, Sticker::RBD),
@@ -232,9 +232,9 @@ impl Cube<3> {
         }
 
         fn zz_right_edge_index(cube: &Cube<3>) -> usize {
-            let mut green_red: usize = usize::MAX;
-            let mut yellow_red: usize = usize::MAX;
-            let mut blue_red: usize = usize::MAX;
+            let mut green_red = usize::MAX;
+            let mut yellow_red = usize::MAX;
+            let mut blue_red = usize::MAX;
             for (i, &(s1, s2)) in [
                 (Sticker::FR, Sticker::RF),
                 (Sticker::DR, Sticker::RD),

@@ -1,5 +1,5 @@
 use {
-    colored::Colorize,
+    colored::Colorize as _,
     std::{convert::TryFrom, fmt::Display, hash::Hash},
 };
 
@@ -19,12 +19,12 @@ impl TryFrom<u8> for Color {
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
-            0 => Ok(Color::WHITE),
-            1 => Ok(Color::RED),
-            2 => Ok(Color::GREEN),
-            3 => Ok(Color::YELLOW),
-            4 => Ok(Color::ORANGE),
-            5 => Ok(Color::BLUE),
+            0 => Ok(Self::WHITE),
+            1 => Ok(Self::RED),
+            2 => Ok(Self::GREEN),
+            3 => Ok(Self::YELLOW),
+            4 => Ok(Self::ORANGE),
+            5 => Ok(Self::BLUE),
             _ => Err("Colors are from 0 to 5 included"),
         }
     }

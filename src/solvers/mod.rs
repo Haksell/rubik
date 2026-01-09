@@ -12,7 +12,7 @@ pub use {
 };
 
 use crate::{
-    Cube, Puzzle,
+    Cube, Puzzle as _,
     r#move::{MOVES, Move},
 };
 
