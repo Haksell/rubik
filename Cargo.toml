@@ -31,4 +31,6 @@ suspicious = { level = "deny", priority = -1 }
 arithmetic_side_effects = "allow"
 indexing_slicing = "allow"
 missing_docs_in_private_items = "allow"
+missing_inline_in_public_items = "allow"
 single_call_fn = "allow"
+wildcard_enum_match_arm = "allow"
