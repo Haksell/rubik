@@ -19,7 +19,7 @@ fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>)
         .zip(puzzle.get_faces().iter())
         .for_each(|(node, &color)| {
             let [r, g, b] = color.as_rgb();
-            node.set_color(r, g, b)
+            node.set_color(r, g, b);
         });
 }
 
