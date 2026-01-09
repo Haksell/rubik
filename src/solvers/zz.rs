@@ -4,11 +4,11 @@ use {
         reduce_moves,
     },
     crate::{
+        Cube, EDGES, Puzzle, Sticker,
         color::Color,
         r#move::Move,
         sticker::CORNERS,
-        tables::{read_moves, FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT},
-        Cube, Puzzle, Sticker, EDGES,
+        tables::{FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT, read_moves},
     },
 };
 
@@ -268,11 +268,12 @@ impl Cube<3> {
 
 #[cfg(test)]
 mod tests {
-    use super::{zz, NUM_EO_LINES, NUM_ZZ_LEFT};
-    use crate::{
-        cub3,
-        r#move::{Move, MOVES_RUL},
-        Cube, Puzzle,
+    use {
+        super::{NUM_EO_LINES, NUM_ZZ_LEFT, zz},
+        crate::{
+            Cube, Puzzle, cub3,
+            r#move::{MOVES_RUL, Move},
+        },
     };
 
     #[test]

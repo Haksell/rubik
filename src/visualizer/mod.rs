@@ -1,7 +1,7 @@
 mod karaoke;
 
 use {
-    crate::{r#move::Move, Puzzle},
+    crate::{Puzzle, r#move::Move},
     karaoke::{draw_karaoke, karaoke_format},
     kiss3d::{
         event::{Action, Key, WindowEvent},

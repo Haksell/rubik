@@ -2,11 +2,11 @@
 
 use {
     crate::{
+        Puzzle,
         color::Color,
         r#move::Move,
-        solvers::{iddfs, premover, zz, DFSAble},
+        solvers::{DFSAble, iddfs, premover, zz},
         trigger::Trigger,
-        Puzzle,
     },
     kiss3d::{
         camera::ArcBall,
@@ -661,7 +661,7 @@ impl DFSAble for Cube<2> {
 #[cfg(test)]
 mod tests {
     use super::Cube;
-    use crate::{r#move::Move, Puzzle};
+    use crate::{Puzzle, r#move::Move};
 
     #[test]
     fn test_is_solved_generic() {

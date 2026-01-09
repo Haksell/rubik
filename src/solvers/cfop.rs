@@ -4,11 +4,11 @@ use {
         reduce_moves,
     },
     crate::{
+        Cube, EDGES, Puzzle,
         color::Color,
         r#move::Move,
-        tables::{read_moves, FILE_CROSSES},
-        trigger::{Trigger, TRIGGERS_BY_SLOT},
-        Cube, Puzzle, EDGES,
+        tables::{FILE_CROSSES, read_moves},
+        trigger::{TRIGGERS_BY_SLOT, Trigger},
     },
     std::{
         cmp::Reverse,
@@ -223,8 +223,8 @@ impl Cube<3> {
 
 #[cfg(test)]
 mod tests {
-    use super::{cfop, solve_cross, NUM_CROSSES};
-    use crate::{cub3, r#move::Move, Cube, Puzzle};
+    use super::{NUM_CROSSES, cfop, solve_cross};
+    use crate::{Cube, Puzzle, cub3, r#move::Move};
 
     #[test]
     fn test_is_cross_solved() {

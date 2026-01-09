@@ -11,5 +11,5 @@ pub mod visualizer;
 
 pub use {
     puzzles::{Cube, Puzzle, Pyraminx},
-    sticker::{Sticker, EDGES},
+    sticker::{EDGES, Sticker},
 };

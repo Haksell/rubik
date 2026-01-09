@@ -5,15 +5,15 @@ mod last_layer;
 mod zz;
 
 pub use {
-    cfop::{cfop, NUM_CROSSES},
-    iddfs::{iddfs, DFSAble},
+    cfop::{NUM_CROSSES, cfop},
+    iddfs::{DFSAble, iddfs},
     kociemba::kociemba,
-    zz::{zz, NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT},
+    zz::{NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT, zz},
 };
 
 use crate::{
-    r#move::{Move, MOVES},
     Cube, Puzzle,
+    r#move::{MOVES, Move},
 };
 
 // TODO: depends on PyraMove or CubeMove

@@ -1,9 +1,9 @@
 use {
     crate::{
+        Puzzle,
         color::Color,
         r#move::Move,
-        solvers::{iddfs, DFSAble},
-        Puzzle,
+        solvers::{DFSAble, iddfs},
     },
     kiss3d::{
         camera::ArcBall,

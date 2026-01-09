@@ -1,6 +1,6 @@
 use {
     super::file_operations::write_moves,
-    crate::{cub3, r#move::Move, Cube, Puzzle},
+    crate::{Cube, Puzzle, cub3, r#move::Move},
     std::{collections::VecDeque, io},
 };
 

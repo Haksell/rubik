@@ -1,6 +1,6 @@
 use {
     clap::{Parser, ValueEnum},
-    rubik::{puzzles::PuzzleArg, r#move::Move, visualizer::visualize},
+    rubik::{r#move::Move, puzzles::PuzzleArg, visualizer::visualize},
 };
 
 // TODO: help messages
@@ -67,9 +67,8 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use rubik::{
-        cub3,
+        Cube, Puzzle, cub3,
         solvers::{premover, zz},
-        Cube, Puzzle,
     };
     use serial_test::serial;
 

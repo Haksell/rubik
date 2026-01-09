@@ -1,4 +1,4 @@
-use crate::{r#move::Move, Puzzle};
+use crate::{Puzzle, r#move::Move};
 
 pub trait DFSAble: Puzzle {
     const ALLOWED_MOVES: &'static [Move];

@@ -1,5 +1,5 @@
 use {
-    crate::{color::Color, r#move::Move, Cube, Puzzle},
+    crate::{Cube, Puzzle, color::Color, r#move::Move},
     move_macro::moves,
 };
 
