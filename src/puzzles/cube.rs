@@ -367,8 +367,6 @@ impl<const N: usize> Puzzle for Cube<N> {
             }
             _ => panic!("REMOVE THIS CRAP"),
         }
-        // println!("{:?}", self.faces);
-        //println!("{}", self);
     }
 
     fn solve(&self) -> Option<Vec<Move>> {

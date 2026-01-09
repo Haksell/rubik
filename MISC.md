@@ -55,16 +55,7 @@
 
 ## clippy lints
 
-- clippy::cast_sign_loss
 - clippy::cognitive_complexity
-- clippy::collapsible_if
-- clippy::derive_partial_eq_without_eq
-- clippy::enum_glob_use
-- clippy::explicit_iter_loop
-- clippy::integer_division
-- clippy::integer_division_remainder_used
-- clippy::io_other_error
-- clippy::len_without_is_empty
 - clippy::match_same_arms
 - clippy::missing_const_for_fn
 - clippy::missing_panics_doc

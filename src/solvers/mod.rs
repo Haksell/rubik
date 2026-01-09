@@ -22,15 +22,15 @@ fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
     let mut simplified: Vec<Move> = vec![];
     for &move_ in moves {
         let mut push_move = true;
-        if let Some(&last) = simplified.last() {
-            if last.same_face(&move_) {
-                push_move = false;
-                simplified.pop();
-                let repetitions = (last.repetitions() + move_.repetitions()) % 4;
-                if repetitions != 0 {
-                    simplified
-                        .push(Move::try_from(move_.as_int() % 6 + 6 * (repetitions - 1)).unwrap());
-                }
+        if let Some(&last) = simplified.last()
+            && last.same_face(&move_)
+        {
+            push_move = false;
+            simplified.pop();
+            let repetitions = (last.repetitions() + move_.repetitions()) % 4;
+            if repetitions != 0 {
+                simplified
+                    .push(Move::try_from(move_.as_int() % 6 + 6 * (repetitions - 1)).unwrap());
             }
         }
         if push_move {

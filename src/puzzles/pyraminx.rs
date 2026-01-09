@@ -168,7 +168,7 @@ impl Puzzle for Pyraminx {
                 (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
                     / 4.,
             );
-            for v in vertices.iter_mut() {
+            for v in &mut vertices {
                 *v += (middle - *v) * CORE_MARGIN;
             }
 
@@ -213,7 +213,7 @@ impl Puzzle for Pyraminx {
                 const STICKER_MARGIN: f32 = 0.1;
                 let middle =
                     Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
-                for v in triplet.iter_mut() {
+                for v in &mut triplet {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
                 draw_triangle(window, triplet, sticker.as_rgb())

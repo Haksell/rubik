@@ -52,7 +52,7 @@ pub trait Puzzle: Display {
     fn parse_move(&self, str: &str) -> Result<Move, String>;
 }
 
-#[derive(ValueEnum, Clone, Debug, PartialEq)]
+#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 pub enum PuzzleArg {
     Cube2,
     Cube3,
@@ -62,9 +62,9 @@ pub enum PuzzleArg {
 impl PuzzleArg {
     pub fn build(&self) -> Box<dyn Puzzle> {
         match self {
-            PuzzleArg::Cube2 => Box::new(cub2!()),
-            PuzzleArg::Cube3 => Box::new(cub3!()),
-            PuzzleArg::Pyraminx => Box::new(Pyraminx::new()),
+            Self::Cube2 => Box::new(cub2!()),
+            Self::Cube3 => Box::new(cub3!()),
+            Self::Pyraminx => Box::new(Pyraminx::new()),
         }
     }
 }

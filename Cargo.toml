@@ -35,6 +35,9 @@ multiple_crate_versions = "allow"
 cast_lossless = "allow"
 cast_possible_truncation = "allow"
 cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+# I don't like allowing it but it's too useful for the Sticker enum
+enum_glob_use = "allow"            
 many_single_char_names = "allow"
 missing_errors_doc = "allow"
 must_use_candidate = "allow"
@@ -52,6 +55,8 @@ expect_used = "allow"
 float_arithmetic = "allow"
 implicit_return = "allow"
 indexing_slicing = "allow"
+integer_division = "allow"
+integer_division_remainder_used = "allow"
 min_ident_chars = "allow"
 missing_docs_in_private_items = "allow"
 missing_inline_in_public_items = "allow"
@@ -69,6 +74,9 @@ std_instead_of_core = "allow"
 unreachable = "allow"
 unwrap_used = "allow"
 wildcard_enum_match_arm = "allow"
+
+# style
+len_without_is_empty = "allow"
 
 # suspicious
 blanket_clippy_restriction_lints = "allow"

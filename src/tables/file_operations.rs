@@ -38,9 +38,9 @@ pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
 
 pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {
     let buffer: Vec<u8> = moves.iter().map(|move_| move_.unwrap().as_int()).collect();
-    let parent_dir = Path::new(filename).parent().ok_or_else(|| {
-        io::Error::new(io::ErrorKind::Other, "Failed to determine parent directory")
-    })?;
+    let parent_dir = Path::new(filename)
+        .parent()
+        .ok_or_else(|| io::Error::other("Failed to determine parent directory"))?;
     fs::create_dir_all(parent_dir)?;
     let mut file = File::create(filename)?;
     file.write_all(&buffer)?;
