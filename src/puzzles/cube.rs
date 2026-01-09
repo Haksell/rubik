@@ -115,8 +115,8 @@ impl<const N: usize> Cube<N> {
     }
 
     fn get_face(&self, face: usize) -> &[Color] {
-        let start = face as usize * N * N;
-        let end = (face as usize + 1) * N * N;
+        let start = face * N * N;
+        let end = (face + 1) * N * N;
         &self.faces[start..end]
     }
 }

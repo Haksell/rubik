@@ -130,12 +130,12 @@ impl TryFrom<(Key, Modifiers)> for Move {
     fn try_from(value: (Key, Modifiers)) -> Result<Self, Self::Error> {
         let (key, mods) = value;
         let move_ = match key {
-            Key::F => Ok(Move::F),
-            Key::R => Ok(Move::R),
-            Key::U => Ok(Move::U),
-            Key::B => Ok(Move::B),
-            Key::L => Ok(Move::L),
-            Key::D => Ok(Move::D),
+            Key::F => Ok(Self::F),
+            Key::R => Ok(Self::R),
+            Key::U => Ok(Self::U),
+            Key::B => Ok(Self::B),
+            Key::L => Ok(Self::L),
+            Key::D => Ok(Self::D),
             _ => Err("Invalid key"),
         };
 
