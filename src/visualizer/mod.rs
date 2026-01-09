@@ -13,7 +13,7 @@ use {
 
 const WINDOW_SIZE: u32 = 1000;
 
-fn refresh_stickers(stickers: &mut Vec<SceneNode>, puzzle: &mut Box<dyn Puzzle>) {
+fn refresh_stickers(stickers: &mut [SceneNode], puzzle: &mut Box<dyn Puzzle>) {
     stickers
         .iter_mut()
         .zip(puzzle.get_faces().iter())
