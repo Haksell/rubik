@@ -59,7 +59,7 @@ pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
         | ((faces[FU as usize] == Color::WHITE) as u16) << 3
         | ((faces[FUR as usize] == Color::WHITE) as u16) << 2
         | ((faces[RFU as usize] == Color::WHITE) as u16) << 1
-        | ((faces[RU as usize] == Color::WHITE) as u16) << 0
+        | ((faces[RU as usize] == Color::WHITE) as u16)
     {
         0b000000000 => Some(vec![]),
         0b011101011 => Some(moves!["R U2 R2 F R F' U2 R' F R F'"]),

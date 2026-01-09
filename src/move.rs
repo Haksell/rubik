@@ -56,8 +56,8 @@ impl Move {
         Move::try_from(i).unwrap()
     }
 
-    pub fn same_face(&self, move_: &Move) -> bool {
-        return (self.as_int() + 18 - move_.as_int()) % 6 == 0;
+    pub fn same_face(&self, move_: &Self) -> bool {
+        (self.as_int() + 18 - move_.as_int()).is_multiple_of(6)
     }
 
     pub fn random() -> Self {

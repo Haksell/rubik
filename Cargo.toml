@@ -27,8 +27,17 @@ restriction = { level = "warn", priority = -1 }
 style = { level = "warn", priority = -1 }
 suspicious = { level = "deny", priority = -1 }
 
+# cargo
+cargo_common_metadata = "allow"
+multiple_crate_versions = "allow"
+
+# pedantic
+must_use_candidate = "allow"
+
 # restriction
+arbitrary_source_item_ordering = "allow"
 arithmetic_side_effects = "allow"
+float_arithmetic = "allow"
 implicit_return = "allow"
 indexing_slicing = "allow"
 min_ident_chars = "allow"
@@ -39,3 +48,6 @@ pub_with_shorthand = "allow"
 semicolon_outside_block = "allow"
 single_call_fn = "allow"
 wildcard_enum_match_arm = "allow"
+
+# suspicious
+blanket_clippy_restriction_lints = "allow"

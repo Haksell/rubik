@@ -468,11 +468,7 @@ impl<const N: usize> Puzzle for Cube<N> {
                 let i = start + i;
                 let color = cube.faces[i];
                 let (x, y, z) = get_coords(i, N, face);
-                let translation = Translation3::new(
-                    (x as f32) * CUBIE_SIZE,
-                    (y as f32) * CUBIE_SIZE,
-                    (z as f32) * CUBIE_SIZE,
-                );
+                let translation = Translation3::new(x * CUBIE_SIZE, y * CUBIE_SIZE, z * CUBIE_SIZE);
 
                 squares.push(create_cubie_face(
                     window,

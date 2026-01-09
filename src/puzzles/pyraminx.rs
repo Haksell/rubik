@@ -175,7 +175,7 @@ impl Puzzle for Pyraminx {
             for i in 0..4 {
                 draw_triangle(
                     window,
-                    vec![vertices[i], vertices[i + 1 & 3], vertices[i + 2 & 3]],
+                    vec![vertices[i], vertices[(i + 1) & 3], vertices[(i + 2) & 3]],
                     [0., 0., 0.],
                 );
             }
