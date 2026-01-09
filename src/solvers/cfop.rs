@@ -73,7 +73,7 @@ fn reconstruct_path<const N: usize>(
 ) -> Vec<Trigger> {
     let mut path: Vec<Trigger> = vec![];
 
-    while let Some(trigger) = came_from[&cube] {
+    while let Some(trigger) = came_from[cube] {
         trigger
             .moves()
             .iter()

@@ -74,7 +74,7 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
                 Point3::new(1.0, 0.0, 0.0)
             };
             window.draw_text(
-                &line,
+                line,
                 &Point2::new(centerx, starty),
                 TEXT_SCALE,
                 &font,

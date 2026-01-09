@@ -598,7 +598,7 @@ impl<const N: usize> Display for Cube<N> {
 
         let face = self.get_face(0);
         for line in 0..N {
-            writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
+            writeln!(f, "{}{}", " ".repeat(N * 2), format(face, N, line))?;
         }
 
         let faces: Vec<&[Color]> = vec![4, 2, 1, 5]
@@ -620,7 +620,7 @@ impl<const N: usize> Display for Cube<N> {
 
         let face = self.get_face(3);
         for line in 0..N {
-            writeln!(f, "{}{}", " ".repeat(N * 2), format(&face, N, line))?;
+            writeln!(f, "{}{}", " ".repeat(N * 2), format(face, N, line))?;
         }
 
         Ok(())

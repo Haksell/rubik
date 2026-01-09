@@ -37,11 +37,11 @@ pub enum Move {
 }
 
 impl Move {
-    pub fn as_int(&self) -> u8 {
+    pub const fn as_int(&self) -> u8 {
         *self as u8
     }
 
-    pub fn repetitions(&self) -> u8 {
+    pub const fn repetitions(&self) -> u8 {
         self.as_int() / 6 + 1
     }
 
@@ -56,7 +56,7 @@ impl Move {
         Self::try_from(i).unwrap()
     }
 
-    pub fn same_face(&self, move_: &Self) -> bool {
+    pub const fn same_face(&self, move_: &Self) -> bool {
         (self.as_int() + 18 - move_.as_int()).is_multiple_of(6)
     }
 

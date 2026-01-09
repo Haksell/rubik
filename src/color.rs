@@ -35,22 +35,22 @@ impl Color {
     // TODO: specific for Cube<3>
     pub fn side(&self) -> i8 {
         match self {
-            Color::BLUE => 0,
-            Color::RED => 1,
-            Color::GREEN => 2,
-            Color::ORANGE => 3,
+            Self::BLUE => 0,
+            Self::RED => 1,
+            Self::GREEN => 2,
+            Self::ORANGE => 3,
             _ => unimplemented!(),
         }
     }
 
-    pub fn as_rgb(&self) -> [f32; 3] {
+    pub const fn as_rgb(&self) -> [f32; 3] {
         match self {
-            Color::WHITE => [1.0, 1.0, 1.0],
-            Color::RED => [1.0, 0.071, 0.204],
-            Color::GREEN => [0.0, 0.608, 0.282],
-            Color::YELLOW => [1.0, 0.835, 0.0],
-            Color::ORANGE => [1.0, 0.345, 0.0],
-            Color::BLUE => [0.0, 0.275, 0.678],
+            Self::WHITE => [1.0, 1.0, 1.0],
+            Self::RED => [1.0, 0.071, 0.204],
+            Self::GREEN => [0.0, 0.608, 0.282],
+            Self::YELLOW => [1.0, 0.835, 0.0],
+            Self::ORANGE => [1.0, 0.345, 0.0],
+            Self::BLUE => [0.0, 0.275, 0.678],
         }
     }
 }

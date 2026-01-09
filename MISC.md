@@ -56,11 +56,6 @@
 ## clippy lints
 
 - clippy::cognitive_complexity
-- clippy::match_same_arms
-- clippy::missing_const_for_fn
-- clippy::missing_panics_doc
-- clippy::missing_trait_methods
-- clippy::modulo_arithmetic
 - clippy::needless_borrow
 - clippy::needless_range_loop
 - clippy::new_without_default
@@ -74,7 +69,6 @@
 - clippy::redundant_type_annotations
 - clippy::renamed_function_params
 - clippy::return_self_not_must_use
-- clippy::shadow_unrelated
 - clippy::significant_drop_tightening
 - clippy::similar_names
 - clippy::string_slice

@@ -386,7 +386,7 @@ impl Display for Pyraminx {
                 f,
                 "{}{}",
                 " ".repeat((3 + 3 - 1 + line) * 2).as_str(),
-                draw_triangle_line(&face, 3 - line - 1, true),
+                draw_triangle_line(face, 3 - line - 1, true),
             )?;
         }
 
