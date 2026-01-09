@@ -13,7 +13,7 @@ use {
 
 const WINDOW_SIZE: u32 = 1000;
 
-fn refresh_stickers(stickers: &mut [SceneNode], puzzle: &mut Box<dyn Puzzle>) {
+fn refresh_stickers(stickers: &mut [SceneNode], puzzle: &dyn Puzzle) {
     stickers
         .iter_mut()
         .zip(puzzle.get_faces().iter())
@@ -56,7 +56,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &[Move], karaoke: bool) {
                             i -= 1;
                             let inverse_move = puzzle.opposite_move(moves[i]);
                             puzzle.do_move(inverse_move);
-                            refresh_stickers(&mut stickers, puzzle);
+                            refresh_stickers(&mut stickers, &**puzzle);
                         }
                         event.inhibited = true;
                     }
@@ -64,7 +64,7 @@ pub fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &[Move], karaoke: bool) {
                         if i < moves.len() {
                             puzzle.do_move(moves[i]);
                             i += 1;
-                            refresh_stickers(&mut stickers, puzzle);
+                            refresh_stickers(&mut stickers, &**puzzle);
                         }
                         event.inhibited = true;
                     }
