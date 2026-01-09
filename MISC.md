@@ -52,3 +52,49 @@
 - *Analyzing the Rubik's Cube Group of Various Sizes and Solutions* : https://math.uchicago.edu/~may/REU2021/REUPapers/Chuang,Alex.pdf#page=17&zoom=100,169,306
 - *Group Theory and the Rubik's Cube* : https://people.math.harvard.edu/~jjchen/docs/Group%20Theory%20and%20the%20Rubik's%20Cube.pdf
 - Θ(n²/log(n)) god's number : https://arxiv.org/pdf/1106.5736
+
+## clippy lints
+
+- absolute_paths
+- cast_sign_loss
+- cognitive_complexity
+- collapsible_if
+- derive_partial_eq_without_eq
+- enum_glob_use
+- explicit_iter_loop
+- integer_division
+- integer_division_remainder_used
+- io_other_error
+- len_without_is_empty
+- match_same_arms
+- missing_const_for_fn
+- missing_panics_doc
+- missing_trait_methods
+- modulo_arithmetic
+- needless_borrow
+- needless_range_loop
+- new_without_default
+- non_ascii_literal
+- option_if_let_else
+- panic
+- ptr_as_ptr
+- pub_use
+- rc_buffer
+- redundant_static_lifetimes
+- redundant_type_annotations
+- renamed_function_params
+- return_self_not_must_use
+- shadow_unrelated
+- significant_drop_tightening
+- similar_names
+- string_slice
+- str_to_string
+- suboptimal_flops
+- too_many_lines
+- undocumented_unsafe_blocks
+- unimplemented
+- uninlined_format_args
+- unreadable_literal
+- unused_trait_names
+- unwrap_in_result
+- use_self
