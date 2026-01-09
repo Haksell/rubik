@@ -28,6 +28,7 @@ pub struct Cube<const N: usize> {
 
 // TODO: remove dummy PartialOrd and Ord
 
+#[expect(clippy::non_canonical_partial_ord_impl)] // TODO: remove
 impl PartialOrd for Cube<3> {
     fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
         Some(std::cmp::Ordering::Equal)

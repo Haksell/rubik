@@ -38,6 +38,7 @@ many_single_char_names = "allow"
 must_use_candidate = "allow"
 
 # restriction
+allow_attributes_without_reason = "allow"
 arbitrary_source_item_ordering = "allow"
 arithmetic_side_effects = "allow"
 as_conversions = "allow"

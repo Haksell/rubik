@@ -3,7 +3,7 @@
 ## todo
 
 - [ ] 3x3 visualisation (vegret)
-- [ ] pyraminx mooves + iddfs + visualisation (vegret)
+- [ ] pyraminx moves + iddfs + visualisation (vegret)
 - [ ] big cube moves + visualisation (vegret)
 - [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file` (axbrisse)
 - [ ] generate or find optimal ZBLL (axbrisse)
@@ -31,7 +31,7 @@
 
 ## before push
 
-- [ ] remove `#[allow(dead_code)]`
+- [ ] remove `#[expect(dead_code)]`
 - [ ] remove useless `pub` and use `pub(crate)`/`pub(super)` where appropriate
 
 ## resources
