@@ -15,6 +15,7 @@ use {
         window::Window,
     },
     std::{
+        f32::consts::FRAC_PI_2,
         fmt::{Display, Error, Formatter},
         hash::Hash,
     },
@@ -446,22 +447,11 @@ impl<const N: usize> Puzzle for Cube<N> {
             } / 2.0;
 
             let rotation = match face {
-                Color::WHITE => {
-                    UnitQuaternion::from_axis_angle(&Vector3::x_axis(), std::f32::consts::FRAC_PI_2)
-                }
-                Color::RED => {
-                    UnitQuaternion::from_axis_angle(&Vector3::y_axis(), std::f32::consts::FRAC_PI_2)
-                }
-                Color::GREEN => UnitQuaternion::identity(),
-                Color::YELLOW => UnitQuaternion::from_axis_angle(
-                    &Vector3::x_axis(),
-                    -std::f32::consts::FRAC_PI_2,
-                ),
-                Color::ORANGE => UnitQuaternion::from_axis_angle(
-                    &Vector3::y_axis(),
-                    -std::f32::consts::FRAC_PI_2,
-                ),
-                Color::BLUE => UnitQuaternion::identity(),
+                Color::WHITE => UnitQuaternion::from_axis_angle(&Vector3::x_axis(), FRAC_PI_2),
+                Color::RED => UnitQuaternion::from_axis_angle(&Vector3::y_axis(), FRAC_PI_2),
+                Color::YELLOW => UnitQuaternion::from_axis_angle(&Vector3::x_axis(), -FRAC_PI_2),
+                Color::ORANGE => UnitQuaternion::from_axis_angle(&Vector3::y_axis(), -FRAC_PI_2),
+                Color::GREEN | Color::BLUE => UnitQuaternion::identity(),
             };
 
             let start = face as usize * N * N;
