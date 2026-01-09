@@ -26,7 +26,8 @@ struct Args {
     // explain: bool,
 }
 
-fn main() {
+#[kiss3d::main]
+async fn main() {
     let args = Args::parse();
     let mut puzzle = args.puzzle.build();
 
@@ -60,7 +61,8 @@ fn main() {
             &solution,
             args.mode == Mode::Karaoke,
             // TODO: no playground bool
-        );
+        )
+        .await;
     }
 }
 

@@ -43,21 +43,21 @@ impl Color {
         }
     }
 
-    pub const fn as_rgb(&self) -> [f32; 3] {
+    pub const fn as_rgba(&self) -> [f32; 4] {
         match self {
-            Self::WHITE => [1.0, 1.0, 1.0],
-            Self::RED => [1.0, 0.071, 0.204],
-            Self::GREEN => [0.0, 0.608, 0.282],
-            Self::YELLOW => [1.0, 0.835, 0.0],
-            Self::ORANGE => [1.0, 0.345, 0.0],
-            Self::BLUE => [0.0, 0.275, 0.678],
+            Self::WHITE => [1.0, 1.0, 1.0, 1.0],
+            Self::RED => [1.0, 0.071, 0.204, 1.0],
+            Self::GREEN => [0.0, 0.608, 0.282, 1.0],
+            Self::YELLOW => [1.0, 0.835, 0.0, 1.0],
+            Self::ORANGE => [1.0, 0.345, 0.0, 1.0],
+            Self::BLUE => [0.0, 0.275, 0.678, 1.0],
         }
     }
 }
 
 impl Display for Color {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        let [r, g, b] = self.as_rgb();
+        let [r, g, b, _] = self.as_rgba();
         write!(
             f,
             "{}",

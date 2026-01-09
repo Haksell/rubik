@@ -9,10 +9,9 @@ use {
         trigger::Trigger,
     },
     kiss3d::{
-        camera::ArcBall,
-        nalgebra::{Point3, Translation3, UnitQuaternion, Vector3},
-        scene::SceneNode,
-        window::Window,
+        camera::OrbitCamera3d,
+        glamx::{Quat, Vec3},
+        scene::SceneNode3d,
     },
     std::{
         f32::consts::FRAC_PI_2,
@@ -415,47 +414,47 @@ impl<const N: usize> Puzzle for Cube<N> {
         &self.faces
     }
 
-    fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
+    fn draw(&self, scene: &mut SceneNode3d) -> Vec<SceneNode3d> {
         const CUBIE_SIZE: f32 = 1.0;
         const MARGIN: f32 = 0.05;
 
         const STICKER_SIZE: f32 = CUBIE_SIZE * (1.0 - MARGIN);
 
         fn create_cubie_face(
-            window: &mut Window,
-            color: &[f32; 3],
-            translation: Vector3<f32>,
-            rotation: UnitQuaternion<f32>,
-        ) -> SceneNode {
-            let mut face = window.add_quad(STICKER_SIZE, STICKER_SIZE, 1, 1);
-            face.set_local_translation(Translation3::from(translation));
-            face.set_local_rotation(rotation);
-            face.set_color(color[0], color[1], color[2]);
-            face
+            scene: &mut SceneNode3d,
+            color: [f32; 4],
+            translation: Vec3,
+            rotation: Quat,
+        ) -> SceneNode3d {
+            scene
+                .add_quad(STICKER_SIZE, STICKER_SIZE, 1, 1)
+                .translate(Vec3::from(translation))
+                .rotate(rotation)
+                .set_color(color.into())
         }
 
         fn draw_face<const N: usize>(
             cube: &Cube<N>,
-            window: &mut Window,
+            scene: &mut SceneNode3d,
             face: Color,
-        ) -> Vec<SceneNode> {
-            let mut squares: Vec<SceneNode> = Vec::new();
+        ) -> Vec<SceneNode3d> {
+            let mut squares: Vec<SceneNode3d> = Vec::new();
 
             let translation_addition = match face {
-                Color::WHITE => -Vector3::y(),
-                Color::RED => -Vector3::x(),
-                Color::GREEN => -Vector3::z(),
-                Color::YELLOW => Vector3::y(),
-                Color::ORANGE => Vector3::x(),
-                Color::BLUE => Vector3::z(),
+                Color::WHITE => -Vec3::Y,
+                Color::RED => -Vec3::X,
+                Color::GREEN => -Vec3::Z,
+                Color::YELLOW => Vec3::Y,
+                Color::ORANGE => Vec3::X,
+                Color::BLUE => Vec3::Z,
             } / 2.0;
 
             let rotation = match face {
-                Color::WHITE => UnitQuaternion::from_axis_angle(&Vector3::x_axis(), FRAC_PI_2),
-                Color::RED => UnitQuaternion::from_axis_angle(&Vector3::y_axis(), FRAC_PI_2),
-                Color::YELLOW => UnitQuaternion::from_axis_angle(&Vector3::x_axis(), -FRAC_PI_2),
-                Color::ORANGE => UnitQuaternion::from_axis_angle(&Vector3::y_axis(), -FRAC_PI_2),
-                Color::GREEN | Color::BLUE => UnitQuaternion::identity(),
+                Color::WHITE => Quat::from_axis_angle(Vec3::X, FRAC_PI_2),
+                Color::RED => Quat::from_axis_angle(Vec3::Y, FRAC_PI_2),
+                Color::YELLOW => Quat::from_axis_angle(Vec3::X, -FRAC_PI_2),
+                Color::ORANGE => Quat::from_axis_angle(Vec3::Y, -FRAC_PI_2),
+                Color::GREEN | Color::BLUE => Quat::IDENTITY,
             };
 
             let start = face as usize * N * N;
@@ -463,12 +462,12 @@ impl<const N: usize> Puzzle for Cube<N> {
                 let i = start + i;
                 let color = cube.faces[i];
                 let (x, y, z) = get_coords(i, N, face);
-                let translation = Translation3::new(x * CUBIE_SIZE, y * CUBIE_SIZE, z * CUBIE_SIZE);
+                let translation = Vec3::new(x, y, z) * CUBIE_SIZE;
 
                 squares.push(create_cubie_face(
-                    window,
-                    &color.as_rgb(),
-                    translation.vector + translation_addition,
+                    scene,
+                    color.as_rgba(),
+                    translation + translation_addition,
                     rotation,
                 ));
             }
@@ -511,22 +510,22 @@ impl<const N: usize> Puzzle for Cube<N> {
 
         let core_size: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
 
-        let mut core = window.add_cube(core_size, core_size, core_size);
-        core.set_local_translation(Translation3::new(
+        let mut core = scene.add_cube(core_size, core_size, core_size);
+        core.translate(Vec3::new(
             (N - 1) as f32 / 2.0 + 1.0,
             (N - 1) as f32 / 2.0,
             (N - 1) as f32 / 2.0 + 1.0,
         ));
-        core.set_color(0.0, 0.0, 0.0);
+        core.set_color(kiss3d::color::BLACK);
 
         (0..6)
             .map(|i| Color::try_from(i).unwrap())
-            .flat_map(|face| draw_face(self, window, face))
-            .collect::<Vec<SceneNode>>()
+            .flat_map(|face| draw_face(self, scene, face))
+            .collect::<Vec<SceneNode3d>>()
     }
 
-    fn default_cam(&self) -> ArcBall {
-        ArcBall::new(Point3::new(-2.5, 6.0, -6.0), Point3::new(1.75, 1.5, 1.5))
+    fn default_cam(&self) -> OrbitCamera3d {
+        OrbitCamera3d::new(Vec3::new(-2.5, 6.0, -6.0), Vec3::new(1.75, 1.5, 1.5))
     }
 
     fn available_moves(&self) -> Vec<Move> {

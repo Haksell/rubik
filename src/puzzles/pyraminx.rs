@@ -6,15 +6,16 @@ use {
         solvers::{DFSAble, iddfs},
     },
     kiss3d::{
-        camera::ArcBall,
-        nalgebra::{Point2, Point3, Vector3},
-        ncollide3d::procedural::TriMesh,
-        scene::SceneNode,
-        window::Window,
+        camera::OrbitCamera3d,
+        glamx::{Vec2, Vec3},
+        prelude::GpuMesh3d,
+        scene::SceneNode3d,
     },
     std::{
+        cell::RefCell,
         fmt::{Display, Formatter},
         hash::Hash,
+        rc::Rc,
         vec,
     },
 };
@@ -150,54 +151,52 @@ impl Puzzle for Pyraminx {
         &self.faces
     }
 
-    fn draw(&self, window: &mut Window) -> Vec<SceneNode> {
+    fn draw(&self, scene: &mut SceneNode3d) -> Vec<SceneNode3d> {
         fn draw_triangle(
-            window: &mut Window,
-            vertices: Vec<Point3<f32>>,
-            [r, g, b]: [f32; 3],
-        ) -> SceneNode {
-            let trimesh = TriMesh::new(
+            scene: &mut SceneNode3d,
+            vertices: Vec<Vec3>,
+            color: [f32; 4],
+        ) -> SceneNode3d {
+            let mesh = Rc::new(RefCell::new(GpuMesh3d::new(
                 vertices,
-                Some(vec![Vector3::z(), Vector3::z(), Vector3::z()]),
-                Some(vec![Point2::new(0.0, 1.0)]),
-                None,
-            );
-            let mut sticker = window.add_trimesh(trimesh, Vector3::new(3.0, 3.0, 3.0));
-            sticker.set_color(r, g, b);
-            sticker.enable_backface_culling(false);
-            sticker
+                vec![[0, 1, 2]],
+                Some(vec![Vec3::Z, Vec3::Z, Vec3::Z]),
+                Some(vec![Vec2::new(0.0, 1.0)]),
+                true,
+            )));
+            scene
+                .add_mesh(mesh, Vec3::new(3.0, 3.0, 3.0))
+                .set_color(color.into())
+                .enable_backface_culling(false)
         }
 
-        fn render_core(window: &mut Window, mut vertices: [Point3<f32>; 4]) {
+        fn render_core(scene: &mut SceneNode3d, mut vertices: [Vec3; 4]) {
             const CORE_MARGIN: f32 = 0.04;
-            let middle = Point3::from(
-                (vertices[0].coords + vertices[1].coords + vertices[2].coords + vertices[3].coords)
-                    / 4.,
-            );
+            let middle = Vec3::from((vertices[0] + vertices[1] + vertices[2] + vertices[3]) / 4.);
             for v in &mut vertices {
                 *v += (middle - *v) * CORE_MARGIN;
             }
 
             for i in 0..4 {
                 draw_triangle(
-                    window,
+                    scene,
                     vec![vertices[i], vertices[(i + 1) & 3], vertices[(i + 2) & 3]],
-                    [0., 0., 0.],
+                    [0., 0., 0., 1.0],
                 );
             }
         }
 
         fn render_pyra_face(
-            window: &mut Window,
-            v0: Point3<f32>,
-            v6: Point3<f32>,
-            v9: Point3<f32>,
+            scene: &mut SceneNode3d,
+            v0: Vec3,
+            v6: Vec3,
+            v9: Vec3,
             face: &[Color],
-        ) -> Vec<SceneNode> {
+        ) -> Vec<SceneNode3d> {
             let v1 = v0 + (v6 - v0) / 3.0;
             let v2 = v0 + (v9 - v0) / 3.0;
             let v3 = v0 + (v6 - v0) * 2.0 / 3.0;
-            let v4 = Point3::from((v0.coords + v9.coords + v6.coords) / 3.);
+            let v4 = Vec3::from((v0 + v9 + v6) / 3.);
             let v5 = v0 + (v9 - v0) * 2.0 / 3.0;
             let v7 = v9 + (v6 - v9) * 2.0 / 3.0;
             let v8 = v9 + (v6 - v9) / 3.0;
@@ -217,33 +216,32 @@ impl Puzzle for Pyraminx {
             .zip(face)
             .map(|(mut triplet, sticker)| {
                 const STICKER_MARGIN: f32 = 0.1;
-                let middle =
-                    Point3::from((triplet[0].coords + triplet[1].coords + triplet[2].coords) / 3.);
+                let middle = Vec3::from((triplet[0] + triplet[1] + triplet[2]) / 3.);
                 for v in &mut triplet {
                     *v += (middle - *v) * STICKER_MARGIN;
                 }
-                draw_triangle(window, triplet, sticker.as_rgb())
+                draw_triangle(scene, triplet, sticker.as_rgba())
             })
             .collect()
         }
 
-        let v1 = Point3::new(-0.5, -0.5, -0.5);
-        let v2 = Point3::new(0.5, -0.5, 0.5);
-        let v3 = Point3::new(-0.5, 0.5, 0.5);
-        let v4 = Point3::new(0.5, 0.5, -0.5);
+        let v1 = Vec3::new(-0.5, -0.5, -0.5);
+        let v2 = Vec3::new(0.5, -0.5, 0.5);
+        let v3 = Vec3::new(-0.5, 0.5, 0.5);
+        let v4 = Vec3::new(0.5, 0.5, -0.5);
 
-        render_core(window, [v1, v2, v3, v4]);
+        render_core(scene, [v1, v2, v3, v4]);
         [
-            render_pyra_face(window, v4, v3, v2, self.get_face(0)),
-            render_pyra_face(window, v4, v2, v1, self.get_face(1)),
-            render_pyra_face(window, v4, v1, v3, self.get_face(2)),
-            render_pyra_face(window, v3, v1, v2, self.get_face(3)),
+            render_pyra_face(scene, v4, v3, v2, self.get_face(0)),
+            render_pyra_face(scene, v4, v2, v1, self.get_face(1)),
+            render_pyra_face(scene, v4, v1, v3, self.get_face(2)),
+            render_pyra_face(scene, v3, v1, v2, self.get_face(3)),
         ]
         .concat()
     }
 
-    fn default_cam(&self) -> ArcBall {
-        ArcBall::new(Point3::new(0.5, 0.5, -0.5), Point3::new(0., 0., 0.))
+    fn default_cam(&self) -> OrbitCamera3d {
+        OrbitCamera3d::new(Vec3::new(0.5, 0.5, -0.5), Vec3::new(0., 0., 0.))
     }
 
     fn available_moves(&self) -> Vec<Move> {

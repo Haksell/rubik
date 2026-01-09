@@ -2,13 +2,14 @@ use {
     super::WINDOW_SIZE,
     crate::r#move::Move,
     kiss3d::{
-        nalgebra::{Point2, Point3},
+        color::{LIME, RED},
+        glamx::Vec2,
         text::Font,
         window::Window,
     },
 };
 
-const TEXT_SCALE: f32 = 100.0;
+const TEXT_SCALE: f32 = 50.0;
 
 fn display_size(text: &str) -> f32 {
     text.chars()
@@ -48,38 +49,28 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
 
     text.lines().enumerate().for_each(|(i, line)| {
         let starty = i as f32 * line_height;
-        let centerx = ((WINDOW_SIZE * 2) as f32 - display_size(line)) / 2.0;
+        let centerx = ((WINDOW_SIZE) as f32 - display_size(line)) / 2.0;
         if i == cur_line {
             window.draw_text(
                 &line[..idx - char_sum],
-                &Point2::new(centerx, starty),
+                Vec2::new(centerx, starty),
                 TEXT_SCALE,
                 &font,
-                &Point3::new(0.0, 1.0, 0.0),
+                LIME,
             );
 
             let startx = display_size(&line[..idx - char_sum]);
 
             window.draw_text(
                 &line[idx - char_sum..],
-                &Point2::new(centerx + startx, starty),
+                Vec2::new(centerx + startx, starty),
                 TEXT_SCALE,
                 &font,
-                &Point3::new(1.0, 0.0, 0.0),
+                RED,
             );
         } else {
-            let color = if i < cur_line {
-                Point3::new(0.0, 1.0, 0.0)
-            } else {
-                Point3::new(1.0, 0.0, 0.0)
-            };
-            window.draw_text(
-                line,
-                &Point2::new(centerx, starty),
-                TEXT_SCALE,
-                &font,
-                &color,
-            );
+            let color = if i < cur_line { LIME } else { RED };
+            window.draw_text(&line, Vec2::new(centerx, starty), TEXT_SCALE, &font, color);
             char_sum += line.chars().count() + 1;
         }
     });
@@ -97,7 +88,7 @@ pub fn karaoke_format(moves: &[Move]) -> String {
                 move_str.insert(0, ' ');
             }
             let mut move_display_size = display_size(&move_str);
-            if chars_width + move_display_size > (WINDOW_SIZE * 2 - 5) as f32 {
+            if chars_width + move_display_size > (WINDOW_SIZE - 5) as f32 {
                 move_str.insert(0, '\n');
                 if move_str[1..].starts_with(' ') {
                     move_str.remove(1);

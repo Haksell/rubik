@@ -65,8 +65,8 @@ impl Move {
     }
 
     pub fn choice(moves: &[Self]) -> Self {
-        use rand::prelude::*;
-        *moves.choose(&mut thread_rng()).unwrap()
+        use rand::{prelude::*, rng};
+        *moves.choose(&mut rng()).unwrap()
     }
 
     #[must_use]
