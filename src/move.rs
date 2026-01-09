@@ -53,7 +53,7 @@ impl Move {
         } else if i > 11 {
             i %= 12;
         }
-        Move::try_from(i).unwrap()
+        Self::try_from(i).unwrap()
     }
 
     pub fn same_face(&self, move_: &Self) -> bool {
@@ -69,28 +69,29 @@ impl Move {
         *moves.choose(&mut thread_rng()).unwrap()
     }
 
-    pub fn rotate_y(&self) -> Self {
+    #[must_use]
+    pub const fn rotate_y(&self) -> Self {
         match self {
-            Move::F => Move::R,
-            Move::R => Move::B,
-            Move::B => Move::L,
-            Move::L => Move::F,
-            Move::F2 => Move::R2,
-            Move::R2 => Move::B2,
-            Move::B2 => Move::L2,
-            Move::L2 => Move::F2,
-            Move::F3 => Move::R3,
-            Move::R3 => Move::B3,
-            Move::B3 => Move::L3,
-            Move::L3 => Move::F3,
+            Self::F => Self::R,
+            Self::R => Self::B,
+            Self::B => Self::L,
+            Self::L => Self::F,
+            Self::F2 => Self::R2,
+            Self::R2 => Self::B2,
+            Self::B2 => Self::L2,
+            Self::L2 => Self::F2,
+            Self::F3 => Self::R3,
+            Self::R3 => Self::B3,
+            Self::B3 => Self::L3,
+            Self::L3 => Self::F3,
             _ => *self,
         }
     }
 
-    pub fn format_sequence(sequence: &Vec<Move>) -> String {
+    pub fn format_sequence(sequence: &[Self]) -> String {
         sequence
             .iter()
-            .map(|move_| format!("{:?}", move_))
+            .map(|move_| format!("{move_:?}"))
             .collect::<Vec<String>>()
             .join(" ")
     }
@@ -101,24 +102,24 @@ impl TryFrom<u8> for Move {
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
-            0 => Ok(Move::F),
-            1 => Ok(Move::R),
-            2 => Ok(Move::U),
-            3 => Ok(Move::B),
-            4 => Ok(Move::L),
-            5 => Ok(Move::D),
-            6 => Ok(Move::F2),
-            7 => Ok(Move::R2),
-            8 => Ok(Move::U2),
-            9 => Ok(Move::B2),
-            10 => Ok(Move::L2),
-            11 => Ok(Move::D2),
-            12 => Ok(Move::F3),
-            13 => Ok(Move::R3),
-            14 => Ok(Move::U3),
-            15 => Ok(Move::B3),
-            16 => Ok(Move::L3),
-            17 => Ok(Move::D3),
+            0 => Ok(Self::F),
+            1 => Ok(Self::R),
+            2 => Ok(Self::U),
+            3 => Ok(Self::B),
+            4 => Ok(Self::L),
+            5 => Ok(Self::D),
+            6 => Ok(Self::F2),
+            7 => Ok(Self::R2),
+            8 => Ok(Self::U2),
+            9 => Ok(Self::B2),
+            10 => Ok(Self::L2),
+            11 => Ok(Self::D2),
+            12 => Ok(Self::F3),
+            13 => Ok(Self::R3),
+            14 => Ok(Self::U3),
+            15 => Ok(Self::B3),
+            16 => Ok(Self::L3),
+            17 => Ok(Self::D3),
             _ => Err("Moves are from 0 to 17 included"),
         }
     }
@@ -139,8 +140,10 @@ impl TryFrom<(Key, Modifiers)> for Move {
             _ => Err("Invalid key"),
         };
 
-        if move_.is_ok() && mods.contains(Modifiers::Shift) {
-            Ok(move_.unwrap().opposite())
+        if let Ok(move_) = move_
+            && mods.contains(Modifiers::Shift)
+        {
+            Ok(move_.opposite())
         } else {
             move_
         }
@@ -150,32 +153,32 @@ impl TryFrom<(Key, Modifiers)> for Move {
 impl Debug for Move {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         let s = match self {
-            Move::F => "F",
-            Move::R => "R",
-            Move::U => "U",
-            Move::B => "B",
-            Move::L => "L",
-            Move::D => "D",
-            Move::F2 => "F2",
-            Move::R2 => "R2",
-            Move::U2 => "U2",
-            Move::B2 => "B2",
-            Move::L2 => "L2",
-            Move::D2 => "D2",
-            Move::F3 => "F'",
-            Move::R3 => "R'",
-            Move::U3 => "U'",
-            Move::B3 => "B'",
-            Move::L3 => "L'",
-            Move::D3 => "D'",
-            Move::TR => "r",
-            Move::TU => "u",
-            Move::TB => "b",
-            Move::TL => "l",
-            Move::TR2 => "r'",
-            Move::TU2 => "u'",
-            Move::TB2 => "b'",
-            Move::TL2 => "l'",
+            Self::F => "F",
+            Self::R => "R",
+            Self::U => "U",
+            Self::B => "B",
+            Self::L => "L",
+            Self::D => "D",
+            Self::F2 => "F2",
+            Self::R2 => "R2",
+            Self::U2 => "U2",
+            Self::B2 => "B2",
+            Self::L2 => "L2",
+            Self::D2 => "D2",
+            Self::F3 => "F'",
+            Self::R3 => "R'",
+            Self::U3 => "U'",
+            Self::B3 => "B'",
+            Self::L3 => "L'",
+            Self::D3 => "D'",
+            Self::TR => "r",
+            Self::TU => "u",
+            Self::TB => "b",
+            Self::TL => "l",
+            Self::TR2 => "r'",
+            Self::TU2 => "u'",
+            Self::TB2 => "b'",
+            Self::TL2 => "l'",
         };
         write!(f, "{s}")
     }
