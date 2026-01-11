@@ -56,6 +56,15 @@ pub trait Puzzle: Display + Send {
 
     fn draw(&self, scene: &mut SceneNode3d) -> Vec<SceneNode3d>;
 
+    fn refresh_stickers(&self, stickers: &mut [SceneNode3d]) {
+        stickers
+            .iter_mut()
+            .zip(self.get_faces().iter())
+            .for_each(|(node, &color)| {
+                node.set_color(color.as_rgba().into());
+            });
+    }
+
     fn default_cam(&self) -> OrbitCamera3d;
 
     fn opposite_move(&self, move_: Move) -> Move;

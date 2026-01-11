@@ -13,15 +13,6 @@ use {
 
 const WINDOW_SIZE: u32 = 1000;
 
-fn refresh_stickers(stickers: &mut [SceneNode3d], puzzle: &dyn Puzzle) {
-    stickers
-        .iter_mut()
-        .zip(puzzle.get_faces().iter())
-        .for_each(|(node, &color)| {
-            node.set_color(color.as_rgba().into());
-        });
-}
-
 // TODO: flag for playground mode
 pub async fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &[Move], karaoke: bool) {
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE).await;
@@ -57,14 +48,14 @@ pub async fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &[Move], karaoke: bo
                             i -= 1;
                             let inverse_move = puzzle.opposite_move(moves[i]);
                             puzzle.do_move(inverse_move);
-                            refresh_stickers(&mut stickers, &**puzzle);
+                            puzzle.refresh_stickers(&mut stickers);
                         }
                     }
                     Key::Right => {
                         if i < moves.len() {
                             puzzle.do_move(moves[i]);
                             i += 1;
-                            refresh_stickers(&mut stickers, &**puzzle);
+                            puzzle.refresh_stickers(&mut stickers);
                         }
                     }
                     _ => {}
