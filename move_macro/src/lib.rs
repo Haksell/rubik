@@ -14,7 +14,7 @@ pub fn moves(input: TokenStream) -> TokenStream {
     let expanded = quote! {
         {
             use crate::puzzles::Puzzle as _;
-            let puzzle = crate::puzzles::Cube::<3>::new(); // :( :( :( :(
+            let puzzle = crate::puzzles::Cube::<3>::new();
             let mut moves_vec = Vec::new();
             #(
                 moves_vec.push(puzzle.parse_move(#moves).expect("moves! failed"));

@@ -1,5 +1,3 @@
-// TODO: less pub
-
 pub mod color;
 pub mod r#move;
 pub mod puzzles;
