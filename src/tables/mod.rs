@@ -1,6 +1,7 @@
 mod file_operations;
 mod generate_table;
 
+#[expect(clippy::pub_use)]
 pub use {
     file_operations::{read_moves, write_moves},
     generate_table::generate_table,

@@ -4,9 +4,10 @@ use {
         reduce_moves,
     },
     crate::{
-        Cube, EDGES, Puzzle as _,
         color::Color,
         r#move::Move,
+        puzzles::{Cube, Puzzle as _},
+        sticker::EDGES,
         tables::{FILE_CROSSES, read_moves},
         trigger::{TRIGGERS_BY_SLOT, Trigger},
     },
@@ -129,7 +130,8 @@ fn solve_pair(cube: &Cube<3>, triggers: &[Trigger]) -> Vec<Trigger> {
 impl Cube<3> {
     #[cfg(test)]
     fn is_cross_solved(&self) -> bool {
-        use crate::Sticker::*;
+        use crate::sticker::Sticker::*;
+
         self.faces[DF as usize] == Color::YELLOW
             && self.faces[DR as usize] == Color::YELLOW
             && self.faces[DB as usize] == Color::YELLOW
@@ -186,7 +188,7 @@ impl Cube<3> {
     }
 
     fn is_pair_solved(&self, index: usize) -> bool {
-        use crate::Sticker::*;
+        use crate::sticker::Sticker::*;
 
         match index {
             0 => {
@@ -225,7 +227,7 @@ impl Cube<3> {
 #[cfg(test)]
 mod tests {
     use super::{NUM_CROSSES, cfop, solve_cross};
-    use crate::{Cube, Puzzle as _, cub3, r#move::Move};
+    use crate::{cub3, r#move::Move, puzzles::Puzzle as _};
 
     #[test]
     fn test_is_cross_solved() {

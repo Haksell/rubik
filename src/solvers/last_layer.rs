@@ -1,5 +1,9 @@
 use {
-    crate::{Cube, Puzzle as _, color::Color, r#move::Move},
+    crate::{
+        color::Color,
+        r#move::Move,
+        puzzles::{Cube, Puzzle as _},
+    },
     move_macro::moves,
 };
 
@@ -33,7 +37,7 @@ pub(super) fn solve_last_layer_step(
 }
 
 pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
-    let auf = match cube.get_faces()[crate::Sticker::FU as usize] {
+    let auf = match cube.get_faces()[crate::sticker::Sticker::FU as usize] {
         Color::GREEN => vec![],
         Color::ORANGE => vec![Move::U],
         Color::BLUE => vec![Move::U2],
@@ -48,7 +52,7 @@ pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
 
 #[expect(clippy::unreadable_literal)]
 pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
-    use crate::Sticker::*;
+    use crate::sticker::Sticker::*;
 
     let faces = cube.get_faces();
     match (((faces[BUL as usize] == Color::WHITE) as u16) << 8)
@@ -124,7 +128,7 @@ pub(super) fn oll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
 }
 
 pub(super) fn pll_matcher(cube: &Cube<3>) -> Option<Vec<Move>> {
-    use crate::Sticker::*;
+    use crate::sticker::Sticker::*;
 
     let faces = cube.get_faces();
     let reference_sticker = faces[FLU as usize].side();

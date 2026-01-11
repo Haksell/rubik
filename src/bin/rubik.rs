@@ -69,8 +69,9 @@ async fn main() {
 mod tests {
     use {
         rubik::{
-            Cube, Puzzle as _, cub3,
+            cub3,
             r#move::Move,
+            puzzles::Puzzle as _,
             solvers::{premover, zz},
         },
         serial_test::serial,

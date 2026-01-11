@@ -12,6 +12,7 @@ use {
 static MOVE_CACHE: LazyLock<Mutex<HashMap<String, Arc<Vec<Move>>>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
 
+#[expect(clippy::uninit_vec)] // TODO: remove
 pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
     let mut cache = MOVE_CACHE.lock().unwrap();
 

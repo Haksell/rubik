@@ -1,6 +1,7 @@
 mod cube;
 mod pyraminx;
 
+#[expect(clippy::pub_use)]
 pub use {cube::Cube, pyraminx::Pyraminx};
 
 use {

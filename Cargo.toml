@@ -31,6 +31,9 @@ suspicious = { level = "deny", priority = -1 }
 cargo_common_metadata = "allow"
 multiple_crate_versions = "allow"
 
+# correctness
+useless_attribute = "allow" # seems buggy for pub_use
+
 # nursery
 # Annoying, but required by kiss3d 0.39
 future_not_send = "allow"

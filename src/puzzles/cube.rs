@@ -2,9 +2,9 @@
 
 use {
     crate::{
-        Puzzle,
         color::Color,
         r#move::Move,
+        puzzles::Puzzle,
         solvers::{DFSAble, iddfs, premover, zz},
         trigger::Trigger,
     },
@@ -46,14 +46,14 @@ impl Ord for Cube<3> {
 #[macro_export]
 macro_rules! cub2 {
     () => {
-        Cube::<2>::new()
+        $crate::puzzles::Cube::<2>::new()
     };
 }
 
 #[macro_export]
 macro_rules! cub3 {
     () => {
-        Cube::<3>::new()
+        $crate::puzzles::Cube::<3>::new()
     };
 }
 
@@ -655,8 +655,7 @@ impl DFSAble for Cube<2> {
 
 #[cfg(test)]
 mod tests {
-    use super::Cube;
-    use crate::{Puzzle as _, r#move::Move};
+    use crate::{r#move::Move, puzzles::Puzzle as _};
 
     #[test]
     fn test_is_solved_generic() {

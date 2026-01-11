@@ -4,10 +4,10 @@ use {
         reduce_moves,
     },
     crate::{
-        Cube, EDGES, Puzzle as _, Sticker,
         color::Color,
         r#move::Move,
-        sticker::CORNERS,
+        puzzles::{Cube, Puzzle as _},
+        sticker::{CORNERS, EDGES, Sticker},
         tables::{FILE_EO_LINES, FILE_ZZ_LEFT, FILE_ZZ_RIGHT, read_moves},
     },
 };
@@ -81,7 +81,7 @@ impl Cube<3> {
     }
 
     pub fn is_eo_line_solved(&self) -> bool {
-        use Sticker::*;
+        use crate::sticker::Sticker::*;
 
         // TODO: remove 2 redundant edge checks
         EDGES.iter().all(|&(s1, s2)| self.is_edge_oriented(s1, s2))
@@ -115,7 +115,8 @@ impl Cube<3> {
 
     pub fn is_zz_left_solved(&self) -> bool {
         // We could eliminate some checks by assuming the EO-line is solved
-        use Sticker::*;
+        use crate::sticker::Sticker::*;
+
         self.faces[FL as usize] == Color::GREEN
             && self.faces[LF as usize] == Color::ORANGE
             && self.faces[FDL as usize] == Color::GREEN
@@ -187,7 +188,8 @@ impl Cube<3> {
     }
 
     pub fn is_zz_right_solved(&self) -> bool {
-        use Sticker::*;
+        use crate::sticker::Sticker::*;
+
         self.faces[FR as usize] == Color::GREEN
             && self.faces[RF as usize] == Color::RED
             && self.faces[FRD as usize] == Color::GREEN
@@ -271,8 +273,9 @@ mod tests {
     use {
         super::{NUM_EO_LINES, NUM_ZZ_LEFT, zz},
         crate::{
-            Cube, Puzzle as _, cub3,
+            cub3,
             r#move::{MOVES_RUL, Move},
+            puzzles::Puzzle as _,
         },
     };
 

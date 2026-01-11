@@ -1,20 +1,22 @@
-mod cfop;
-mod iddfs;
-mod kociemba;
-mod last_layer;
-mod zz;
+pub mod cfop;
+pub mod iddfs;
+pub mod kociemba;
+pub mod last_layer;
+pub mod zz;
 
-pub use {
-    cfop::{NUM_CROSSES, cfop},
-    iddfs::{DFSAble, iddfs},
-    kociemba::kociemba,
-    zz::{NUM_EO_LINES, NUM_ZZ_LEFT, NUM_ZZ_RIGHT, zz},
-};
+#[expect(clippy::pub_use)]
+pub use {cfop::cfop, iddfs::iddfs, kociemba::kociemba, zz::zz};
 
 use crate::{
-    Cube, Puzzle as _,
     r#move::{MOVES, Move},
+    puzzles::{Cube, Puzzle},
 };
+
+pub trait DFSAble: Puzzle {
+    const ALLOWED_MOVES: &'static [Move];
+
+    fn presolve(&mut self) -> Vec<Move>;
+}
 
 // TODO: depends on PyraMove or CubeMove
 fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {

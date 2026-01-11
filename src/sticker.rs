@@ -1,3 +1,5 @@
+// TODO: put closer to Cube<3>?
+
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Sticker {

@@ -4,6 +4,9 @@ validate:
 	@$(MAKE) -s lint
 	@$(MAKE) -s test
 
+format:
+	@cargo fmt --all
+
 check:
 	@cargo check --workspace --all-targets
 
@@ -12,6 +15,3 @@ lint:
 
 test:
 	@cargo test --release --workspace --all-targets
-
-format:
-	@cargo fmt --all

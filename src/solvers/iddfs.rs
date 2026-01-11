@@ -1,10 +1,4 @@
-use crate::{Puzzle, r#move::Move};
-
-pub trait DFSAble: Puzzle {
-    const ALLOWED_MOVES: &'static [Move];
-
-    fn presolve(&mut self) -> Vec<Move>;
-}
+use crate::{r#move::Move, solvers::DFSAble};
 
 pub fn iddfs<T: DFSAble>(mut start: T) -> Vec<Move> {
     fn search<T: DFSAble>(

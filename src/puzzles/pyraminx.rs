@@ -1,8 +1,8 @@
 use {
     crate::{
-        Puzzle,
         color::Color,
         r#move::Move,
+        puzzles::Puzzle,
         solvers::{DFSAble, iddfs},
     },
     kiss3d::{
