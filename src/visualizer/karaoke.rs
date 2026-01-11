@@ -51,18 +51,20 @@ pub fn draw_karaoke(text: &str, moves_done: usize, window: &mut Window) {
         let start_y = i as f32 * line_height;
         let centerx = ((WINDOW_SIZE) as f32 - display_size(line)) / 2.0;
         if i == cur_line {
+            let (start_line, end_line) = line.split_at(idx - char_sum);
+
             window.draw_text(
-                &line[..idx - char_sum],
+                start_line,
                 Vec2::new(centerx, start_y),
                 TEXT_SCALE,
                 &font,
                 LIME,
             );
 
-            let start_x = display_size(&line[..idx - char_sum]);
+            let start_x = display_size(start_line);
 
             window.draw_text(
-                &line[idx - char_sum..],
+                end_line,
                 Vec2::new(centerx + start_x, start_y),
                 TEXT_SCALE,
                 &font,
@@ -90,7 +92,7 @@ pub fn karaoke_format(moves: &[Move]) -> String {
             let mut move_display_size = display_size(&move_str);
             if chars_width + move_display_size > (WINDOW_SIZE - 5) as f32 {
                 move_str.insert(0, '\n');
-                if move_str[1..].starts_with(' ') {
+                if move_str.chars().nth(1) == Some(' ') {
                     move_str.remove(1);
                     move_display_size = display_size(&move_str);
                 }

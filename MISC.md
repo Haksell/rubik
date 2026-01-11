@@ -64,7 +64,6 @@ Lints to fix:
 - ptr_as_ptr
 - pub_use
 - rc_buffer
-- return_self_not_must_use
 - string_slice
 - too_many_lines
 - undocumented_unsafe_blocks
