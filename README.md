@@ -11,6 +11,7 @@
 - related:
   - [ ] random move scrambler without redundant moves
   - [ ] better `reduce_moves` (`R L R L'`-> `R2`)
+- `moves!` -> `&'static [Move]`
 
 ## features
 
