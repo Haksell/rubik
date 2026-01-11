@@ -18,7 +18,7 @@ pub trait Puzzle: Display + Send {
 
     fn is_solved(&self) -> bool;
 
-    fn get_faces(&self) -> &Vec<Color>;
+    fn get_faces(&self) -> &[Color];
 
     fn do_move(&mut self, move_: Move);
 

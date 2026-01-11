@@ -417,7 +417,7 @@ impl<const N: usize> Puzzle for Cube<N> {
         }
     }
 
-    fn get_faces(&self) -> &Vec<Color> {
+    fn get_faces(&self) -> &[Color] {
         &self.faces
     }
 

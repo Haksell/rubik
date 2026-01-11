@@ -147,7 +147,7 @@ impl Puzzle for Pyraminx {
             .all(|(i, &col)| col == ORDER[i / 9])
     }
 
-    fn get_faces(&self) -> &Vec<Color> {
+    fn get_faces(&self) -> &[Color] {
         &self.faces
     }
 

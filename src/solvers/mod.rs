@@ -19,7 +19,7 @@ pub trait DFSAble: Puzzle {
 }
 
 // TODO: depends on PyraMove or CubeMove
-fn reduce_moves(moves: &Vec<Move>) -> Vec<Move> {
+fn reduce_moves(moves: &[Move]) -> Vec<Move> {
     // TODO: handle L R L'
     let mut simplified: Vec<Move> = vec![];
     for &move_ in moves {
