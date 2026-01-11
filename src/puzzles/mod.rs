@@ -42,7 +42,10 @@ pub trait Puzzle: Display + Send {
 
         while sequence.len() < iterations {
             let move_ = *self.rand_scramble_moves().choose(&mut rng()).unwrap();
-            if !sequence.is_empty() && move_.same_face(sequence.last().unwrap()) {
+            if sequence
+                .last()
+                .is_some_and(|last_move| last_move.same_face(&move_))
+            {
                 continue;
             }
             self.do_move(move_);
