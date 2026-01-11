@@ -248,8 +248,8 @@ impl Puzzle for Pyraminx {
         16
     }
 
-    fn rand_scramble_moves(&self) -> Vec<Move> {
-        vec![
+    fn rand_scramble_moves(&self) -> &'static [Move] {
+        &[
             Move::R,
             Move::U,
             Move::B,

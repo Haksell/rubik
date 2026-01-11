@@ -545,39 +545,34 @@ impl<const N: usize> Puzzle for Cube<N> {
     }
 
     // TODO: remove once each puzzle has its own Move enum or trait or whatever
-    fn rand_scramble_moves(&self) -> Vec<Move> {
+    fn rand_scramble_moves(&self) -> &'static [Move] {
+        const MOVE_2X2: &[Move] = &[
+            Move::R,
+            Move::R2,
+            Move::R3,
+            Move::F,
+            Move::F2,
+            Move::F3,
+            Move::U,
+            Move::U2,
+            Move::U3,
+        ];
+
+        const MOVE_3X3: &[Move] = &[
+            Move::R,
+            Move::R2,
+            Move::R3,
+            Move::F,
+            Move::F2,
+            Move::F3,
+            Move::U,
+            Move::U2,
+            Move::U3,
+        ];
+
         match N {
-            2 => vec![
-                Move::R,
-                Move::R2,
-                Move::R3,
-                Move::F,
-                Move::F2,
-                Move::F3,
-                Move::U,
-                Move::U2,
-                Move::U3,
-            ],
-            3 => vec![
-                Move::R,
-                Move::R2,
-                Move::R3,
-                Move::F,
-                Move::F2,
-                Move::F3,
-                Move::U,
-                Move::U2,
-                Move::U3,
-                Move::D,
-                Move::D2,
-                Move::D3,
-                Move::L,
-                Move::L2,
-                Move::L3,
-                Move::B,
-                Move::B2,
-                Move::B3,
-            ],
+            2 => MOVE_2X2,
+            3 => MOVE_3X3,
             4.. => unimplemented!(),
             _ => unreachable!(),
         }

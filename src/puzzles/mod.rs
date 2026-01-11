@@ -22,7 +22,7 @@ pub trait Puzzle: Display + Send {
 
     fn do_move(&mut self, move_: Move);
 
-    fn rand_scramble_moves(&self) -> Vec<Move>; // TODO New vec every time :(
+    fn rand_scramble_moves(&self) -> &'static [Move];
 
     fn scramble(&mut self, sequence: &str) {
         for s in sequence.split_whitespace() {
