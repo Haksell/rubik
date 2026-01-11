@@ -12,7 +12,7 @@ use {
 static MOVE_CACHE: LazyLock<Mutex<HashMap<String, Arc<Vec<Move>>>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
 
-#[expect(clippy::uninit_vec)] // TODO: remove
+#[expect(clippy::significant_drop_tightening, clippy::unwrap_in_result)]
 pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
     let mut cache = MOVE_CACHE.lock().unwrap();
 
@@ -22,12 +22,11 @@ pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
 
     let mut file = File::open(filename)?;
     let file_size = file.metadata()?.len() as usize;
-    let mut moves = Vec::with_capacity(file_size);
+    let mut moves: Vec<Move> = Vec::with_capacity(file_size);
     unsafe {
         moves.set_len(file_size);
     }
-    let buffer =
-        unsafe { std::slice::from_raw_parts_mut(moves.as_mut_ptr() as *mut u8, file_size) };
+    let buffer = unsafe { std::slice::from_raw_parts_mut(moves.as_mut_ptr().cast(), file_size) };
     file.read_exact(buffer)?;
 
     let moves_arc = Arc::new(moves);
