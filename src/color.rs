@@ -39,7 +39,7 @@ impl Color {
             Self::RED => 1,
             Self::GREEN => 2,
             Self::ORANGE => 3,
-            _ => unimplemented!(),
+            _ => unreachable!(),
         }
     }
 

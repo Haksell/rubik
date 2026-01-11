@@ -31,10 +31,11 @@ suspicious = { level = "deny", priority = -1 }
 cargo_common_metadata = "allow"
 multiple_crate_versions = "allow"
 
-# nuresery
+# nursery
 # Annoying, but required by kiss3d 0.39
 future_not_send = "allow"
 option_if_let_else = "allow"
+suboptimal_flops = "allow"
 
 # pedantic
 cast_lossless = "allow"

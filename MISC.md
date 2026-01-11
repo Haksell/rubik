@@ -60,13 +60,8 @@ Commands:
 - `c ccl --workspace --all-targets -- -A warnings -D clippy::xxx`
 
 Lints to fix:
-- cognitive_complexity
 - ptr_as_ptr
 - pub_use
 - rc_buffer
-- string_slice
-- too_many_lines
 - undocumented_unsafe_blocks
-- unimplemented
-- unseparated_literal_suffix
 - unwrap_in_result
