@@ -61,8 +61,6 @@ Commands:
 
 Lints to fix:
 - cognitive_complexity
-- exit
-- future_not_send
 - ptr_as_ptr
 - pub_use
 - rc_buffer

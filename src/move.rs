@@ -46,6 +46,7 @@ impl Move {
     }
 
     // TODO: #[deprecated]
+    #[must_use]
     pub fn opposite(&self) -> Self {
         let mut i = self.as_int();
         if i < 6 {
