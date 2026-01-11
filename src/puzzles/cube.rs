@@ -568,6 +568,15 @@ impl<const N: usize> Puzzle for Cube<N> {
             Move::U,
             Move::U2,
             Move::U3,
+            Move::L,
+            Move::L2,
+            Move::L3,
+            Move::B,
+            Move::B2,
+            Move::B3,
+            Move::D,
+            Move::D2,
+            Move::D3,
         ];
 
         match N {
