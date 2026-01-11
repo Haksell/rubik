@@ -291,7 +291,7 @@ mod tests {
     fn test_solve_cross() {
         for _ in 0..10 {
             let mut cube = cub3!();
-            cube.rand_scramble(100);
+            cube.rand_scramble();
             let solution = solve_cross(&mut cube);
             assert!(cube.is_cross_solved());
             assert!(solution.len() <= 8);
@@ -302,7 +302,7 @@ mod tests {
     fn test_cfop_solves_cube() {
         for _ in 0..100 {
             let mut cube = cub3!();
-            let scramble = cube.rand_scramble(100);
+            let scramble = cube.rand_scramble();
             let solution = cfop(&mut cube);
             assert!(
                 cube.is_solved(),

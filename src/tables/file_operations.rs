@@ -3,7 +3,7 @@ use {
     std::{
         collections::HashMap,
         fs::{self, File},
-        io::{self, Read as _, Write as _},
+        io::{self, Write as _},
         path::Path,
         sync::{Arc, LazyLock, Mutex},
     },
@@ -20,23 +20,17 @@ pub fn read_moves(filename: &str) -> io::Result<Arc<[Move]>> {
         return Ok(Arc::clone(moves));
     }
 
-    let mut file = File::open(filename)?;
-    let file_size = file.metadata()?.len() as usize;
+    let mut bytes = std::mem::ManuallyDrop::new(std::fs::read(filename)?);
+    let ptr = bytes.as_mut_ptr().cast();
+    let len = bytes.len();
+    let cap = bytes.capacity();
 
-    // SAFETY NOTE: this assumes file_size is a multiple of size_of::<Move>()
-    let mut moves: Vec<Move> = Vec::with_capacity(file_size);
-    unsafe {
-        moves.set_len(file_size);
-    }
+    let moves: Arc<[Move]> =
+        Arc::from(unsafe { Vec::from_raw_parts(ptr, len, cap) }.into_boxed_slice());
 
-    let buffer = unsafe { std::slice::from_raw_parts_mut(moves.as_mut_ptr().cast(), file_size) };
+    cache.insert(filename.to_owned(), Arc::clone(&moves));
 
-    file.read_exact(buffer)?;
-
-    let moves_arc = Arc::from(moves.into_boxed_slice());
-    cache.insert(filename.to_owned(), Arc::clone(&moves_arc));
-
-    Ok(moves_arc)
+    Ok(moves)
 }
 
 pub fn write_moves(filename: &str, moves: &[Option<Move>]) -> io::Result<()> {

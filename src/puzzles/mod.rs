@@ -11,6 +11,7 @@ use {
     std::fmt::Display,
 };
 
+// TODO: each Puzzle should have its own Move and Sticker enums
 pub trait Puzzle: Display + Send {
     fn solve(&self) -> Option<Vec<Move>>;
 
@@ -20,7 +21,7 @@ pub trait Puzzle: Display + Send {
 
     fn do_move(&mut self, move_: Move);
 
-    fn available_moves(&self) -> Vec<Move>; // TODO New vec every time :(
+    fn rand_scramble_moves(&self) -> Vec<Move>; // TODO New vec every time :(
 
     fn scramble(&mut self, sequence: &str) {
         for s in sequence.split_whitespace() {
@@ -29,12 +30,17 @@ pub trait Puzzle: Display + Send {
         }
     }
 
-    fn rand_scramble(&mut self, iterations: usize) -> Vec<Move> {
+    fn rand_scramble_iterations(&self) -> usize;
+
+    fn rand_scramble(&mut self) -> Vec<Move> {
+        use rand::{prelude::*, rng};
+
         // TODO Better scrambler
         let mut sequence: Vec<Move> = Vec::new();
+        let iterations = self.rand_scramble_iterations();
 
         while sequence.len() < iterations {
-            let move_ = Move::choice(&self.available_moves());
+            let move_ = *self.rand_scramble_moves().choose(&mut rng()).unwrap();
             if !sequence.is_empty() && move_.same_face(sequence.last().unwrap()) {
                 continue;
             }

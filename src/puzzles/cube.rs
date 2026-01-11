@@ -82,7 +82,7 @@ impl<const N: usize> Cube<N> {
                 faces: self.faces.clone(),
             })
         } else {
-            Err("Cannot convert Cube<N> to Cube<3>: N is not 3")
+            Err("Cannot convert Cube<N> to Cube<2>: N is not 2")
         }
     }
 
@@ -385,29 +385,35 @@ impl<const N: usize> Puzzle for Cube<N> {
 
     // Kind of sucks, but we can't implement the same method for Cube<2> and Cube<N >= 3> without nightly
     fn is_solved(&self) -> bool {
-        if N == 2 {
-            self.faces[16] == self.faces[18]
-                && self.faces[17] == self.faces[18]
-                && self.faces[19] == self.faces[18]
-                && self.faces[20] == self.faces[23]
-                && self.faces[21] == self.faces[23]
-                && self.faces[22] == self.faces[23]
-                && self.faces[12] == self.faces[14]
-                && self.faces[13] == self.faces[14]
-                && self.faces[15] == self.faces[14]
-        } else {
-            const ORDER: [Color; 6] = [
-                Color::WHITE,
-                Color::RED,
-                Color::GREEN,
-                Color::YELLOW,
-                Color::ORANGE,
-                Color::BLUE,
-            ];
-            self.faces
-                .iter()
-                .enumerate()
-                .all(|(i, &col)| col == ORDER[i / (N * N)])
+        match N {
+            2 => {
+                // TODO: better once Sticker has its own Sticker
+                self.faces[16] == self.faces[18]
+                    && self.faces[17] == self.faces[18]
+                    && self.faces[19] == self.faces[18]
+                    && self.faces[20] == self.faces[23]
+                    && self.faces[21] == self.faces[23]
+                    && self.faces[22] == self.faces[23]
+                    && self.faces[12] == self.faces[14]
+                    && self.faces[13] == self.faces[14]
+                    && self.faces[15] == self.faces[14]
+            }
+            3 => {
+                const ORDER: [Color; 6] = [
+                    Color::WHITE,
+                    Color::RED,
+                    Color::GREEN,
+                    Color::YELLOW,
+                    Color::ORANGE,
+                    Color::BLUE,
+                ];
+                self.faces
+                    .iter()
+                    .enumerate()
+                    .all(|(i, &col)| col == ORDER[i / (N * N)])
+            }
+            4.. => unimplemented!(),
+            _ => unreachable!(),
         }
     }
 
@@ -529,18 +535,52 @@ impl<const N: usize> Puzzle for Cube<N> {
         OrbitCamera3d::new(Vec3::new(-2.5, 6.0, -6.0), Vec3::new(1.75, 1.5, 1.5))
     }
 
-    fn available_moves(&self) -> Vec<Move> {
-        vec![
-            Move::R,
-            Move::R2,
-            Move::R3,
-            Move::F,
-            Move::F2,
-            Move::F3,
-            Move::U,
-            Move::U2,
-            Move::U3,
-        ]
+    fn rand_scramble_iterations(&self) -> usize {
+        match N {
+            2 => 16,
+            3 => 32,
+            4.. => unimplemented!(),
+            _ => unreachable!(),
+        }
+    }
+
+    // TODO: remove once each puzzle has its own Move enum or trait or whatever
+    fn rand_scramble_moves(&self) -> Vec<Move> {
+        match N {
+            2 => vec![
+                Move::R,
+                Move::R2,
+                Move::R3,
+                Move::F,
+                Move::F2,
+                Move::F3,
+                Move::U,
+                Move::U2,
+                Move::U3,
+            ],
+            3 => vec![
+                Move::R,
+                Move::R2,
+                Move::R3,
+                Move::F,
+                Move::F2,
+                Move::F3,
+                Move::U,
+                Move::U2,
+                Move::U3,
+                Move::D,
+                Move::D2,
+                Move::D3,
+                Move::L,
+                Move::L2,
+                Move::L3,
+                Move::B,
+                Move::B2,
+                Move::B3,
+            ],
+            4.. => unimplemented!(),
+            _ => unreachable!(),
+        }
     }
 
     fn opposite_move(&self, move_: Move) -> Move {

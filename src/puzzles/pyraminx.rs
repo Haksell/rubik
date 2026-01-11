@@ -244,7 +244,11 @@ impl Puzzle for Pyraminx {
         OrbitCamera3d::new(Vec3::new(0.5, 0.5, -0.5), Vec3::new(0., 0., 0.))
     }
 
-    fn available_moves(&self) -> Vec<Move> {
+    fn rand_scramble_iterations(&self) -> usize {
+        16
+    }
+
+    fn rand_scramble_moves(&self) -> Vec<Move> {
         vec![
             Move::R,
             Move::U,

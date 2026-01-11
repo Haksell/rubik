@@ -396,7 +396,7 @@ mod tests {
     fn test_zz_solves_cube() {
         for _ in 0..100 {
             let mut cube = cub3!();
-            let scramble = cube.rand_scramble(100);
+            let scramble = cube.rand_scramble();
             let solution = zz(&mut cube);
             assert!(
                 cube.is_solved(),

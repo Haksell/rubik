@@ -34,7 +34,7 @@ async fn main() {
     if let Some(sequence) = args.scramble {
         puzzle.scramble(&sequence);
     } else {
-        let sequence = puzzle.rand_scramble(15);
+        let sequence = puzzle.rand_scramble();
         println!(
             "No scramble sequence provided, using the following one:\n{}",
             Move::format_sequence(&sequence)
@@ -78,12 +78,10 @@ mod tests {
     };
 
     fn test_performances_n(n: usize) {
-        const SCRAMBLE_LENGTH: usize = 200;
-
         let mut total_moves = 0;
         for _ in 0..n {
             let mut cube = cub3!();
-            let _: Vec<Move> = cube.rand_scramble(SCRAMBLE_LENGTH);
+            let _: Vec<Move> = cube.rand_scramble();
             // println!("{cube}");
             let solution = premover(&mut cube, zz);
             assert!(cube.is_solved());

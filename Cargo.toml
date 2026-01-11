@@ -89,6 +89,8 @@ single_call_fn = "allow"
 std_instead_of_alloc = "allow"
 std_instead_of_core = "allow"
 undocumented_unsafe_blocks = "allow"
+# TODO: remove before push
+unimplemented = "allow"
 unreachable = "allow"
 unwrap_used = "allow"
 wildcard_enum_match_arm = "allow"
