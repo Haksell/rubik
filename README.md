@@ -2,6 +2,7 @@
 
 ## todo
 
+- [ ] Move/Sticker for each puzzle + associated constants
 - [ ] 3x3 visualisation (vegret)
 - [ ] pyraminx moves + iddfs + visualisation (vegret)
 - [ ] big cube moves + visualisation (vegret)
@@ -20,11 +21,11 @@
 - [ ] 3x3x3 thistlethwaite/kloosterman/pochmann solver (axbrisse)
 - [ ] 3x3x3 reid solver (axbrisse)
 - [ ] 3x3x3 kociemba solver (axbrisse)
-- [ ] 3x3x3 korf solver
+- [ ] 3x3x3 korf solver (vegret)
 - [x] 2x2x2 iddfs solver
 - [x] pyraminx iddfs solver
-- [ ] big cube solver
-- [ ] megaminx solver
+- [ ] big cube solver (axbrisse)
+- [ ] megaminx solver (axbrisse)
 - [ ] step explainer (vegret)
 - [x] random move scrambler
 - [ ] random state scrambler for 2x2/3x3(requires kociemba)/pyra (vegret)
