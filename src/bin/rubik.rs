@@ -1,6 +1,10 @@
 use {
     clap::{Parser, ValueEnum},
-    rubik::{r#move::Move, puzzles::PuzzleArg, visualizer::visualize},
+    rubik::{
+        cub2,
+        r#move::Move,
+        puzzles::{Puzzle as _, PuzzleArg},
+    },
 };
 
 // TODO: help messages
@@ -29,39 +33,46 @@ struct Args {
 #[kiss3d::main]
 async fn main() {
     let args = Args::parse();
-    let mut puzzle = args.puzzle.build();
 
-    if let Some(sequence) = args.scramble {
-        puzzle.scramble(&sequence);
-    } else {
-        let sequence = puzzle.rand_scramble();
-        println!(
-            "No scramble sequence provided, using the following one:\n{}",
-            Move::format_sequence(&sequence)
-        );
-    }
+    match args.puzzle {
+        PuzzleArg::Cube2 => {
+            let mut puzzle = cub2!();
 
-    println!("{puzzle}");
+            if let Some(sequence) = args.scramble {
+                puzzle.scramble(&sequence);
+            } else {
+                let sequence = puzzle.rand_scramble();
+                println!(
+                    "No scramble sequence provided, using the following one:\n{}",
+                    Move::format_sequence(&sequence)
+                );
+            }
 
-    let solution = puzzle
-        .solve()
-        .expect("a valid solution should always be found");
+            println!("{puzzle}");
 
-    if solution.is_empty() {
-        println!("The puzzle was already solved!");
-    } else {
-        println!("Solution of {} moves found:", solution.len());
-        println!("{}", Move::format_sequence(&solution));
-    }
+            let solution = puzzle
+                .solve()
+                .expect("a valid solution should always be found");
 
-    if args.mode != Mode::Cli {
-        visualize(
-            &mut puzzle,
-            &solution,
-            args.mode == Mode::Karaoke,
-            // TODO: no playground bool
-        )
-        .await;
+            if solution.is_empty() {
+                println!("The puzzle was already solved!");
+            } else {
+                println!("Solution of {} moves found:", solution.len());
+                println!("{}", Move::format_sequence(&solution));
+            }
+
+            if args.mode != Mode::Cli {
+                puzzle
+                    .visualize(
+                        &solution,
+                        args.mode == Mode::Karaoke,
+                        // TODO: no playground bool
+                    )
+                    .await;
+            }
+        }
+        PuzzleArg::Cube3 => todo!(),
+        PuzzleArg::Pyraminx => todo!(),
     }
 }
 

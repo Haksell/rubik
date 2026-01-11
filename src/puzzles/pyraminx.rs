@@ -2,7 +2,7 @@ use {
     crate::{
         color::Color,
         r#move::Move,
-        puzzles::Puzzle,
+        puzzles::{MoveTrait, Puzzle},
         solvers::{DFSAble, iddfs},
     },
     kiss3d::{
@@ -56,7 +56,13 @@ impl Default for Pyraminx {
     }
 }
 
+pub enum PyraMove {}
+
+impl MoveTrait for PyraMove {}
+
 impl Puzzle for Pyraminx {
+    type MoveType = PyraMove;
+
     fn do_move(&mut self, move_: Move) {
         // TODO: per puzzle moves enum
         // TODO: per puzzle sticker enum

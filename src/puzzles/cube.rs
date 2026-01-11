@@ -4,7 +4,7 @@ use {
     crate::{
         color::Color,
         r#move::Move,
-        puzzles::Puzzle,
+        puzzles::{MoveTrait, Puzzle},
         solvers::{DFSAble, iddfs, premover, zz},
         trigger::Trigger,
     },
@@ -137,7 +137,13 @@ impl Cube<3> {
     }
 }
 
+pub enum RubikMove {}
+
+impl MoveTrait for RubikMove {}
+
 impl<const N: usize> Puzzle for Cube<N> {
+    type MoveType = RubikMove;
+
     #[expect(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn do_move(&mut self, move_: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap
