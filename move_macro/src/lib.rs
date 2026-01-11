@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{LitStr, parse_macro_input};
 
-// TODO: NO
+// TODO: return a &'static [Move] instead of a Vec<Move>
 
 #[proc_macro]
 pub fn moves(input: TokenStream) -> TokenStream {

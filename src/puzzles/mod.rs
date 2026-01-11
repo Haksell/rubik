@@ -13,7 +13,7 @@ use {
 
 // TODO: each Puzzle should have its own Move and Sticker enums
 // and associated constants of all moves and all stickers
-pub trait Puzzle: Display + Send {
+pub trait Puzzle: Display {
     fn solve(&self) -> Option<Vec<Move>>;
 
     fn is_solved(&self) -> bool;
