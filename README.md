@@ -3,9 +3,10 @@
 ## todo
 
 - [ ] Move/Sticker for each puzzle + associated constants
-- [ ] 3x3 visualisation (vegret)
+- [ ] 3x3 visualization (vegret)
 - [ ] pyraminx moves + iddfs + visualisation (vegret)
 - [ ] big cube moves + visualisation (vegret)
+- [ ] antialiasing
 - [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file` (axbrisse)
 - [ ] generate or find optimal ZBLL/ZBLS (axbrisse)
 - related:
