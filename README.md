@@ -28,7 +28,7 @@
 - [ ] step explainer (vegret)
 - [x] random move scrambler
 - [ ] random state scrambler for 2x2/3x3(requires kociemba)/pyra (vegret)
-- [ ] 3d visualization (vegret)
+- [ ] 3d visualization with animation (vegret)
 
 ## resources
 
