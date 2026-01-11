@@ -62,8 +62,11 @@ pub trait Puzzle: Display + Send {
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 pub enum PuzzleArg {
+    #[value(alias = "2", alias = "2x2", alias = "2x2x2")]
     Cube2,
+    #[value(alias = "3", alias = "3x3", alias = "3x3x3")]
     Cube3,
+    #[value(alias = "pyra")]
     Pyraminx,
 }
 
