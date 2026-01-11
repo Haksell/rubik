@@ -6,39 +6,33 @@
 - [ ] pyraminx moves + iddfs + visualisation (vegret)
 - [ ] big cube moves + visualisation (vegret)
 - [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file` (axbrisse)
-- [ ] generate or find optimal ZBLL (axbrisse)
-- [ ] random move scrambler without redundant moves
-- [ ] better `reduce_moves` (`R L R L'`-> `R2`)
+- [ ] generate or find optimal ZBLL/ZBLS (axbrisse)
+- related:
+  - [ ] random move scrambler without redundant moves
+  - [ ] better `reduce_moves` (`R L R L'`-> `R2`)
 
 ## features
 
 - [x] 3x3x3 cfop solver
-- [ ] 3x3x3 zb solver (axbrisse)
 - [ ] 3x3x3 zz solver (axbrisse)
+- [ ] 3x3x3 zb solver (axbrisse)
 - [ ] 3x3x3 petrus solver (axbrisse)
 - [ ] 3x3x3 thistlethwaite/kloosterman/pochmann solver (axbrisse)
 - [ ] 3x3x3 reid solver (axbrisse)
-- [ ] 3x3x3 kociemba solver
+- [ ] 3x3x3 kociemba solver (axbrisse)
 - [ ] 3x3x3 korf solver
 - [x] 2x2x2 iddfs solver
-- [ ] pyraminx iddfs solver (vegret)
+- [x] pyraminx iddfs solver
 - [ ] big cube solver
 - [ ] megaminx solver
-- [ ] step explainer
-- [ ] random move scrambler (vegret)
-- [ ] random state scrambler (vegret)
+- [ ] step explainer (vegret)
+- [x] random move scrambler
+- [ ] random state scrambler for 2x2/3x3(requires kociemba)/pyra (vegret)
 - [ ] 3d visualization (vegret)
-
-## before push
-
-- [ ] remove `#[expect(dead_code)]`
-- [ ] remove useless `pub` and use `pub(crate)`/`pub(super)` where appropriate
 
 ## resources
 
 - https://kociemba.org/cube.htm
-- https://github.com/sebcrozet/kiss3d
-- https://www.youtube.com/watch?v=9PGfL4t-uqE
 - https://en.wikipedia.org/wiki/Optimal_solutions_for_the_Rubik%27s_Cube
 - Kloosterman explanation : https://www.math.rwth-aachen.de/~Martin.Schoenert/Cube-Lovers/michael_reid__an_upper_bound_on_god%27s_number.html
 - Pochmann code : https://www.stefan-pochmann.info/spocc/other_stuff/tools/solver_thistlethwaite/solver_thistlethwaite_cpp.txt
