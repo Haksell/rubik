@@ -43,13 +43,9 @@ async fn main() {
 
     println!("{puzzle}");
 
-    let solution = puzzle.solve().unwrap_or_else(|| {
-        println!("Failed to find solution.");
-        // Clippy warning but cannot change main to return a Result<(), u8>
-        // since #[kiss3d::main] override it to void :c
-        // maybe pull request on kiss3d to change the macro ?
-        std::process::exit(1);
-    });
+    let solution = puzzle
+        .solve()
+        .expect("a valid solution should always be found");
 
     if solution.is_empty() {
         println!("The puzzle was already solved!");

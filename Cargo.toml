@@ -5,13 +5,13 @@ edition = "2024"
 default-run = "rubik"
 
 [dependencies]
-clap = { version = "4.5.54", features = ["derive"] }
-colored = "2.2.0"
-kiss3d = "0.39.1"
+clap = { version = "4.5", features = ["derive"] }
+colored = "2.2"
+kiss3d = "0.39"
 move_macro = { path = "move_macro" }
-rand = "0.9.2"
-rusttype = "0.9.3"
-serial_test = "3.3.1"
+rand = "0.9"
+rusttype = "0.9"
+serial_test = "3.3"
 
 [lints.rust]
 # TODO
@@ -32,6 +32,8 @@ cargo_common_metadata = "allow"
 multiple_crate_versions = "allow"
 
 # nuresery
+# Annoying, but required by kiss3d 0.39
+future_not_send = "allow"
 option_if_let_else = "allow"
 
 # pedantic
@@ -40,7 +42,7 @@ cast_possible_truncation = "allow"
 cast_precision_loss = "allow"
 cast_sign_loss = "allow"
 # I don't like allowing it but it's too useful for the Sticker enum
-enum_glob_use = "allow"            
+enum_glob_use = "allow"
 many_single_char_names = "allow"
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
@@ -75,6 +77,7 @@ pub_with_shorthand = "allow"
 question_mark_used = "allow"
 redundant_test_prefix = "allow"
 semicolon_outside_block = "allow"
+separated_literal_suffix = "allow"
 shadow_reuse = "allow"
 shadow_same = "allow"
 shadow_unrelated = "allow"
@@ -84,7 +87,6 @@ std_instead_of_core = "allow"
 unreachable = "allow"
 unwrap_used = "allow"
 wildcard_enum_match_arm = "allow"
-separated_literal_suffix = "allow"
 
 # style
 len_without_is_empty = "allow"

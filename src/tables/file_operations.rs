@@ -32,7 +32,6 @@ pub fn read_moves(filename: &str) -> io::Result<Arc<Vec<Move>>> {
 
     let moves_arc = Arc::new(moves);
     cache.insert(filename.to_owned(), Arc::clone(&moves_arc));
-    drop(cache);
 
     Ok(moves_arc)
 }

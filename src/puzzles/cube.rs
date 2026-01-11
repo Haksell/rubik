@@ -508,7 +508,7 @@ impl<const N: usize> Puzzle for Cube<N> {
             }
         }
 
-        let core_size: f32 = CUBIE_SIZE * 2f32.mul_add(-MARGIN, N as f32);
+        let core_size: f32 = CUBIE_SIZE * (N as f32 - 2.0 * MARGIN);
 
         let mut core = scene.add_cube(core_size, core_size, core_size);
         core.translate(Vec3::new(
@@ -566,8 +566,8 @@ impl<const N: usize> Puzzle for Cube<N> {
         }
     }
 
-    fn parse_move(&self, str: &str) -> Result<Move, String> {
-        match str {
+    fn parse_move(&self, value: &str) -> Result<Move, String> {
+        match value {
             "F" => Ok(Move::F),
             "F2" => Ok(Move::F2),
             "F'" | "F’" => Ok(Move::F3),
@@ -586,7 +586,7 @@ impl<const N: usize> Puzzle for Cube<N> {
             "D" => Ok(Move::D),
             "D2" => Ok(Move::D2),
             "D'" | "D’" => Ok(Move::D3),
-            _ => Err(format!("Invalid move '{str}'")),
+            _ => Err(format!("Invalid move '{value}'")),
         }
     }
 }

@@ -287,8 +287,8 @@ impl Puzzle for Pyraminx {
         }
     }
 
-    fn parse_move(&self, str: &str) -> Result<Move, String> {
-        match str {
+    fn parse_move(&self, value: &str) -> Result<Move, String> {
+        match value {
             "R" => Ok(Move::R),
             "R'" | "R’" => Ok(Move::R2),
             "U" => Ok(Move::U),
@@ -305,7 +305,7 @@ impl Puzzle for Pyraminx {
             "u'" | "u’" => Ok(Move::TU2),
             "b'" | "b’" => Ok(Move::TB2),
             "l'" | "l’" => Ok(Move::TL2),
-            _ => Err(format!("Invalid move '{str}'")),
+            _ => Err(format!("Invalid move '{value}'")),
         }
     }
 }

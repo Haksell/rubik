@@ -10,7 +10,7 @@ use {
     std::fmt::Display,
 };
 
-pub trait Puzzle: Display {
+pub trait Puzzle: Display + Send {
     fn solve(&self) -> Option<Vec<Move>>;
 
     fn is_solved(&self) -> bool;
@@ -49,7 +49,7 @@ pub trait Puzzle: Display {
 
     fn opposite_move(&self, move_: Move) -> Move;
 
-    fn parse_move(&self, str: &str) -> Result<Move, String>;
+    fn parse_move(&self, value: &str) -> Result<Move, String>;
 }
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]

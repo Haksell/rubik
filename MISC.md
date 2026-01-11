@@ -60,24 +60,16 @@ Commands:
 - `c ccl --workspace --all-targets -- -A warnings -D clippy::xxx`
 
 Lints to fix:
-- clippy::cognitive_complexity
-- clippy::ptr_as_ptr
-- clippy::pub_use
-- clippy::rc_buffer
-- clippy::redundant_static_lifetimes
-- clippy::redundant_type_annotations
-- clippy::renamed_function_params
-- clippy::return_self_not_must_use
-- clippy::significant_drop_tightening
-- clippy::similar_names
-- clippy::string_slice
-- clippy::str_to_string
-- clippy::suboptimal_flops
-- clippy::too_many_lines
-- clippy::undocumented_unsafe_blocks
-- clippy::unimplemented
-- clippy::uninlined_format_args
-- clippy::unreadable_literal
-- clippy::unused_trait_names
-- clippy::unwrap_in_result
-- clippy::use_self
+- cognitive_complexity
+- exit
+- future_not_send
+- ptr_as_ptr
+- pub_use
+- rc_buffer
+- return_self_not_must_use
+- string_slice
+- too_many_lines
+- undocumented_unsafe_blocks
+- unimplemented
+- unseparated_literal_suffix
+- unwrap_in_result
