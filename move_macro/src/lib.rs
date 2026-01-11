@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, LitStr};
+use syn::{LitStr, parse_macro_input};
 
 // TODO: NO
 
@@ -13,7 +13,7 @@ pub fn moves(input: TokenStream) -> TokenStream {
 
     let expanded = quote! {
         {
-            use crate::puzzles::Puzzle;
+            use crate::puzzles::Puzzle as _;
             let puzzle = crate::puzzles::Cube::<3>::new(); // :( :( :( :(
             let mut moves_vec = Vec::new();
             #(
