@@ -36,15 +36,15 @@ pub(super) fn solve_last_layer_step(
     unreachable!();
 }
 
-pub(super) fn solve_auf(cube: &mut Cube<3>) -> Vec<Move> {
+pub(super) fn solve_auf(cube: &mut Cube<3>) -> Option<Move> {
     let auf = match cube.get_faces()[crate::sticker::Sticker::FU as usize] {
-        Color::GREEN => vec![],
-        Color::ORANGE => vec![Move::U],
-        Color::BLUE => vec![Move::U2],
-        Color::RED => vec![Move::U3],
+        Color::GREEN => None,
+        Color::ORANGE => Some(Move::U),
+        Color::BLUE => Some(Move::U2),
+        Color::RED => Some(Move::U3),
         _ => unreachable!(),
     };
-    for &move_ in &auf {
+    if let Some(move_) = auf {
         cube.do_move(move_);
     }
     auf
