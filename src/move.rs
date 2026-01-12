@@ -1,5 +1,6 @@
 use {
     kiss3d::event::{Key, Modifiers},
+    rand::seq::IndexedRandom as _,
     std::fmt::{Debug, Formatter},
 };
 
@@ -67,8 +68,7 @@ impl Move {
     }
 
     pub fn choice(moves: &[Self]) -> Self {
-        use rand::{prelude::*, rng};
-        *moves.choose(&mut rng()).unwrap()
+        *moves.choose(&mut rand::rng()).unwrap()
     }
 
     #[must_use]

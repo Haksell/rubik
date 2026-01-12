@@ -8,6 +8,7 @@ use {
     crate::{color::Color, cub2, cub3, r#move::Move},
     clap::ValueEnum,
     kiss3d::{camera::OrbitCamera3d, scene::SceneNode3d},
+    rand::seq::IndexedRandom as _,
     std::fmt::Display,
 };
 
@@ -34,12 +35,9 @@ pub trait Puzzle: Display {
     fn rand_scramble_iterations(&self) -> usize;
 
     fn rand_scramble(&mut self) -> Vec<Move> {
-        use rand::{prelude::*, rng};
-
-        // TODO Better scrambler
         let mut sequence: Vec<Move> = Vec::new();
         let iterations = self.rand_scramble_iterations();
-        let mut rng = rng();
+        let mut rng = rand::rng();
 
         while sequence.len() < iterations {
             let move_ = *self.rand_scramble_moves().choose(&mut rng).unwrap();
@@ -52,6 +50,7 @@ pub trait Puzzle: Display {
             self.do_move(move_);
             sequence.push(move_);
         }
+
         sequence
     }
 
