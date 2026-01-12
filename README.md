@@ -2,7 +2,7 @@
 
 ## todo
 
-- [ ] Move/Sticker for each puzzle + associated constants
+- [ ] Move/Sticker/(Color -> Face) for each puzzle + associated constants
 - [ ] 3x3 visualization (vegret)
 - [ ] pyraminx moves + iddfs + visualisation (vegret)
 - [ ] big cube moves + visualisation (vegret)

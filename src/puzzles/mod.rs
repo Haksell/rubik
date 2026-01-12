@@ -39,9 +39,10 @@ pub trait Puzzle: Display {
         // TODO Better scrambler
         let mut sequence: Vec<Move> = Vec::new();
         let iterations = self.rand_scramble_iterations();
+        let mut rng = rng();
 
         while sequence.len() < iterations {
-            let move_ = *self.rand_scramble_moves().choose(&mut rng()).unwrap();
+            let move_ = *self.rand_scramble_moves().choose(&mut rng).unwrap();
             if sequence
                 .last()
                 .is_some_and(|last_move| last_move.same_face(&move_))

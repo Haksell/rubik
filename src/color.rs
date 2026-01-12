@@ -5,6 +5,8 @@ use {
 
 #[repr(u8)]
 #[derive(Clone, Debug, Copy, PartialEq, Eq, Hash)]
+// TODO: rename to Face (Color::WHITE -> Face::UP etc)
+// Like with Move and Sticker, each Puzzle should have a Face
 pub enum Color {
     WHITE,
     RED,
