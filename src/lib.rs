@@ -1,13 +1,15 @@
 pub mod color;
+mod karaoke;
 pub mod r#move;
 pub mod puzzles;
 pub mod solvers;
 pub mod sticker;
 pub mod tables;
 pub mod trigger;
-pub mod visualizer;
 
 use clap::{Parser, ValueEnum};
+
+const WINDOW_SIZE: u32 = 1000;
 
 #[derive(Parser, Debug)]
 #[command(name = "rubik", about, long_about = None)]

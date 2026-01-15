@@ -1,6 +1,5 @@
 use {
-    super::WINDOW_SIZE,
-    crate::r#move::Move,
+    crate::{WINDOW_SIZE, r#move::Move},
     kiss3d::{
         color::{LIME, RED},
         glamx::Vec2,

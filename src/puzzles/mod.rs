@@ -6,13 +6,10 @@ pub use {cube::Cube, pyraminx::Pyraminx};
 
 use {
     crate::{
-        Args, Mode,
+        Args, Mode, WINDOW_SIZE,
         color::Color,
+        karaoke::{draw_karaoke, karaoke_format},
         r#move::{Move, MoveTrait},
-        visualizer::{
-            WINDOW_SIZE,
-            karaoke::{draw_karaoke, karaoke_format},
-        },
     },
     kiss3d::{
         camera::OrbitCamera3d,
