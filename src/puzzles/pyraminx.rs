@@ -57,6 +57,8 @@ impl Default for Pyraminx {
 }
 
 impl Puzzle for Pyraminx {
+    type Move = Move;
+
     fn do_move(&mut self, move_: Move) {
         // TODO: per puzzle moves enum
         // TODO: per puzzle sticker enum

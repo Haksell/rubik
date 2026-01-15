@@ -138,6 +138,8 @@ impl Cube<3> {
 }
 
 impl<const N: usize> Puzzle for Cube<N> {
+    type Move = Move;
+
     #[expect(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn do_move(&mut self, move_: Move) {
         // TODO: N+1 assignments instead of 2N with Vec::swap

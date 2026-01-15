@@ -1,67 +1,19 @@
 use {
-    clap::{Parser, ValueEnum},
-    rubik::{r#move::Move, puzzles::PuzzleArg, visualizer::visualize},
+    clap::Parser as _,
+    rubik::{
+        Args, PuzzleArg, cub2, cub3,
+        puzzles::{Puzzle as _, Pyraminx},
+    },
 };
-
-// TODO: help messages
-#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
-pub enum Mode {
-    Cli,
-    Gui,
-    Karaoke,
-}
-
-#[derive(Parser, Debug)]
-#[command(name = "rubik", about, long_about = None)]
-struct Args {
-    #[arg(long, short, help = "Specify a scramble sequence for the puzzle")]
-    scramble: Option<String>,
-
-    #[arg(long, short, value_enum, default_value_t = Mode::Cli)]
-    mode: Mode,
-
-    #[arg(long, short, value_enum, default_value_t = PuzzleArg::Cube3)]
-    puzzle: PuzzleArg,
-    // #[arg(long, short, help = "Show the different steps")]
-    // explain: bool,
-}
 
 #[kiss3d::main]
 async fn main() {
     let args = Args::parse();
-    let mut puzzle = args.puzzle.build();
 
-    if let Some(sequence) = args.scramble {
-        puzzle.scramble(&sequence);
-    } else {
-        let sequence = puzzle.rand_scramble();
-        println!(
-            "No scramble sequence provided, using the following one:\n{}",
-            Move::format_sequence(&sequence)
-        );
-    }
-
-    println!("{puzzle}");
-
-    let solution = puzzle
-        .solve()
-        .expect("a valid solution should always be found");
-
-    if solution.is_empty() {
-        println!("The puzzle was already solved!");
-    } else {
-        println!("Solution of {} moves found:", solution.len());
-        println!("{}", Move::format_sequence(&solution));
-    }
-
-    if args.mode != Mode::Cli {
-        visualize(
-            &mut puzzle,
-            &solution,
-            args.mode == Mode::Karaoke,
-            // TODO: no playground bool
-        )
-        .await;
+    match args.puzzle {
+        PuzzleArg::Cube2 => cub2!().main(args).await,
+        PuzzleArg::Cube3 => cub3!().main(args).await,
+        PuzzleArg::Pyraminx => Pyraminx::new().main(args).await,
     }
 }
 

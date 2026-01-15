@@ -5,9 +5,22 @@ mod pyraminx;
 pub use {cube::Cube, pyraminx::Pyraminx};
 
 use {
-    crate::{color::Color, cub2, cub3, r#move::Move},
-    clap::ValueEnum,
-    kiss3d::{camera::OrbitCamera3d, scene::SceneNode3d},
+    crate::{
+        Args, Mode,
+        color::Color,
+        r#move::{Move, MoveTrait},
+        visualizer::{
+            WINDOW_SIZE,
+            karaoke::{draw_karaoke, karaoke_format},
+        },
+    },
+    kiss3d::{
+        camera::OrbitCamera3d,
+        event::{Action, Key, WindowEvent},
+        light::Light,
+        scene::SceneNode3d,
+        window::Window,
+    },
     rand::seq::IndexedRandom as _,
     std::fmt::Display,
 };
@@ -15,6 +28,8 @@ use {
 // TODO: each Puzzle should have its own Move and Sticker enums
 // and associated constants of all moves and all stickers
 pub trait Puzzle: Display {
+    type Move: MoveTrait;
+
     fn solve(&self) -> Option<Vec<Move>>;
 
     fn is_solved(&self) -> bool;
@@ -70,24 +85,92 @@ pub trait Puzzle: Display {
     fn opposite_move(&self, move_: Move) -> Move;
 
     fn parse_move(&self, value: &str) -> Result<Move, String>;
-}
 
-#[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
-pub enum PuzzleArg {
-    #[value(alias = "2", alias = "2x2", alias = "2x2x2")]
-    Cube2,
-    #[value(alias = "3", alias = "3x3", alias = "3x3x3")]
-    Cube3,
-    #[value(alias = "pyra")]
-    Pyraminx,
-}
+    // TODO: flag for playground mode
+    #[expect(async_fn_in_trait)] // horrible
+    async fn visualize(&mut self, moves: &[Move], karaoke: bool) {
+        let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE).await;
+        let mut scene = SceneNode3d::empty();
 
-impl PuzzleArg {
-    pub fn build(&self) -> Box<dyn Puzzle> {
-        match self {
-            Self::Cube2 => Box::new(cub2!()),
-            Self::Cube3 => Box::new(cub3!()),
-            Self::Pyraminx => Box::new(Pyraminx::new()),
+        scene.set_light(Some(Light::default())); // TODO Better light
+
+        let mut cam = self.default_cam();
+
+        // lock zoom
+        cam.set_dist_step(1.0);
+        cam.set_dist(9.6); // TODO: depends on puzzle
+
+        cam.rebind_drag_button(None);
+
+        let mut stickers = self.draw(&mut scene);
+
+        let karaoke_text = karaoke.then(|| karaoke_format(moves));
+
+        let mut i: usize = 0;
+
+        while window.render_3d(&mut scene, &mut cam).await {
+            if let Some(text) = &karaoke_text {
+                draw_karaoke(text, i, &mut window);
+            }
+
+            for mut event in window.events().iter() {
+                if let WindowEvent::Key(button, Action::Press, _) = event.value {
+                    event.inhibited = true;
+                    match button {
+                        Key::Left => {
+                            if i > 0 {
+                                i -= 1;
+                                let inverse_move = self.opposite_move(moves[i]);
+                                self.do_move(inverse_move);
+                                self.refresh_stickers(&mut stickers);
+                            }
+                        }
+                        Key::Right => {
+                            if i < moves.len() {
+                                self.do_move(moves[i]);
+                                i += 1;
+                                self.refresh_stickers(&mut stickers);
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+    }
+
+    #[expect(async_fn_in_trait)] // horrible
+    async fn main(&mut self, args: Args) {
+        if let Some(sequence) = args.scramble {
+            self.scramble(&sequence);
+        } else {
+            let sequence = self.rand_scramble();
+            println!(
+                "No scramble sequence provided, using the following one:\n{}",
+                Move::format_sequence(&sequence)
+            );
+        }
+
+        println!("{self}");
+
+        let solution = self
+            .solve()
+            .expect("a valid solution should always be found");
+
+        if solution.is_empty() {
+            println!("The puzzle was already solved!");
+        } else {
+            println!("Solution of {} moves found:", solution.len());
+            println!("{}", Move::format_sequence(&solution));
+        }
+
+        if args.mode != Mode::Cli {
+            self.visualize(
+                &solution,
+                args.mode == Mode::Karaoke,
+                // TODO: no playground bool
+            )
+            .await;
         }
     }
 }

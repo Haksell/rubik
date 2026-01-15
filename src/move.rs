@@ -4,6 +4,9 @@ use {
     std::fmt::{Debug, Formatter},
 };
 
+// TODO: rename to Move
+pub trait MoveTrait: Clone + Copy + PartialEq + Eq + Debug {}
+
 // move.cycles
 
 #[repr(u8)]
@@ -98,6 +101,8 @@ impl Move {
             .join(" ")
     }
 }
+
+impl MoveTrait for Move {}
 
 impl TryFrom<u8> for Move {
     type Error = &'static str;
