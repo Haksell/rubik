@@ -2,23 +2,26 @@
 
 ## todo
 
-- [ ] Move/Sticker/(Color -> Face) for each puzzle + associated constants
-- [ ] 3x3 visualization (vegret)
-- [ ] pyraminx moves + iddfs + visualisation (vegret)
+- [ ] associated types for `Puzzle` (`Cube<2>` and `Cube<3>` are different)
+  - [ ] `Move`
+  - [ ] `Sticker`
+  - [ ] `Color` (rename to `Face`)
+- [ ] moving 3x3 visualization (vegret)
+- [ ] mirror blocks visualization (vegret)
 - [ ] big cube moves + visualisation (vegret)
-- [ ] antialiasing
+- [ ] antialiasing (vegret)
 - [ ] `solve_cross`, `solve_eo_line`... = `solve_step_from_file` (axbrisse)
 - [ ] generate or find optimal ZBLL/ZBLS (axbrisse)
-- related:
+- move reduction (axbrisse):
   - [ ] random move scrambler without redundant moves
   - [ ] better `reduce_moves` (`R L R L'`-> `R2`)
-- [ ] `moves!` -> `&'static [Move]`
+- [ ] `moves!` -> `&'static [Move]` (vegret)
 
 ## features
 
 - [x] 3x3x3 cfop solver
-- [ ] 3x3x3 zz solver (axbrisse)
-- [ ] 3x3x3 zb solver (axbrisse)
+- [ ] 3x3x3 zz solver (axbrisse) (zbll remaining)
+- [ ] 3x3x3 zb solver (axbrisse) (zbls/zbll remaining)
 - [ ] 3x3x3 petrus solver (axbrisse)
 - [ ] 3x3x3 thistlethwaite/kloosterman/pochmann solver (axbrisse)
 - [ ] 3x3x3 reid solver (axbrisse)
