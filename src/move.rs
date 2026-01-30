@@ -58,7 +58,7 @@ impl Move {
         Self::try_from(i).unwrap()
     }
 
-    // TODO convertir en i16 pour pas overflow ou garder + 30 ?
+    // TODO: convertir en i16 pour pas overflow ou garder + 30 ?
     pub const fn same_face(&self, move_: &Self) -> bool {
         (self.as_int() + 30 - move_.as_int()).is_multiple_of(6)
     }

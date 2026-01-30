@@ -481,7 +481,7 @@ impl<const N: usize> Puzzle for Cube<N> {
             squares
         }
 
-        // TODO Cleanup
+        // TODO: cleanup
         fn get_coords(i: usize, n: usize, face: Color) -> (f32, f32, f32) {
             let n = n as f32;
             let i = i as f32;

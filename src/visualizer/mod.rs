@@ -18,7 +18,7 @@ pub async fn visualize(puzzle: &mut Box<dyn Puzzle>, moves: &[Move], karaoke: bo
     let mut window = Window::new_with_size("rubik", WINDOW_SIZE, WINDOW_SIZE).await;
     let mut scene = SceneNode3d::empty();
 
-    scene.set_light(Some(Light::default())); // TODO Better light
+    scene.set_light(Some(Light::default())); // TODO: better light
 
     let mut cam = puzzle.default_cam();
 
