@@ -16,6 +16,7 @@
   - [ ] random move scrambler without redundant moves
   - [ ] better `reduce_moves` (`R L R L'`-> `R2`)
 - [ ] `moves!` -> `&'static [Move]` (vegret)
+- [ ] `moves!` without quotes (`moves![R U R' U']`)
 - [ ] x-cross flag for cfop/zb (axbrisse)
 
 ## features
@@ -31,6 +32,7 @@
 - [x] 2x2x2 iddfs solver
 - [x] pyraminx iddfs solver
 - [ ] big cube solver (axbrisse)
+- [ ] face-turning-octahedron solver (axbrisse)
 - [ ] megaminx solver (axbrisse)
 - [ ] step explainer (vegret)
 - [x] random move scrambler
